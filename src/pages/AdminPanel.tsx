@@ -1,179 +1,41 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Users, Languages, UserCheck, Clock, Plus, Edit, Save } from "lucide-react";
-import { agents, allLanguages, allShifts, qcGroups, Agent, QCGroup } from "@/data/mockData";
+import { Building2, Clock, Languages, Save, ShieldCheck, UserCheck, Users } from "lucide-react";
 import { toast } from "sonner";
+import { useCallCenter } from "@/contexts/CallCenterContext";
+import { agents, allLanguages, allShifts, qcGroups } from "@/data/mockData";
 
 const tabs = [
-  { label: "User Management", icon: <Users className="w-4 h-4" /> },
-  { label: "Language Assignment", icon: <Languages className="w-4 h-4" /> },
-  { label: "QC Groups", icon: <UserCheck className="w-4 h-4" /> },
-  { label: "Shift Management", icon: <Clock className="w-4 h-4" /> },
+  { label: "User Management", icon: <Users className="h-4 w-4" /> },
+  { label: "Languages", icon: <Languages className="h-4 w-4" /> },
+  { label: "QC Groups", icon: <UserCheck className="h-4 w-4" /> },
+  { label: "Branches", icon: <Building2 className="h-4 w-4" /> },
+  { label: "Shifts", icon: <Clock className="h-4 w-4" /> },
 ];
 
-interface AdminPanelProps {
-  initialTab?: number;
-}
-
-export default function AdminPanel({ initialTab = 0 }: AdminPanelProps) {
+export default function AdminPanel({ initialTab = 0 }: { initialTab?: number }) {
   const [activeTab, setActiveTab] = useState(initialTab);
-  const [agentData, setAgentData] = useState<Agent[]>([...agents]);
-
-  const handleSave = (msg: string) => toast.success(msg);
+  const [newBranch, setNewBranch] = useState({ name: "", city: "" });
+  const { branches, addBranch, updateBranch } = useCallCenter();
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Admin Panel</h1>
-
-      <div className="flex gap-1 border-b">
-        {tabs.map((tab, i) => (
-          <button
-            key={tab.label}
-            onClick={() => setActiveTab(i)}
-            className={`px-4 py-2.5 text-sm flex items-center gap-2 transition-colors relative ${
-              activeTab === i ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {tab.icon} {tab.label}
-            {activeTab === i && <motion.div layoutId="admin-tab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-attica-gold" />}
-          </button>
-        ))}
+      <div>
+        <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">Administration</p>
+        <h1 className="flex items-center gap-2 text-3xl font-semibold tracking-tight"><ShieldCheck className="h-6 w-6 text-accent" />Admin Panel</h1>
       </div>
 
-      {/* User Management */}
-      {activeTab === 0 && (
-        <div className="bg-card border rounded-lg overflow-hidden">
-          <div className="p-4 border-b flex items-center justify-between">
-            <span className="text-sm font-medium">{agentData.length} users</span>
-            <button className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg btn-press flex items-center gap-1.5 hover:opacity-90">
-              <Plus className="w-3.5 h-3.5" /> Add User
-            </button>
-          </div>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Name</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Email</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Role</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {agentData.map((a) => (
-                <tr key={a.id} className="border-b last:border-0 hover:bg-muted/30">
-                  <td className="px-4 py-3 font-medium">{a.name}</td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">{a.email}</td>
-                  <td className="px-4 py-3 capitalize text-xs">{a.role}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
-                      a.status === "active" ? "bg-green-100 text-green-700" : a.status === "on-break" ? "bg-yellow-100 text-yellow-700" : "bg-muted text-muted-foreground"
-                    }`}>{a.status}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button onClick={() => handleSave(`${a.name} updated`)} className="p-1.5 rounded hover:bg-muted btn-press text-muted-foreground hover:text-foreground">
-                      <Edit className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <div className="surface-panel p-2"><div className="flex flex-wrap gap-2">{tabs.map((tab, i) => <button key={tab.label} onClick={() => setActiveTab(i)} className={activeTab === i ? "action-gold" : "action-outline"}>{tab.icon}{tab.label}</button>)}</div></div>
 
-      {/* Language Assignment */}
-      {activeTab === 1 && (
-        <div className="bg-card border rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Agent</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Assigned Languages</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {agentData.filter((a) => a.role === "agent").map((a) => (
-                <tr key={a.id} className="border-b last:border-0 hover:bg-muted/30">
-                  <td className="px-4 py-3 font-medium">{a.name}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {a.languages.map((l) => (
-                        <span key={l} className="px-2 py-0.5 text-xs rounded-full bg-attica-gold/10 text-attica-gold border border-attica-gold/20">{l}</span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button onClick={() => handleSave(`Languages updated for ${a.name}`)} className="px-3 py-1 text-xs border rounded-md hover:bg-muted btn-press flex items-center gap-1">
-                      <Save className="w-3 h-3" /> Save
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      {activeTab === 0 && <div className="surface-panel overflow-hidden"><table className="w-full text-sm"><thead className="bg-muted/60 text-left text-muted-foreground"><tr><th className="px-4 py-3">Name</th><th className="px-4 py-3">Email</th><th className="px-4 py-3">Role</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Action</th></tr></thead><tbody>{agents.map((agent) => <tr key={agent.id} className="border-t border-border"><td className="px-4 py-3 font-medium">{agent.name}</td><td className="px-4 py-3">{agent.email}</td><td className="px-4 py-3 capitalize">{agent.role}</td><td className="px-4 py-3"><span className={agent.status === "active" ? "success-badge" : agent.status === "on-break" ? "warning-badge" : "done-badge"}>{agent.status}</span></td><td className="px-4 py-3"><button className="action-outline" onClick={() => toast.success(`${agent.name} saved`)}>Edit</button></td></tr>)}</tbody></table></div>}
 
-      {/* QC Groups */}
-      {activeTab === 2 && (
-        <div className="space-y-4">
-          {qcGroups.map((g) => (
-            <div key={g.id} className="bg-card border rounded-lg p-5">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h3 className="font-medium">{g.name}</h3>
-                  <p className="text-sm text-muted-foreground">Reviewer: {g.reviewerName} · Target: {g.reviewTarget} reviews/day</p>
-                </div>
-                <button onClick={() => handleSave(`${g.name} updated`)} className="p-1.5 rounded hover:bg-muted btn-press text-muted-foreground">
-                  <Edit className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {g.agentIds.map((aid) => {
-                  const agent = agents.find((a) => a.id === aid);
-                  return agent ? (
-                    <span key={aid} className="px-3 py-1 text-xs border rounded-full bg-muted">{agent.name}</span>
-                  ) : null;
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {activeTab === 1 && <div className="surface-panel overflow-hidden"><table className="w-full text-sm"><thead className="bg-muted/60 text-left text-muted-foreground"><tr><th className="px-4 py-3">Agent</th><th className="px-4 py-3">Languages</th><th className="px-4 py-3">Action</th></tr></thead><tbody>{agents.filter((agent) => agent.role === "agent").map((agent) => <tr key={agent.id} className="border-t border-border"><td className="px-4 py-3 font-medium">{agent.name}</td><td className="px-4 py-3"><div className="flex flex-wrap gap-2">{allLanguages.slice(0, 6).map((language) => <span key={language} className={agent.languages.includes(language) ? "success-badge" : "done-badge"}>{language}</span>)}</div></td><td className="px-4 py-3"><button className="action-outline" onClick={() => toast.success(`Languages updated for ${agent.name}`)}><Save className="h-4 w-4" />Save</button></td></tr>)}</tbody></table></div>}
 
-      {/* Shift Management */}
-      {activeTab === 3 && (
-        <div className="bg-card border rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Agent</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Current Shift</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {agentData.filter((a) => a.role === "agent").map((a) => (
-                <tr key={a.id} className="border-b last:border-0 hover:bg-muted/30">
-                  <td className="px-4 py-3 font-medium">{a.name}</td>
-                  <td className="px-4 py-3 text-sm">{a.shift}</td>
-                  <td className="px-4 py-3">
-                    <select
-                      defaultValue={a.shift}
-                      onChange={() => handleSave(`Shift updated for ${a.name}`)}
-                      className="px-2 py-1 text-xs border rounded-md bg-card focus:outline-none"
-                    >
-                      {allShifts.map((s) => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      {activeTab === 2 && <div className="grid gap-4 md:grid-cols-2">{qcGroups.map((group) => <div key={group.id} className="surface-panel p-5"><h2 className="text-lg font-semibold">{group.name}</h2><p className="mt-1 text-sm text-muted-foreground">Reviewer: {group.reviewerName} · Target: {group.reviewTarget}/day</p><div className="mt-4 flex flex-wrap gap-2">{group.agentIds.map((id) => <span key={id} className="done-badge">{agents.find((agent) => agent.id === id)?.name}</span>)}</div></div>)}</div>}
+
+      {activeTab === 3 && <div className="grid gap-6 xl:grid-cols-[340px_minmax(0,1fr)]"><div className="surface-panel p-5"><h2 className="mb-4 text-lg font-semibold">Add Branch</h2><div className="space-y-3"><input className="control-field" placeholder="Branch name" value={newBranch.name} onChange={(e) => setNewBranch({ ...newBranch, name: e.target.value })} /><input className="control-field" placeholder="City" value={newBranch.city} onChange={(e) => setNewBranch({ ...newBranch, city: e.target.value })} /><button className="action-gold w-full justify-center" onClick={() => { addBranch(newBranch.name, newBranch.city); setNewBranch({ name: "", city: "" }); }}><Building2 className="h-4 w-4" />Add Branch</button></div></div><div className="surface-panel overflow-hidden"><table className="w-full text-sm"><thead className="bg-muted/60 text-left text-muted-foreground"><tr><th className="px-4 py-3">Branch</th><th className="px-4 py-3">City</th><th className="px-4 py-3">Action</th></tr></thead><tbody>{branches.map((branch) => <tr key={branch.id} className="border-t border-border"><td className="px-4 py-3 font-medium">{branch.name}</td><td className="px-4 py-3">{branch.city}</td><td className="px-4 py-3"><button className="action-outline" onClick={() => updateBranch(branch.id, branch.name, branch.city)}>Save</button></td></tr>)}</tbody></table></div></div>}
+
+      {activeTab === 4 && <div className="surface-panel overflow-hidden"><table className="w-full text-sm"><thead className="bg-muted/60 text-left text-muted-foreground"><tr><th className="px-4 py-3">Agent</th><th className="px-4 py-3">Shift</th><th className="px-4 py-3">Hours</th></tr></thead><tbody>{agents.filter((agent) => agent.role === "agent").map((agent) => <tr key={agent.id} className="border-t border-border"><td className="px-4 py-3 font-medium">{agent.name}</td><td className="px-4 py-3"><select className="control-field max-w-xs" defaultValue={agent.shift} onChange={() => toast.success(`Shift updated for ${agent.name}`)}>{allShifts.map((shift) => <option key={shift}>{shift}</option>)}</select></td><td className="px-4 py-3">{agent.shift}</td></tr>)}</tbody></table></div>}
     </motion.div>
   );
 }

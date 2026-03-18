@@ -1,26 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { callRecords } from "@/data/mockData";
+import { Download, Filter, Phone, Play, Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Phone, Play, Download, Search } from "lucide-react";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.03 } },
-} as const;
-const itemVariants = {
-  hidden: { y: 8, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: "spring" as const, bounce: 0 } },
-} as const;
-
-const statusColors: Record<string, string> = {
-  answered: "bg-green-100 text-green-700",
-  missed: "bg-red-100 text-red-700",
-  transferred: "bg-yellow-100 text-yellow-700",
-  active: "bg-blue-100 text-blue-700",
-  "on-hold": "bg-orange-100 text-orange-700",
-  completed: "bg-muted text-muted-foreground",
-};
+import { useCallCenter } from "@/contexts/CallCenterContext";
 
 interface CallsPageProps {
   direction: "incoming" | "outgoing";
@@ -28,146 +10,89 @@ interface CallsPageProps {
 
 export default function CallsPage({ direction }: CallsPageProps) {
   const { user } = useAuth();
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const { calls, branches, addFollowUp, prefillDialedNumber } = useCallCenter();
+  const [filters, setFilters] = useState({ search: "", status: "all", language: "all", branch: "all", date: "2026-03-18", agent: "all" });
   const [playingId, setPlayingId] = useState<string | null>(null);
 
-  let calls = callRecords.filter((c) => c.direction === direction);
-  if (user?.role === "agent") calls = calls.filter((c) => c.agentId === user.id);
-  if (search) {
-    const s = search.toLowerCase();
-    calls = calls.filter((c) => c.callerName.toLowerCase().includes(s) || c.callerId.includes(s) || c.agentName.toLowerCase().includes(s));
-  }
-  if (statusFilter !== "all") calls = calls.filter((c) => c.status === statusFilter);
+  const visibleCalls = useMemo(() => {
+    let next = calls.filter((call) => call.direction === direction);
+    if (user?.role === "agent") next = next.filter((call) => call.agentId === user.id);
+    if (filters.search) {
+      const term = filters.search.toLowerCase();
+      next = next.filter((call) => [call.callerId, call.callerName, call.customerName, call.agentName, call.branch].some((value) => value?.toLowerCase().includes(term)));
+    }
+    if (filters.status !== "all") next = next.filter((call) => call.status === filters.status);
+    if (filters.language !== "all") next = next.filter((call) => call.language === filters.language);
+    if (filters.branch !== "all") next = next.filter((call) => call.branch === filters.branch);
+    if (filters.agent !== "all") next = next.filter((call) => call.agentName === filters.agent);
+    if (filters.date) next = next.filter((call) => call.date === filters.date);
+    return next;
+  }, [calls, direction, filters, user]);
+
+  const languages = Array.from(new Set(calls.map((call) => call.language)));
+  const agents = Array.from(new Set(calls.map((call) => call.agentName)));
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
-      <motion.div variants={itemVariants}>
-        <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-          <Phone className="w-6 h-6 text-primary" />
-          {direction === "incoming" ? "Incoming Calls" : "Outgoing Calls"}
-        </h1>
-      </motion.div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">Call Management</p>
+        <h1 className="flex items-center gap-2 text-3xl font-semibold tracking-tight"><Phone className="h-6 w-6 text-accent" />{direction === "incoming" ? "Incoming Calls" : "Outgoing Calls"}</h1>
+      </div>
 
-      {/* Filters */}
-      <motion.div variants={itemVariants} className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search caller, agent..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm border rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-attica-gold/50"
-          />
+      <div className="surface-panel p-4">
+        <div className="mb-3 flex items-center gap-2 text-sm font-medium"><Filter className="h-4 w-4 text-accent" />Filters</div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+          <input className="control-field" placeholder="Search number, customer, branch" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+          <input className="control-field" type="date" value={filters.date} onChange={(e) => setFilters({ ...filters, date: e.target.value })} />
+          <select className="control-field" value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}><option value="all">All status</option><option value="answered">Answered</option><option value="missed">Missed</option><option value="transferred">Transferred</option><option value="active">Active</option><option value="on-hold">On Hold</option><option value="completed">Completed</option></select>
+          <select className="control-field" value={filters.language} onChange={(e) => setFilters({ ...filters, language: e.target.value })}><option value="all">All languages</option>{languages.map((language) => <option key={language}>{language}</option>)}</select>
+          <select className="control-field" value={filters.branch} onChange={(e) => setFilters({ ...filters, branch: e.target.value })}><option value="all">All branches</option>{branches.map((branch) => <option key={branch.id}>{branch.name}</option>)}</select>
+          <select className="control-field" value={filters.agent} onChange={(e) => setFilters({ ...filters, agent: e.target.value })}><option value="all">All agents</option>{agents.map((agent) => <option key={agent}>{agent}</option>)}</select>
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 text-sm border rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-attica-gold/50"
-        >
-          <option value="all">All Status</option>
-          <option value="answered">Answered</option>
-          <option value="missed">Missed</option>
-          <option value="transferred">Transferred</option>
-          <option value="active">Active</option>
-          <option value="on-hold">On Hold</option>
-          <option value="completed">Completed</option>
-        </select>
-      </motion.div>
+      </div>
 
-      {/* Table */}
-      <motion.div variants={itemVariants} className="bg-card border rounded-lg overflow-hidden">
+      <div className="surface-panel overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Caller</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Agent</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Time</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Duration</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Language</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Recording</th>
+            <thead className="bg-muted/60 text-left text-muted-foreground">
+              <tr>
+                <th className="px-4 py-3">Caller</th>
+                <th className="px-4 py-3">Branch</th>
+                <th className="px-4 py-3">Agent</th>
+                <th className="px-4 py-3">Time</th>
+                <th className="px-4 py-3">Duration</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Recording</th>
+                <th className="px-4 py-3">Action</th>
               </tr>
             </thead>
             <tbody>
-              {calls.map((call) => (
-                <tr key={call.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+              {visibleCalls.map((call) => (
+                <tr key={call.id} className="border-t border-border">
                   <td className="px-4 py-3">
-                    <div className="font-medium">{call.callerName}</div>
-                    <div className="text-xs font-mono text-muted-foreground">{call.callerId}</div>
+                    <div className="font-medium">{call.customerName ?? call.callerName}</div>
+                    <div className="text-xs text-muted-foreground">{call.callerId} · {call.purpose}</div>
                   </td>
+                  <td className="px-4 py-3">{call.branch}</td>
                   <td className="px-4 py-3">{call.agentName}</td>
                   <td className="px-4 py-3 font-mono text-xs">{call.time}</td>
                   <td className="px-4 py-3 font-mono text-xs">{call.duration}</td>
-                  <td className="px-4 py-3 text-xs">{call.language}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium capitalize ${statusColors[call.status] || ""}`}>
-                      {(call.status === "active" || call.status === "on-hold") && (
-                        <span className={`status-dot ${call.status === "active" ? "status-active" : "status-hold"} live-pulse`} />
-                      )}
-                      {call.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    {call.hasRecording ? (
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setPlayingId(playingId === call.id ? null : call.id)}
-                          className="p-1.5 rounded-md hover:bg-muted transition-colors btn-press text-primary"
-                        >
-                          <Play className="w-4 h-4" />
-                        </button>
-                        <button className="p-1.5 rounded-md hover:bg-muted transition-colors btn-press text-muted-foreground">
-                          <Download className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </td>
+                  <td className="px-4 py-3"><span className={call.status === "missed" ? "danger-badge" : call.status === "active" ? "live-badge" : call.status === "on-hold" ? "warning-badge" : "done-badge"}>{call.status}</span></td>
+                  <td className="px-4 py-3">{call.hasRecording ? <div className="flex gap-2"><button className="action-outline" onClick={() => setPlayingId(playingId === call.id ? null : call.id)}><Play className="h-4 w-4" />Play</button><button className="action-outline"><Download className="h-4 w-4" />Download</button></div> : "—"}</td>
+                  <td className="px-4 py-3"><div className="flex gap-2"><button className="action-outline" onClick={() => prefillDialedNumber(call.callerId)}>Callback</button><button className="action-gold" onClick={() => addFollowUp({ customerName: call.customerName ?? call.callerName, phone: call.callerId, branch: call.branch ?? branches[0]?.name ?? "", followUpAt: "2026-03-18T18:00", notes: `Follow-up from ${call.id}`, callId: call.id })}><Plus className="h-4 w-4" />Follow-Up</button></div></td>
                 </tr>
               ))}
-              {calls.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">No calls found</td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
 
-        {/* Inline Audio Player */}
         {playingId && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="border-t p-4 bg-muted/30"
-          >
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium">Playing: {playingId}</span>
-              <div className="flex-1 flex items-end gap-0.5 h-8">
-                {Array.from({ length: 40 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 bg-attica-gold/60 rounded-t-sm"
-                    style={{ height: `${Math.random() * 100}%`, minHeight: 2 }}
-                  />
-                ))}
-              </div>
-              <span className="text-xs font-mono text-muted-foreground">02:15 / 04:32</span>
-              <button
-                onClick={() => setPlayingId(null)}
-                className="text-xs text-muted-foreground hover:text-foreground"
-              >
-                Close
-              </button>
-            </div>
-          </motion.div>
+          <div className="border-t border-border bg-muted/30 p-4">
+            <div className="mb-2 text-sm font-medium">Recording player · {playingId}</div>
+            <div className="flex h-10 items-end gap-1">{Array.from({ length: 48 }).map((_, i) => <div key={i} className="flex-1 rounded-t bg-accent/60" style={{ height: `${12 + ((i * 17) % 70)}%` }} />)}</div>
+          </div>
         )}
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
