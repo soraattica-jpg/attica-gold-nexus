@@ -10,8 +10,8 @@ import { toast } from "sonner";
 
 const itemV = {
   hidden: { y: 10, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: "spring", bounce: 0 } },
-};
+  visible: { y: 0, opacity: 1, transition: { type: "spring" as const, bounce: 0 } },
+} as const;
 
 const tabs = ["Agent Performance", "Time Statistics", "User Statistics", "Missed Calls"];
 

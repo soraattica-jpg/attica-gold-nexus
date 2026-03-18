@@ -7,11 +7,11 @@ import { useAuth } from "@/contexts/AuthContext";
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
-};
+} as const;
 const itemVariants = {
   hidden: { y: 10, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: "spring", bounce: 0 } },
-};
+  visible: { y: 0, opacity: 1, transition: { type: "spring" as const, bounce: 0 } },
+} as const;
 
 export default function DashboardHome() {
   const { user } = useAuth();

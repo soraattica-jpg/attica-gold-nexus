@@ -7,11 +7,11 @@ import { Phone, Play, Download, Search } from "lucide-react";
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.03 } },
-};
+} as const;
 const itemVariants = {
   hidden: { y: 8, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: "spring", bounce: 0 } },
-};
+  visible: { y: 0, opacity: 1, transition: { type: "spring" as const, bounce: 0 } },
+} as const;
 
 const statusColors: Record<string, string> = {
   answered: "bg-green-100 text-green-700",
