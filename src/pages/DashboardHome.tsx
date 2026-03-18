@@ -1,166 +1,154 @@
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Phone, PhoneOff, Clock, TrendingUp, Activity, Award } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
-import { callRecords, callsPerHour, agents } from "@/data/mockData";
+import { Activity, PhoneOff, Trophy, CalendarClock, PhoneCall, TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import DialerPanel from "@/components/DialerPanel";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
-} as const;
-const itemVariants = {
-  hidden: { y: 10, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: "spring" as const, bounce: 0 } },
-} as const;
+import { topAgentTalkTime, useCallCenter } from "@/contexts/CallCenterContext";
+import { agents } from "@/data/mockData";
 
 export default function DashboardHome() {
   const { user } = useAuth();
-  const todayCalls = callRecords.filter((c) => c.date === "2026-03-18");
-  const answered = todayCalls.filter((c) => c.status === "answered" || c.status === "completed").length;
-  const missed = todayCalls.filter((c) => c.status === "missed").length;
-  const activeCalls = todayCalls.filter((c) => c.status === "active" || c.status === "on-hold");
-  const agentList = agents.filter((a) => a.role === "agent");
-  const topAgents = [...agentList].sort((a, b) => b.callsToday - a.callsToday).slice(0, 5);
-  const missedCallsList = todayCalls.filter((c) => c.status === "missed");
+  const { calls, hourlyCalls, followUps, prefillDialedNumber, followUpDueCount } = useCallCenter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setLoading(false), 700);
+    return () => window.clearTimeout(timeout);
+  }, []);
+
+  const todayCalls = useMemo(() => calls.filter((call) => call.date === "2026-03-18"), [calls]);
+  const answered = todayCalls.filter((call) => ["answered", "completed"].includes(call.status)).length;
+  const missed = todayCalls.filter((call) => call.status === "missed").length;
+  const activeCalls = todayCalls.filter((call) => ["active", "on-hold"].includes(call.status));
+  const topAgents = agents.filter((agent) => agent.role === "agent").sort((a, b) => b.callsToday - a.callsToday).slice(0, 5);
+  const myFollowUps = user?.role === "agent" ? followUps.filter((item) => item.agentId === user.id) : followUps;
 
   const kpis = [
-    { label: "Total Calls Today", value: todayCalls.length, icon: <Phone className="w-5 h-5" />, pulse: true },
-    { label: "Answered", value: answered, icon: <TrendingUp className="w-5 h-5" /> },
-    { label: "Missed", value: missed, icon: <PhoneOff className="w-5 h-5" />, alert: missed > 0 },
-    { label: "Avg Handle Time", value: "04:22", icon: <Clock className="w-5 h-5" /> },
+    { label: "Total Calls Today", value: todayCalls.length },
+    { label: "Answered", value: answered },
+    { label: "Missed", value: missed },
+    { label: "Active Now", value: activeCalls.length },
+    { label: "Follow-Ups Due", value: followUpDueCount },
   ];
 
+  if (loading) {
+    return <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-36 rounded-2xl" />)}</div>;
+  }
+
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
-      <motion.div variants={itemVariants}>
-        <h1 className="text-2xl font-semibold tracking-tight">Operational Overview</h1>
-        <p className="text-sm text-muted-foreground">Welcome back, {user?.name}</p>
-      </motion.div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">Operations Overview</p>
+        <h1 className="text-3xl font-semibold tracking-tight">Welcome back, {user?.name}</h1>
+      </div>
 
-      {/* KPI Cards */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpis.map((kpi) => (
-          <div key={kpi.label} className="kpi-card">
-            {kpi.pulse && (
-              <div className="absolute top-3 right-3">
-                <span className="status-dot bg-attica-gold live-pulse" />
-              </div>
-            )}
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              {kpi.icon}
-              <span className="text-sm">{kpi.label}</span>
-            </div>
-            <div className={`text-4xl font-medium font-mono ${kpi.alert ? "text-primary" : "text-foreground"}`}>
-              {kpi.value}
-            </div>
-          </div>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        {kpis.map((item, index) => (
+          <motion.div key={item.label} className="kpi-card" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
+            <p className="text-sm text-muted-foreground">{item.label}</p>
+            <p className="mt-4 text-4xl font-semibold">{item.value}</p>
+          </motion.div>
         ))}
-      </motion.div>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Calls per Hour Chart */}
-        <motion.div variants={itemVariants} className="lg:col-span-2 bg-card border rounded-lg p-5">
-          <h2 className="text-sm font-medium text-muted-foreground mb-4">Calls Per Hour</h2>
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={callsPerHour}>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_420px]">
+        <div className="surface-panel p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">Volume</p>
+              <h2 className="text-xl font-semibold">Calls per hour</h2>
+            </div>
+            <div className="success-badge"><TrendingUp className="h-4 w-4" /> Stable flow</div>
+          </div>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={hourlyCalls}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="hour" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-              <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-              <Tooltip
-                contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 13 }}
-              />
-              <defs>
-                <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--attica-butterscotch))" stopOpacity={0.9} />
-                  <stop offset="100%" stopColor="hsl(var(--attica-gold))" stopOpacity={0.6} />
-                </linearGradient>
-              </defs>
-              <Bar dataKey="calls" fill="url(#barGrad)" radius={[4, 4, 0, 0]} />
+              <XAxis dataKey="hour" stroke="hsl(var(--muted-foreground))" tick={{ fontSize: 12 }} />
+              <YAxis stroke="hsl(var(--muted-foreground))" tick={{ fontSize: 12 }} />
+              <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 16 }} />
+              <Bar dataKey="calls" fill="hsl(var(--accent))" radius={[10, 10, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
-        </motion.div>
+        </div>
 
-        {/* Top Agents Leaderboard */}
-        <motion.div variants={itemVariants} className="bg-card border rounded-lg p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Award className="w-4 h-4 text-attica-gold" />
-            <h2 className="text-sm font-medium text-muted-foreground">Top Agents</h2>
+        {user?.role === "agent" ? (
+          <DialerPanel />
+        ) : (
+          <div className="surface-panel p-5">
+            <div className="mb-4 flex items-center gap-2"><Trophy className="h-5 w-5 text-accent" /><h2 className="text-xl font-semibold">Top Agents</h2></div>
+            <div className="space-y-3">
+              {topAgents.map((agent, index) => (
+                <div key={agent.id} className="flex items-center gap-3 rounded-xl border border-border p-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 font-semibold text-accent">{index + 1}</div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">{agent.name}</p>
+                    <p className="text-sm text-muted-foreground">{agent.callsToday} calls · {topAgentTalkTime(agent.id)}</p>
+                  </div>
+                  <div className="done-badge">{agent.avgHandleTime}</div>
+                </div>
+              ))}
+            </div>
           </div>
+        )}
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-3">
+        <div className="surface-panel p-5">
+          <div className="mb-4 flex items-center gap-2"><Activity className="h-5 w-5 text-destructive" /><h2 className="text-xl font-semibold">Live Calls Feed</h2></div>
           <div className="space-y-3">
-            {topAgents.map((agent, i) => (
-              <div key={agent.id} className="flex items-center gap-3">
-                <span className="w-5 text-xs font-mono text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>
-                <div className="w-7 h-7 rounded-full border-2 border-attica-gold flex items-center justify-center text-xs font-semibold text-attica-gold">
-                  {agent.name.split(" ").map(n => n[0]).join("")}
+            {activeCalls.map((call) => (
+              <div key={call.id} className="flex items-center justify-between rounded-xl border border-border p-3">
+                <div>
+                  <p className="font-medium">{call.customerName ?? call.callerName}</p>
+                  <p className="text-sm text-muted-foreground">{call.agentName} · {call.branch}</p>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium truncate">{agent.name}</div>
-                  <div className="text-xs text-muted-foreground">{agent.callsToday} calls</div>
+                <div className="inline-flex items-center gap-2 text-sm">
+                  <span className={`status-dot ${call.status === "active" ? "status-live" : "status-hold"}`} />
+                  {call.status}
                 </div>
-                <span className="text-xs font-mono text-muted-foreground">{agent.avgHandleTime}</span>
               </div>
             ))}
           </div>
-        </motion.div>
-      </div>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Live Calls Feed */}
-        <motion.div variants={itemVariants} className="bg-card border rounded-lg p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-medium text-muted-foreground">Live Calls</h2>
-            <span className="status-dot bg-green-500 live-pulse ml-1" />
-          </div>
-          {activeCalls.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No active calls</p>
-          ) : (
-            <div className="space-y-2">
-              {activeCalls.map((call) => (
-                <div key={call.id} className="flex items-center justify-between p-3 rounded-md bg-muted/50 border">
+        <div className="surface-panel p-5">
+          <div className="mb-4 flex items-center gap-2"><PhoneOff className="h-5 w-5 text-destructive" /><h2 className="text-xl font-semibold">Missed Call Alerts</h2></div>
+          <div className="space-y-3">
+            {todayCalls.filter((call) => call.status === "missed").map((call) => (
+              <div key={call.id} className="rounded-xl border border-destructive/20 bg-destructive/5 p-3">
+                <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className="text-sm font-medium">{call.callerName}</div>
-                    <div className="text-xs font-mono text-muted-foreground">{call.callerId}</div>
+                    <p className="font-medium">{call.customerName ?? call.callerName}</p>
+                    <p className="text-sm text-muted-foreground">{call.callerId} · {call.branch}</p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm">{call.agentName}</div>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`status-dot ${call.status === "active" ? "status-active" : "status-hold"}`} />
-                      <span className="text-xs capitalize text-muted-foreground">{call.status}</span>
-                    </div>
-                  </div>
+                  <button className="action-gold" onClick={() => prefillDialedNumber(call.callerId)}>
+                    <PhoneCall className="h-4 w-4" />
+                    Callback
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </motion.div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        {/* Missed Call Alerts */}
-        <motion.div variants={itemVariants} className="bg-card border rounded-lg p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <PhoneOff className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-medium text-muted-foreground">Missed Call Alerts</h2>
-          </div>
-          {missedCallsList.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No missed calls</p>
-          ) : (
-            <div className="space-y-2">
-              {missedCallsList.map((call) => (
-                <div key={call.id} className="flex items-center justify-between p-3 rounded-md border border-primary/10 bg-primary/5">
+        <div className="surface-panel p-5">
+          <div className="mb-4 flex items-center gap-2"><CalendarClock className="h-5 w-5 text-accent" /><h2 className="text-xl font-semibold">Today's Follow-Ups</h2></div>
+          <div className="space-y-3">
+            {myFollowUps.slice(0, 5).map((item) => (
+              <div key={item.id} className="rounded-xl border border-border p-3">
+                <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className="text-sm font-medium">{call.callerName}</div>
-                    <div className="text-xs font-mono text-muted-foreground">{call.callerId}</div>
+                    <p className="font-medium">{item.customerName}</p>
+                    <p className="text-sm text-muted-foreground">{item.branch}</p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs text-muted-foreground">{call.time}</div>
-                    <span className="text-xs font-medium text-primary">Callback required</span>
-                  </div>
+                  <div className="text-right text-sm text-muted-foreground">{new Date(item.followUpAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</div>
                 </div>
-              ))}
-              <p className="text-xs text-muted-foreground mt-2">{missedCallsList.length} missed calls require callback.</p>
-            </div>
-          )}
-        </motion.div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </motion.div>
   );
