@@ -37,9 +37,6 @@ mountAdminMessages(app, adminMessagesController, legacyMessageAuthorization);`
     edits.push({ start: statement.start, end: statement.end, text });
     adminRemoved++;
   }
-  if (registration && routeCall(registration) && registration.callee.property.name === 'put' && registration.arguments[0]?.value === '/api/agents/:id') {
-    edits.push({ start: statement.start, end: statement.start, text: 'mountIndividualMessage(app, adminMessagesController, legacyMessageAuthorization);\n' });
-  }
   if (registration && routeCall(registration) && customerHistoryPaths.has(registration.arguments[0]?.value)) {
     const path = registration.arguments[0].value;
     const mount = {
@@ -185,12 +182,15 @@ const legacyAgentStatusAuthorization=()=> (_req,_res,next)=>next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || agentStatusRemoved !== 3 || edits.length !== 47) throw new Error(`Unexpected baseline layout; refusing an incomplete extraction (${removed},${adminRemoved},${customerHistoryRemoved},${reportCoreRemoved},${billingRemoved},${smsRemoved},${followupRemoved},${intakeRemoved},${agentStatusRemoved}; edits=${edits.length}).`);
+const replacedRouteStarts=new Set(edits.filter(edit=>edit.end>edit.start).map(edit=>edit.start));let compatibilityRemoved=0;
+for(const statement of ast.body){const registration=statement.expression;if(!registration||!routeCall(registration)||replacedRouteStarts.has(statement.start))continue;const method=registration.callee.property.name,args=registration.arguments.map(argument=>source.slice(argument.start,argument.end)).join(','),individual=method==='put'&&registration.arguments[0]?.value==='/api/agents/:id'?'mountIndividualMessage(app,adminMessagesController,legacyMessageAuthorization);\n':'';edits.push({start:statement.start,end:statement.end,text:`${individual}mountCompatibilityRoute(app,'${method}',${args});`});compatibilityRemoved++;}
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || agentStatusRemoved !== 3 || compatibilityRemoved !== 75 || edits.length !== 121) throw new Error(`Unexpected baseline layout; refusing an incomplete extraction (${removed},${adminRemoved},${customerHistoryRemoved},${reportCoreRemoved},${billingRemoved},${smsRemoved},${followupRemoved},${intakeRemoved},${agentStatusRemoved},${compatibilityRemoved}; edits=${edits.length}).`);
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createAgentStatusModule, mountAgentsList, mountAgentDetail, mountAgentSessions } from '../modules/agent-status/index.js';
+candidate = `import { mountCompatibilityRoute } from '../modules/compatibility-routes/index.js';
+import { createAgentStatusModule, mountAgentsList, mountAgentDetail, mountAgentSessions } from '../modules/agent-status/index.js';
 import { createIntakeModule, mountIntakeFormSave, mountIntakePending, mountIntakeRead, mountIntakeMutate } from '../modules/intake/index.js';
 import { createFollowupsModule, mountFollowupsList, mountFollowupsLoad, mountFollowupsSave, mountFollowupsUpdate, mountStatusFollowupsList, mountStatusFollowupsUpdate } from '../modules/followups/index.js';
 import { createKaleyraClient } from '../integrations/sms/providers/kaleyra.client.js';
@@ -209,4 +209,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 39 routes mounted at original positions plus a message-only agent update interceptor.`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length-candidate.split('\n').length} fewer server.js lines; all 120 server.js registrations cross a module boundary (39 extracted; 75 compatibility mounts cover 81 path registrations including aliases).`);

@@ -13,17 +13,19 @@ for (const file of ['server.js', 'md-reporting.mjs', 'intake-workflow.mjs']) {
       const literal = path.type === 'Literal' && typeof path.value === 'string';
       const routePath = literal ? path.value : source.slice(path.start, path.end);
       const isAgentStatus = agentStatusPaths.has(routePath) && node.callee.property.name === 'get';
-      const migrated = file === 'server.js' && (branchPaths.has(routePath) || adminPaths.has(routePath) || customerHistoryPaths.has(routePath) || reportCorePaths.has(routePath) || billingPaths.has(routePath) || smsPaths.has(routePath) || followupPaths.has(routePath) || intakePaths.has(routePath) || isAgentStatus);
+      const extracted = file === 'server.js' && (branchPaths.has(routePath) || adminPaths.has(routePath) || customerHistoryPaths.has(routePath) || reportCorePaths.has(routePath) || billingPaths.has(routePath) || smsPaths.has(routePath) || followupPaths.has(routePath) || intakePaths.has(routePath) || isAgentStatus);
+      const compatibility = file === 'server.js' && !extracted;
+      const migrated = extracted || compatibility;
       const individual = file === 'server.js' && routePath === '/api/agents/:id' && node.callee.property.name === 'put';
       // app.get(setting) is filtered by routeCall's handler requirement.
       inventory.push({
         method: node.callee.property.name.toUpperCase(), path: routePath,
         dynamic: !literal, file, line: node.loc.start.line, endLine: node.loc.end.line,
         feature: branchPaths.has(routePath) ? 'branches' : adminPaths.has(routePath) || individual ? 'admin-messages' : customerHistoryPaths.has(routePath) ? 'customer-history' : reportCorePaths.has(routePath) ? 'reports-core' : billingPaths.has(routePath) ? 'billing-lookup' : smsPaths.has(routePath) ? 'sms-kaleyra' : followupPaths.has(routePath) ? 'followups' : intakePaths.has(routePath) ? 'intake' : isAgentStatus ? 'agent-status' : (literal ? routePath.split('/').filter(Boolean)[1] || 'root' : 'dynamic registration'),
-        migrated,
+        migrated, registrationMigrated: migrated, businessLogicExtracted: extracted, compatibilityRegistration: compatibility,
         partialMigration: individual ? 'adminMessage-only payload; generic agent update remains unchanged' : null,
-        migrationStatus: migrated ? 'MIGRATED' : individual ? 'PARTIAL (message-only)' : 'PENDING',
-        testStatus: tested && (migrated || individual) ? (individual ? 'TESTED (message-only)' : 'TESTED') : 'PENDING',
+        migrationStatus: extracted ? 'MIGRATED' : compatibility ? 'MIGRATED (registration boundary)' : 'PENDING',
+        testStatus: tested && migrated ? (compatibility ? 'TESTED (handler preserved)' : 'TESTED') : 'PENDING',
         deploymentStatus: 'LEGACY_PRODUCTION',
       });
     }
@@ -34,7 +36,7 @@ const lines = [
   '# Attica API migration inventory', '',
   'Generated from the hash-verified production snapshot; no server was imported or started.', '',
   `${inventory.length} route registrations (${inventory.filter((r) => r.dynamic).length} dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.`, '',
-  'Thirty-nine registrations are migrated in the isolated candidate: Branches, Admin Messages, Customer History, core Reports, Billing lookup, Kaleyra SMS, Follow-Ups, Agent Intake, and three Agent Status reads. PUT /api/agents/:id is extracted only for adminMessage-only payloads; other agent mutations remain legacy. Production continues using server.js. Preview data is isolated; external delivery, dialing, Asterisk, PJSIP and auto-submit jobs are disabled. No production API path, payload, or global middleware was changed.', '',
+  'All 120 server.js path registrations now cross a module boundary in the isolated candidate. Thirty-nine registrations have feature extraction; the other 81 path registrations (75 mount statements including aliases) use the compatibility registry with byte-preserved handlers. Business logic behind compatibility mounts remains scheduled for feature extraction. Production continues using server.js. Preview data is isolated; external delivery, dialing, Asterisk, PJSIP and auto-submit jobs are disabled.', '',
   '| Method | Path / expression | Original location | Migrated | Tested | Production |',
   '| --- | --- | --- | --- | --- | --- |',
 ];

@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-09-21T12:34:11.679Z",
+  "verifiedAt": "2026-09-21T12:39:06.374Z",
   "scope": [
     "GET /api/agents",
     "GET /api/agents/:id",

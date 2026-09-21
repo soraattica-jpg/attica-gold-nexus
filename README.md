@@ -21,7 +21,7 @@ node scripts/verify-sms-preview.mjs
 
 The verification scripts restart **only** `attica-api-next-preview.service`; `verify-preview.py` also deliberately crashes it to test automatic recovery and performs read-only production Branches comparisons. The message verifier sends only synthetic announcements to the isolated preview and clears them afterward. Never change its target to production.
 
-Current results: **150 contract/HTTP/structure/logging tests + 25 real MariaDB tests passed**. The generated candidate also passes syntax checks.
+Current results: **151 contract/HTTP/structure/logging tests + 25 real MariaDB tests passed**. The generated candidate also passes syntax checks.
 
 ## Preview service
 
@@ -54,12 +54,12 @@ The installed service's original description still says read-only; Branches is r
 - `modules/sms/` and `integrations/sms/providers/kaleyra.client.js`: SMS orchestration, audit persistence, DLR handling and the existing Kaleyra provider contract.
 - `events/test-admin-message-sink.js`: test transport and reconnect/display adapter, separate from business logic.
 - `config/preview-admin-messages.js` and `middleware/preview-message-auth.js`: isolated persistence and test-actor authorization.
-- `docs/API-INVENTORY.md`: 39 routes MIGRATED + TESTED; PUT agent update explicitly PARTIAL for adminMessage-only payloads.
+- `docs/API-INVENTORY.md`: all 120 `server.js` path registrations MIGRATED + TESTED at the registration boundary; 39 have full feature extraction and 81 retain byte-preserved handlers through the compatibility registry.
 - `docs/MIGRATION-PLAN.md` and `docs/ADMIN-MESSAGES-NEXT.md`: exact original source locations, preserved behavior, remaining gates.
 - `docs/ADMIN-MESSAGES-VERIFICATION.json` and `docs/REVIEW-VERIFICATION.json`: running preview, restart, database boundary and production-isolation evidence. `docs/VERIFICATION.json` is historical first-phase evidence.
 
 Legacy Admin Messages uses polling/refresh tokens, not an existing feature WebSocket. The preview adds no live socket delivery. Legacy message routes also lack route-level authorization; production auth integration is an explicit pre-promotion gate. Concurrent broadcasts retain the original newest-record selection and nontransactional replacement; private-message expiry/audit does not exist in the baseline. See the detailed module report before promotion.
 
-This is not a completed monolith rewrite. The full generated candidate removes 1,086 lines from the original 34,845-line server, and startup remains unconditionally disabled. It still contains legacy side effects and must never be launched. The private baseline and runtime are excluded from Git because the legacy source contains embedded credentials; `docs/BASELINE.json` records the hashes.
+This completes the route-registration migration, not the full business-logic decomposition. The generated candidate removes 1,408 lines from the original server, and startup remains unconditionally disabled. Compatibility-mounted handlers still contain legacy side effects and the candidate must never be launched. The private baseline and runtime are excluded from Git because the legacy source contains embedded credentials; `docs/BASELINE.json` records the hashes.
 
-Next: Agent Status, then call-critical modules last. Kaleyra/SolutionsInfini remains the SMS provider; Smler URLs, Asterisk, SIP, queues and dialer behavior remain unchanged.
+Further work is feature-by-feature extraction of the 81 compatibility-registered paths, with call handling, Asterisk, AMI and queues last. Kaleyra/SolutionsInfini remains the SMS provider; Smler URLs, Asterisk, SIP, queues and dialer behavior remain unchanged.

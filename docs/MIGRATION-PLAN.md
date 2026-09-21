@@ -60,6 +60,10 @@ Four intake form/workflow registrations are MIGRATED + TESTED. Candidate wiring 
 
 Agent list, detail and session-history reads are MIGRATED + TESTED. Production candidate adapters preserve runtime/PJSIP overlays; preview returns synthetic status records and performs no Asterisk/PJSIP access. Agent mutations and call-state controls remain separate call-critical work. See `docs/AGENT-STATUS.md`.
 
+## Completed: all remaining route registrations
+
+Every remaining `server.js` route declaration now registers through `modules/compatibility-routes`. The 75 compatibility mount statements cover 81 paths including aliases; original paths, middleware/handlers and order are byte-preserved and hash-tested. This finishes the requested registration migration without rewriting call-critical implementation logic. See `docs/REGISTRATION-COMPATIBILITY.md`.
+
 ## Following feature slices
 
 1. Agent Status.
@@ -78,12 +82,12 @@ Keep 2–4 low-risk modules isolated before considering promotion. Do not replac
 
 ## Current production status
 
-Phases 1–8 make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Branches uses a SELECT-only snapshot, Admin Messages uses synthetic staging-only records and a test sink, Customer History, Reports and Billing use synthetic SELECT-only schemas, SMS uses an isolated writable test schema plus fake provider, Follow-Ups uses an isolated synthetic schema with no dialer, and Agent Intake uses an isolated schema without timers or telephony. SIP trunks, queue strategy and routing configuration are outside this change.
+Phases 1–9 and the complete registration boundary make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Extracted feature previews use isolated datasets; Agent Status is synthetic only. SIP trunks, queue strategy and routing configuration are outside this change.
 
 ## Verification follow-up
 
 - `docs/REVIEW-VERIFICATION.json`: seven read-only HTTP parity probes against production, normal restart, crash recovery, logging, deployed frontend scan and unchanged production file hashes.
-- `npm test`: 143 passing tests; `npm run test:database`: 22 passing real MariaDB tests. Follow-Up tests cover contracts, persistence, RNR/disconnected dry-run behavior, restart recovery and production isolation.
+- `npm test`: 151 passing tests; `npm run test:database`: 25 passing real MariaDB tests. Registration tests verify all 120 paths, exact order, and byte-preserved compatibility handler arguments.
 - `deployment/attica-api-next-preview.service`: installed and enabled, `Restart=always`, structured journald logs, loopback binding, blocked access to production source, configuration and database files.
 - Credentials: `/etc/attica-next/preview-db.json` (SELECT-only snapshot) and `/etc/attica-next/contract-db.json` (writes only to the separate contract-test database). Both are root-only and outside Git. Branches receives only its read credential through systemd LoadCredential. The Admin Messages preview additionally reads ignored, root-only `.private/messages-preview-db.json` and `.private/message-actors.json`; its contract tests use `.private/messages-contract-db.json`. No production credentials are used by either adapter.
 - Branches and unrelated preview mutations reject POST/PUT/DELETE with 405 by design. Admin Messages test-authenticated mutations are allowed only against synthetic staging data. Compatibility of the underlying mutation handlers is tested directly with original handlers on the contract-test database. Do not describe the public preview's write-block policy as the production mutation contract.
@@ -91,6 +95,6 @@ Phases 1–8 make no production deployment. The production service remains `/roo
 - Live geocoding services are not enabled on port 3101. Google/Photon order, failure fallbacks and request arguments are covered through injected test adapters; real provider/network availability is not certified by this verification.
 - Production source/service/proxy and call handling remain unchanged. No live mutation endpoints were exercised.
 
-## Next feature: Agent Intake
+## Next feature-extraction track
 
-Migrate draft, final submission and reusable customer-prefill behavior while preserving idempotency, form lifecycle and the existing call identity contract. Customer History remains the shared lookup dependency. Keep hangup, hold, transfer and telephony state outside this slice until the call-control phases.
+The registration goal is complete. Continue decomposing compatibility-mounted business handlers by risk: reference/admin data, marketing reports, billing, agent mutations, lead ingestion, follow-up/autodial operations, calls, and finally Asterisk/AMI/queues. Each extraction must replace one compatibility mount without changing its route contract or order.
