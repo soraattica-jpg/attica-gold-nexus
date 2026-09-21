@@ -1,0 +1,81 @@
+{
+  "verifiedAt": "2026-09-21T11:03:39.440267+00:00",
+  "productionParity": [
+    {
+      "path": "/api/branches",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 197
+    },
+    {
+      "path": "/api/branches?page=2&limit=1&state=nonexistent&sort=name",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 197
+    },
+    {
+      "path": "/api/branches/autocomplete?q=Ban",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 4
+    },
+    {
+      "path": "/api/branches/autocomplete?q=zzzz-no-match",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 0
+    },
+    {
+      "path": "/api/branches/search-nearby?lat=12.97&lng=77.59",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 10
+    },
+    {
+      "path": "/api/branches/search-nearby?lat=0&lng=0",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 10
+    },
+    {
+      "path": "/api/branches/search-nearby",
+      "status": 400,
+      "matchedProduction": true,
+      "records": null
+    }
+  ],
+  "previewWritesHTTP": 405,
+  "cleanRestart": {
+    "before": "74340",
+    "after": "76220"
+  },
+  "automaticRecovery": {
+    "afterCrash": "76368"
+  },
+  "requestLogging": true,
+  "errorLogging": true,
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "deployedFrontendPreviewReferences": 0,
+  "productionProxyPort": 3001,
+  "productionDeployment": false,
+  "contractTests": 36,
+  "databaseTests": 3,
+  "snapshotRows": 253,
+  "activeSnapshotRows": 197,
+  "migratedTestedBranchesEndpoints": 6,
+  "externalGeocoding": "stubbed in preview; dependency contracts tested",
+  "mutationParity": "original versus modular handlers on separate staging database; preview HTTP writes blocked",
+  "branchTableDataHashes": {
+    "asterisk": "d473b2d18f7d8f766dc902b6146d38bfd0e724a718f186cf294ca00e8aabc9be",
+    "attica_api_next_preview": "d473b2d18f7d8f766dc902b6146d38bfd0e724a718f186cf294ca00e8aabc9be",
+    "attica_api_next_contract": "d473b2d18f7d8f766dc902b6146d38bfd0e724a718f186cf294ca00e8aabc9be"
+  },
+  "productionDataEqualsSnapshotsAfterTests": true
+}

@@ -7,6 +7,7 @@ export function createBranchesController(service) {
     try {
       res.json(await handler(req));
     } catch (error) {
+      res.locals?.reportError?.(error);
       res.status(error instanceof BranchValidationError ? 400 : 500).json({ error: error.message });
     }
   };
@@ -18,7 +19,7 @@ export function createBranchesController(service) {
     nearby: action((req) => service.nearby(req.query)),
     autocomplete: async (req, res) => {
       try { res.json(await service.autocomplete(req.query.q)); }
-      catch { res.json([]); }
+      catch (error) { res.locals?.reportError?.(error); res.json([]); }
     },
   };
 }

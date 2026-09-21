@@ -1,6 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { branchPaths, parseSource, projectRoot, readBaseline, routeCall, walk } from './source-tools.js';
 
+const tested = process.argv.includes('--tested');
 const inventory = [];
 for (const file of ['server.js', 'md-reporting.mjs', 'intake-workflow.mjs']) {
   const source = readBaseline(file);
@@ -14,26 +15,28 @@ for (const file of ['server.js', 'md-reporting.mjs', 'intake-workflow.mjs']) {
       // app.get(setting) is filtered by routeCall's handler requirement.
       inventory.push({
         method: node.callee.property.name.toUpperCase(), path: routePath,
-        dynamic: !literal, file, line: node.loc.start.line,
+        dynamic: !literal, file, line: node.loc.start.line, endLine: node.loc.end.line,
         feature: branchPaths.has(routePath) ? 'branches' : (literal ? routePath.split('/').filter(Boolean)[1] || 'root' : 'dynamic registration'),
         migrated: file === 'server.js' && branchPaths.has(routePath),
+        migrationStatus: file === 'server.js' && branchPaths.has(routePath) ? 'MIGRATED' : 'PENDING',
+        testStatus: tested && file === 'server.js' && branchPaths.has(routePath) ? 'TESTED' : 'PENDING',
+        deploymentStatus: 'LEGACY_PRODUCTION',
       });
     }
   });
 }
-const tested = process.argv.includes('--tested');
 writeFileSync(projectRoot + 'docs/API-INVENTORY.json', JSON.stringify(inventory, null, 2) + '\n');
 const lines = [
   '# Attica API migration inventory', '',
   'Generated from the hash-verified production snapshot; no server was imported or started.', '',
   `${inventory.length} route registrations (${inventory.filter((r) => r.dynamic).length} dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.`, '',
-  'The six Branches routes are migrated only in the isolated candidate. Production continues using server.js. No API path, payload, or global middleware was changed.', '',
+  'The six Branches routes are migrated only in the isolated candidate. Production continues using server.js. No production API path, payload, or global middleware was changed. TESTED covers legacy contracts, HTTP and real staging MariaDB checks; preview mutations are intentionally blocked with 405. Original read endpoints have no added pagination or sorting parameters.', '',
   '| Method | Path / expression | Original location | Migrated | Tested | Production |',
   '| --- | --- | --- | --- | --- | --- |',
 ];
 for (const row of inventory) {
   const p = row.path.replaceAll('|', '\\|').replaceAll('`', '');
-  lines.push(`| ${row.method} | ${p} | ${row.file}:${row.line} | ${row.migrated ? 'Candidate only' : 'Pending'} | ${row.migrated && tested ? 'Contract + HTTP tests' : 'Pending'} | Legacy |`);
+  lines.push(`| ${row.method} | ${p} | ${row.file}:${row.line} | ${row.migrationStatus} (candidate) | ${row.testStatus} | Legacy |`);
 }
 lines.push('', 'Middleware order, cluster/scheduler initialization, authorization, and external integration contracts remain separate migration checkpoints. Existing md-reporting and intake-workflow modules are recorded as baseline dependencies, not newly migrated work.', '');
 writeFileSync(projectRoot + 'docs/API-INVENTORY.md', lines.join('\n'));

@@ -1,57 +1,50 @@
 # Attica API: incremental modularization
 
-Phase 1 is a Branches extraction in an isolated workspace. It is not a replacement for the production API yet.
+Branches is extracted and verified in `/root/attica-api-next`. Production remains `/root/attica-api`, port 3001, with its existing process and source unchanged.
 
-## Current layout
-
-- `server.js`: small synthetic preview entrypoint, loopback port 3101.
-- `app.js`: side-effect-free app factory for the extracted feature.
-- `modules/branches/`: routes → controller → service → repository, six existing routes.
-- `shared/string.js`: the original string-cleaning semantics.
-- `scripts/`: baseline verification, API inventory, deterministic full-candidate generation.
-- `tests/`: legacy handler comparisons and HTTP checks; synthetic fixtures only.
-- `docs/API-INVENTORY.md`: route registration inventory and migration status.
-- `baseline/`: private, untracked snapshot of production source and manifests.
-- `runtime/`: private, untracked generated full candidate. Startup is explicitly disabled.
-
-The actual production API is `/root/attica-api` on port **3001**. Port 3015 is also occupied. No production file, proxy, database, SIP configuration, or service is changed by this workspace.
-
-The small preview server is **not** evidence that the 34,845-line monolith has been fully modularized. The full candidate removes 139 lines from server.js in this first extraction; all other features remain legacy.
-
-## Verify
+## Run and verify
 
 ```sh
 cd /root/attica-api-next
 npm ci --ignore-scripts
 npm run prepare:runtime
 npm test
+npm run test:database
 node scripts/api-inventory.js --tested
+python3 scripts/verify-preview.py
 ```
 
-The contract tests evaluate only the six original Branches handler definitions and their two pure helpers in a VM with scripted dependencies. They never import the legacy server, connect to MySQL, send messages, or invoke Asterisk. Tests compare response bodies, statuses, normalized SQL, parameters, geocoder calls and errors. Two structural tests verify unrelated statements and endpoint registration order remain identical in the full candidate.
+`verify-preview.py` performs read-only comparisons against production, then restarts and deliberately crashes **only** `attica-api-next-preview.service` to verify recovery. It also scans deployed frontend assets and the reverse proxy. The database tests write only to `attica_api_next_contract` and roll back changes.
 
-The snapshot hash is checked before generating or testing a candidate. `baseline/` is deliberately not committed: the source contains existing embedded credentials. Preserve the local private snapshot; do not publish it or a generated runtime. Fresh checkouts need the same five files listed in `docs/BASELINE.json` from the private baseline, with matching hashes.
+## Preview service
 
-## Local preview
+- URL: `http://127.0.0.1:3101/health`, loopback-only.
+- Unit: `attica-api-next-preview.service`, installed/enabled, `Restart=always`.
+- Database: `attica_api_next_preview`, a snapshot of 253 branch records (197 active at capture).
+- Login: `attica_next_read`, SELECT-only on that snapshot; no access to production tables.
+- HTTP mutations: blocked with 405. Underlying create/update/delete contracts are verified against original handlers using the separate staging database.
+- Logs: `journalctl -u attica-api-next-preview.service`. Structured request/error records include request ID, route, status and duration; exclude query values, bodies and SQL details.
+- Credentials: `/etc/attica-next`, root-only, loaded through systemd credentials. No credentials in Git.
+- Geocoding: test adapters only; no external provider calls from preview. Coordinates-based results match production on the captured dataset. Provider contracts/fallbacks have isolated tests, but live provider availability is outside verification.
+- `ATTICA_PREVIEW_DATA=synthetic npm start` offers the original synthetic mode without database credentials (stop the existing preview or choose a different staging port first).
 
-```sh
-npm start
-curl http://127.0.0.1:3101/health
-curl http://127.0.0.1:3101/api/branches
-curl 'http://127.0.0.1:3101/api/branches/autocomplete?q=Te'
-curl 'http://127.0.0.1:3101/api/branches/search-nearby?lat=12.9&lng=77.6'
-```
+The preview cannot invoke Asterisk, send messages, or start production jobs. The deployed frontend/proxy still points to 3001; port 3101 is not publicly proxied.
 
-`ATTICA_STAGING_PORT` selects an unused non-production port. The preview is read-only and labelled `X-Attica-Staging: synthetic-data-only`. It returns a clearly marked demonstration branch. Mutations return 405, unmigrated routes return 404. Real geocoding, database writes, scheduled jobs, credentials, and telephony are absent.
+## Architecture and status
 
-A transient `attica-api-next-preview.service` may be used to keep this preview running until reboot; it is separate from `attica-api.service`. Check with `systemctl status attica-api-next-preview.service`. Stop only that preview unit to remove it. This preview is not publicly proxied.
+- `app.js` / `server.js`: isolated preview composition and startup; no legacy server import.
+- `modules/branches/`: six routes → HTTP controllers → business service → database repository.
+- `config/preview-database.js`: limited read-only staging connection.
+- `middleware/request-logger.js`: structured preview request/error logging.
+- `shared/string.js`: extracted legacy string cleaning.
+- `tests/`: 36 contract/HTTP/structure/logging tests and three real MariaDB tests.
+- `docs/API-INVENTORY.md` / `.json`: all six Branches entries marked MIGRATED + TESTED (candidate only), with original line ranges.
+- `docs/MIGRATION-PLAN.md`: exact replacement locations and deployment boundaries.
+- `docs/ADMIN-MESSAGES-NEXT.md`: next feature's dependency and test checklist; not yet migrated.
+- `docs/VERIFICATION.json`: historical first-pass evidence; `docs/REVIEW-VERIFICATION.json`: current follow-up evidence.
 
-## Migration boundaries
+This is an incremental extraction, not a completed monolith rewrite. The full candidate removes 139 lines from the original 34,845-line server. `runtime/server.js` is a generated review artifact with startup disabled because legacy initialization still creates schema, runs jobs and changes Asterisk queues.
 
-The full candidate mounts the extracted handlers at their original positions, using the existing `pool` proxy and geocoding helpers. It does not introduce new database pools, alter authentication, rewrite API paths, or change error handling globally. Production modules remain ES modules (`type: module`).
+Private baseline and generated runtime are excluded from Git because the legacy source contains embedded credentials. Hashes in `docs/BASELINE.json` verify the snapshot. Fresh checkouts need the matching private baseline files before characterization tests can run. Never replace newer production fixes using an old snapshot.
 
-The original startup performs schema writes, shared-state cleanup, Asterisk queue changes and scheduler work. Changing a port or disabling clustering does not isolate it. Therefore `runtime/server.js` refuses startup. Do not remove this guard until startup adapters and staging resources are isolated.
-
-The live SMS provider remains **Kaleyra / SolutionsInfini**; stored short URLs are Smler. The future messaging extraction must preserve that configuration, not introduce MSG91 based on an example directory name.
-
-See `docs/MIGRATION-PLAN.md` for remaining phases and cutover requirements.
+The live SMS provider is Kaleyra / SolutionsInfini, with stored Smler URLs. Its eventual module must preserve that integration; MSG91 is not being introduced.

@@ -1,0 +1,29 @@
+[Unit]
+Description=Attica isolated read-only staging API
+After=network.target mysql.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/root/attica-api-next
+ExecStart=/usr/bin/node /root/attica-api-next/server.js
+Environment=NODE_ENV=production
+Environment=ATTICA_STAGING_PORT=3101
+Environment=ATTICA_PREVIEW_DATA=staging-database
+LoadCredential=preview-db.json:/etc/attica-next/preview-db.json
+Restart=always
+RestartSec=3
+TimeoutStopSec=10
+NoNewPrivileges=yes
+ProtectSystem=strict
+PrivateTmp=yes
+ReadOnlyPaths=/root/attica-api-next
+InaccessiblePaths=/root/attica-api /root/attica-api-next/baseline /root/attica-api-next/runtime /etc/attica /etc/attica-next /etc/asterisk /var/lib/mysql /var/spool/asterisk
+IPAddressDeny=any
+IPAddressAllow=localhost
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=attica-api-next-preview
+
+[Install]
+WantedBy=multi-user.target
