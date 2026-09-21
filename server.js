@@ -1,5 +1,6 @@
 // Isolated preview entrypoint: no production adapters, jobs or telephony.
 import { createApp } from './app.js';
+import { createPreviewAdminMessages } from './config/preview-admin-messages.js';
 import { createPreviewDatabase } from './config/preview-database.js';
 import { createFixtureDb, createFixtureGeocoding } from './tests/fixtures/staging.js';
 
@@ -10,13 +11,15 @@ if (!Number.isInteger(port) || port < 1024 || port > 65535 || [3001, 3015].inclu
 const dataMode = process.env.ATTICA_PREVIEW_DATA || 'staging-database';
 if (!['staging-database', 'synthetic'].includes(dataMode)) throw new Error('Invalid preview data mode');
 const db = dataMode === 'staging-database' ? await createPreviewDatabase() : createFixtureDb();
-const app = createApp({ db, geocoding: createFixtureGeocoding(), staging: true, dataMode });
+const adminMessages = dataMode === 'staging-database' ? await createPreviewAdminMessages() : null;
+const app = createApp({ db, geocoding: createFixtureGeocoding(), staging: true, dataMode, adminMessages });
 const server = app.listen(port, '127.0.0.1', () => {
-  console.log(JSON.stringify({ event: 'startup', port, host: '127.0.0.1', dataMode, readOnly: true }));
+  console.log(JSON.stringify({ event: 'startup', port, host: '127.0.0.1', dataMode, branchesReadOnly: true, messageDelivery: adminMessages ? 'test-only' : null }));
 });
 server.on('error', async (error) => {
   console.error(JSON.stringify({ event: 'startup_error', code: error.code || 'LISTEN_FAILED' }));
   await db.close?.();
+  await adminMessages?.close();
   process.exitCode = 1;
 });
 let stopping = false;
@@ -27,6 +30,7 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
     const deadline = setTimeout(() => process.exit(1), 8000).unref();
     server.close(async () => {
       await db.close?.();
+      await adminMessages?.close();
       clearTimeout(deadline);
       process.exit(0);
     });

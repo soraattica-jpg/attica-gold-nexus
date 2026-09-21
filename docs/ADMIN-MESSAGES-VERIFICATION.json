@@ -1,0 +1,22 @@
+{
+  "verifiedAt": "2026-09-21T11:22:00.606Z",
+  "previewPort": 3101,
+  "delivery": "test-only",
+  "checks": [
+    "Production reads and writes denied by message database grants",
+    "Authentication, role restrictions, agent isolation and mixed updates denied",
+    "Private and broadcast display combine correctly; audit uses authenticated sender; delivery is metadata-only test sink",
+    "Persisted private/broadcast message survives preview restart and agent reconnect/intake open",
+    "Clear updates agent display and retains sender/clear audit",
+    "Branches remains read-only and retains 197 active snapshot rows"
+  ],
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "productionDeployment": false
+}

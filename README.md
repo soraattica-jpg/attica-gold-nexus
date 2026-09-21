@@ -1,6 +1,6 @@
 # Attica API: incremental modularization
 
-Branches is extracted and verified in `/root/attica-api-next`. Production remains `/root/attica-api`, port 3001, with its existing process and source unchanged.
+Branches and Admin Messages are extracted and tested in `/root/attica-api-next`. Production remains `/root/attica-api`, port 3001, with its process and source unchanged. No production frontend points to the preview.
 
 ## Run and verify
 
@@ -12,39 +12,39 @@ npm test
 npm run test:database
 node scripts/api-inventory.js --tested
 python3 scripts/verify-preview.py
+node scripts/verify-admin-messages-preview.mjs
 ```
 
-`verify-preview.py` performs read-only comparisons against production, then restarts and deliberately crashes **only** `attica-api-next-preview.service` to verify recovery. It also scans deployed frontend assets and the reverse proxy. The database tests write only to `attica_api_next_contract` and roll back changes.
+The verification scripts restart **only** `attica-api-next-preview.service`; `verify-preview.py` also deliberately crashes it to test automatic recovery and performs read-only production Branches comparisons. The message verifier sends only synthetic announcements to the isolated preview and clears them afterward. Never change its target to production.
+
+Current results: **99 contract/HTTP/structure/logging tests + 7 real MariaDB tests passed**. The generated candidate also passes syntax checks.
 
 ## Preview service
 
-- URL: `http://127.0.0.1:3101/health`, loopback-only.
-- Unit: `attica-api-next-preview.service`, installed/enabled, `Restart=always`.
-- Database: `attica_api_next_preview`, a snapshot of 253 branch records (197 active at capture).
-- Login: `attica_next_read`, SELECT-only on that snapshot; no access to production tables.
-- HTTP mutations: blocked with 405. Underlying create/update/delete contracts are verified against original handlers using the separate staging database.
-- Logs: `journalctl -u attica-api-next-preview.service`. Structured request/error records include request ID, route, status and duration; exclude query values, bodies and SQL details.
-- Credentials: `/etc/attica-next`, root-only, loaded through systemd credentials. No credentials in Git.
-- Geocoding: test adapters only; no external provider calls from preview. Coordinates-based results match production on the captured dataset. Provider contracts/fallbacks have isolated tests, but live provider availability is outside verification.
-- `ATTICA_PREVIEW_DATA=synthetic npm start` offers the original synthetic mode without database credentials (stop the existing preview or choose a different staging port first).
+- `http://127.0.0.1:3101/health`: loopback-only, persistent systemd service, automatic restart, no jobs or telephony.
+- Branches: SELECT-only account on `attica_api_next_preview` (253 snapshot rows, 197 active). Mutations remain blocked with 405; underlying contracts are verified against original handlers on `attica_api_next_contract`.
+- Admin Messages: test-authenticated requests only, synthetic TEST_* agents/messages on `attica_next_messages_preview`. Separate contract database `attica_next_messages_contract`. Both message accounts are denied production table access.
+- Test delivery: injected in-memory event sink, no production sockets or recipients. Authenticated test administrators can inspect `/__test/admin-message-events`; payloads contain invalidation metadata only. Persisted state supplies reconnect/next-intake displays.
+- Logs: `journalctl -u attica-api-next-preview.service`; correlated request/error records omit query values, bodies and SQL details.
+- Credentials: Branches uses root-only `/etc/attica-next` via systemd credentials. Messaging uses root-only, ignored `.private/` config/test actors. No credentials in Git or verification output.
+- Provisioning: `scripts/provision-admin-message-staging.py` creates synthetic message fixtures once and refuses to overwrite existing schemas. Fresh checkouts also require the original private Branches fixtures/credentials and hash-matching baseline.
+- Geocoding: test adapters only. A controlled live-provider authentication/timeout/mapping/failure smoke test remains required before Branches promotion.
+- `ATTICA_PREVIEW_DATA=synthetic npm start` retains the original Branches-only synthetic mode; use an unused staging port if 3101 is already running.
 
-The preview cannot invoke Asterisk, send messages, or start production jobs. The deployed frontend/proxy still points to 3001; port 3101 is not publicly proxied.
+The installed service's original description still says read-only; Branches is read-only, while the isolated message schema intentionally accepts authenticated test writes. Network and filesystem restrictions remain in force.
 
-## Architecture and status
+## Architecture and evidence
 
-- `app.js` / `server.js`: isolated preview composition and startup; no legacy server import.
-- `modules/branches/`: six routes → HTTP controllers → business service → database repository.
-- `config/preview-database.js`: limited read-only staging connection.
-- `middleware/request-logger.js`: structured preview request/error logging.
-- `shared/string.js`: extracted legacy string cleaning.
-- `tests/`: 36 contract/HTTP/structure/logging tests and three real MariaDB tests.
-- `docs/API-INVENTORY.md` / `.json`: all six Branches entries marked MIGRATED + TESTED (candidate only), with original line ranges.
-- `docs/MIGRATION-PLAN.md`: exact replacement locations and deployment boundaries.
-- `docs/ADMIN-MESSAGES-NEXT.md`: next feature's dependency and test checklist; not yet migrated.
-- `docs/VERIFICATION.json`: historical first-pass evidence; `docs/REVIEW-VERIFICATION.json`: current follow-up evidence.
+- `modules/branches/`: six routes, controller, service and repository.
+- `modules/admin-messages/`: six message/UI refresh routes plus message-only agent update interception, controller, service, repository, validation and tests.
+- `events/test-admin-message-sink.js`: test transport and reconnect/display adapter, separate from business logic.
+- `config/preview-admin-messages.js` and `middleware/preview-message-auth.js`: isolated persistence and test-actor authorization.
+- `docs/API-INVENTORY.md`: 12 routes MIGRATED + TESTED; PUT agent update explicitly PARTIAL for adminMessage-only payloads.
+- `docs/MIGRATION-PLAN.md` and `docs/ADMIN-MESSAGES-NEXT.md`: exact original source locations, preserved behavior, remaining gates.
+- `docs/ADMIN-MESSAGES-VERIFICATION.json` and `docs/REVIEW-VERIFICATION.json`: running preview, restart, database boundary and production-isolation evidence. `docs/VERIFICATION.json` is historical first-phase evidence.
 
-This is an incremental extraction, not a completed monolith rewrite. The full candidate removes 139 lines from the original 34,845-line server. `runtime/server.js` is a generated review artifact with startup disabled because legacy initialization still creates schema, runs jobs and changes Asterisk queues.
+Legacy Admin Messages uses polling/refresh tokens, not an existing feature WebSocket. The preview adds no live socket delivery. Legacy message routes also lack route-level authorization; production auth integration is an explicit pre-promotion gate. Concurrent broadcasts retain the original newest-record selection and nontransactional replacement; private-message expiry/audit does not exist in the baseline. See the detailed module report before promotion.
 
-Private baseline and generated runtime are excluded from Git because the legacy source contains embedded credentials. Hashes in `docs/BASELINE.json` verify the snapshot. Fresh checkouts need the matching private baseline files before characterization tests can run. Never replace newer production fixes using an old snapshot.
+This is not a completed monolith rewrite. The full generated candidate removes 315 net lines from the original 34,845-line server, and startup remains unconditionally disabled. It still contains legacy side effects and must never be launched. The private baseline and runtime are excluded from Git because the legacy source contains embedded credentials; `docs/BASELINE.json` records the hashes.
 
-The live SMS provider is Kaleyra / SolutionsInfini, with stored Smler URLs. Its eventual module must preserve that integration; MSG91 is not being introduced.
+Next: Customer History, Reports, Billing lookup, SMS abstraction retaining Kaleyra, Follow-ups, Agent Intake, Agent Status, then call-critical modules last. Kaleyra/SolutionsInfini, Smler URLs, Asterisk, SIP, queues and dialer behavior remain unchanged.

@@ -77,7 +77,7 @@ assert scan.returncode == 1, 'A deployed asset references the preview, or scanni
 proxy = subprocess.check_output(['rg', 'ProxyPass', '/etc/apache2/sites-enabled'], text=True)
 assert ':3101' not in proxy and '127.0.0.1:3001/api' in proxy
 proof = {'verifiedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'productionParity': parity,
-         'previewWritesHTTP': 405, 'cleanRestart': {'before': before, 'after': after_clean},
+         'branchesPreviewWritesHTTP': 405, 'cleanRestart': {'before': before, 'after': after_clean},
          'automaticRecovery': {'afterCrash': after_crash}, 'requestLogging': True, 'errorLogging': True,
          'productionFilesUnchanged': unchanged, 'productionServiceUnchanged': True,
          'deployedFrontendPreviewReferences': 0, 'productionProxyPort': 3001, 'productionDeployment': False}

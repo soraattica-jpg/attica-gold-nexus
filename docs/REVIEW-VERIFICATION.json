@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-09-21T11:03:39.440267+00:00",
+  "verifiedAt": "2026-09-21T11:21:59.894847+00:00",
   "productionParity": [
     {
       "path": "/api/branches",
@@ -44,13 +44,13 @@
       "records": null
     }
   ],
-  "previewWritesHTTP": 405,
+  "branchesPreviewWritesHTTP": 405,
   "cleanRestart": {
-    "before": "74340",
-    "after": "76220"
+    "before": "114971",
+    "after": "117452"
   },
   "automaticRecovery": {
-    "afterCrash": "76368"
+    "afterCrash": "117619"
   },
   "requestLogging": true,
   "errorLogging": true,
@@ -64,18 +64,5 @@
   "productionServiceUnchanged": true,
   "deployedFrontendPreviewReferences": 0,
   "productionProxyPort": 3001,
-  "productionDeployment": false,
-  "contractTests": 36,
-  "databaseTests": 3,
-  "snapshotRows": 253,
-  "activeSnapshotRows": 197,
-  "migratedTestedBranchesEndpoints": 6,
-  "externalGeocoding": "stubbed in preview; dependency contracts tested",
-  "mutationParity": "original versus modular handlers on separate staging database; preview HTTP writes blocked",
-  "branchTableDataHashes": {
-    "asterisk": "d473b2d18f7d8f766dc902b6146d38bfd0e724a718f186cf294ca00e8aabc9be",
-    "attica_api_next_preview": "d473b2d18f7d8f766dc902b6146d38bfd0e724a718f186cf294ca00e8aabc9be",
-    "attica_api_next_contract": "d473b2d18f7d8f766dc902b6146d38bfd0e724a718f186cf294ca00e8aabc9be"
-  },
-  "productionDataEqualsSnapshotsAfterTests": true
+  "productionDeployment": false
 }

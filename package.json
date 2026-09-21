@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test tests/*.test.js",
+    "test": "node --test tests/*.test.js modules/*/*.test.js",
     "inventory": "node scripts/api-inventory.js",
     "prepare:runtime": "node scripts/prepare-runtime.js",
     "test:database": "node --test tests/*.database.mjs"

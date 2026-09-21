@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import { createHash } from 'node:crypto';
 import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
 import { createApp } from '../app.js';
 import { createBranchesModule, mountBranchesCatalog, mountBranchesAutocomplete } from '../modules/branches/index.js';
-import { parseSource, readBaseline, branchPaths, routeCall, projectRoot } from '../scripts/source-tools.js';
+import { parseSource, readBaseline, branchPaths, adminPaths, adminHelperNames, adminConstantNames, routeCall, projectRoot } from '../scripts/source-tools.js';
 import { createFixtureDb, createFixtureGeocoding } from './fixtures/staging.js';
 
 const baseline = readBaseline();
@@ -128,17 +129,21 @@ test('HTTP mounts, caching, errors and staging write isolation', async (t) => {
   }
 });
 
-test('all non-Branches candidate statements match production baseline exactly', () => {
+test('all unmigrated candidate statements match production baseline exactly', () => {
   const candidate = readFileSync(projectRoot + 'runtime/server.js', 'utf8');
-  const skipBaseline = (node) => (node.type === 'FunctionDeclaration' && node.id.name === 'serializeBranchRow')
-    || (node.expression && routeCall(node.expression) && branchPaths.has(node.expression.arguments[0]?.value));
-  const skipCandidate = (node) => (node.type === 'ImportDeclaration' && node.source.value === '../modules/branches/index.js')
+  const skipBaseline = (node) => (node.type === 'FunctionDeclaration' && (node.id.name === 'serializeBranchRow' || adminHelperNames.has(node.id.name)))
+    || (node.type === 'VariableDeclaration' && adminConstantNames.has(node.declarations[0]?.id.name))
+    || (node.expression && routeCall(node.expression) && (branchPaths.has(node.expression.arguments[0]?.value) || adminPaths.has(node.expression.arguments[0]?.value)));
+  const skipCandidate = (node) => (node.type === 'ImportDeclaration' && ['../modules/branches/index.js', '../modules/admin-messages/index.js'].includes(node.source.value))
     || (node.type === 'ThrowStatement')
-    || (node.type === 'VariableDeclaration' && node.declarations[0]?.id.name === 'branchesController')
-    || (node.expression?.type === 'CallExpression' && ['mountBranchesCatalog', 'mountBranchesAutocomplete'].includes(node.expression.callee.name));
+    || (node.type === 'VariableDeclaration' && ['branchesController', 'adminMessagesController', 'legacyMessageAuthorization'].includes(node.declarations[0]?.id.name))
+    || (node.expression?.type === 'CallExpression' && ['mountBranchesCatalog', 'mountBranchesAutocomplete', 'mountAdminMessages', 'mountIndividualMessage'].includes(node.expression.callee.name));
   const old = ast.body.filter((n) => !skipBaseline(n)).map((n) => baseline.slice(n.start, n.end));
   const next = parseSource(candidate).body.filter((n) => !skipCandidate(n)).map((n) => candidate.slice(n.start, n.end));
-  assert.deepEqual(next, old);
+  // Compare hashes so a failure cannot print legacy embedded credentials.
+  assert.equal(next.length, old.length);
+  const digest = (value) => createHash('sha256').update(value).digest('hex');
+  next.forEach((value, index) => assert.equal(digest(value), digest(old[index]), `Unmigrated statement ${index}`));
 });
 
 test('full candidate preserves endpoint registration order', () => {
@@ -149,6 +154,7 @@ test('full candidate preserves endpoint registration order', () => {
     const expression = node.expression;
     if (!expression) continue;
     if (routeCall(expression)) actual.push(candidate.slice(expression.callee.property.start, expression.arguments[0].end));
+    if (expression.callee?.name === 'mountAdminMessages') { actual.push("get('/api/ui-refresh'", "post('/api/ui-refresh'", "get('/api/admin-broadcast'", "get('/api/admin-broadcast/history'", "post('/api/admin-broadcast'", "delete('/api/admin-broadcast'"); }
     if (expression.callee?.name === 'mountBranchesCatalog') {
       actual.push("get('/api/branches'", "post('/api/branches'", "put('/api/branches/:id'", "delete('/api/branches/:id'", "get('/api/branches/search-nearby'");
     }

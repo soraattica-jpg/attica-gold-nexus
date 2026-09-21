@@ -1,5 +1,5 @@
 import { writeFileSync } from 'node:fs';
-import { branchPaths, parseSource, projectRoot, readBaseline, routeCall, walk } from './source-tools.js';
+import { branchPaths, adminPaths, parseSource, projectRoot, readBaseline, routeCall, walk } from './source-tools.js';
 
 const tested = process.argv.includes('--tested');
 const inventory = [];
@@ -12,14 +12,17 @@ for (const file of ['server.js', 'md-reporting.mjs', 'intake-workflow.mjs']) {
     for (const path of paths) {
       const literal = path.type === 'Literal' && typeof path.value === 'string';
       const routePath = literal ? path.value : source.slice(path.start, path.end);
+      const migrated = file === 'server.js' && (branchPaths.has(routePath) || adminPaths.has(routePath));
+      const individual = file === 'server.js' && routePath === '/api/agents/:id' && node.callee.property.name === 'put';
       // app.get(setting) is filtered by routeCall's handler requirement.
       inventory.push({
         method: node.callee.property.name.toUpperCase(), path: routePath,
         dynamic: !literal, file, line: node.loc.start.line, endLine: node.loc.end.line,
-        feature: branchPaths.has(routePath) ? 'branches' : (literal ? routePath.split('/').filter(Boolean)[1] || 'root' : 'dynamic registration'),
-        migrated: file === 'server.js' && branchPaths.has(routePath),
-        migrationStatus: file === 'server.js' && branchPaths.has(routePath) ? 'MIGRATED' : 'PENDING',
-        testStatus: tested && file === 'server.js' && branchPaths.has(routePath) ? 'TESTED' : 'PENDING',
+        feature: branchPaths.has(routePath) ? 'branches' : adminPaths.has(routePath) || individual ? 'admin-messages' : (literal ? routePath.split('/').filter(Boolean)[1] || 'root' : 'dynamic registration'),
+        migrated,
+        partialMigration: individual ? 'adminMessage-only payload; generic agent update remains unchanged' : null,
+        migrationStatus: migrated ? 'MIGRATED' : individual ? 'PARTIAL (message-only)' : 'PENDING',
+        testStatus: tested && (migrated || individual) ? (individual ? 'TESTED (message-only)' : 'TESTED') : 'PENDING',
         deploymentStatus: 'LEGACY_PRODUCTION',
       });
     }
@@ -30,7 +33,7 @@ const lines = [
   '# Attica API migration inventory', '',
   'Generated from the hash-verified production snapshot; no server was imported or started.', '',
   `${inventory.length} route registrations (${inventory.filter((r) => r.dynamic).length} dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.`, '',
-  'The six Branches routes are migrated only in the isolated candidate. Production continues using server.js. No production API path, payload, or global middleware was changed. TESTED covers legacy contracts, HTTP and real staging MariaDB checks; preview mutations are intentionally blocked with 405. Original read endpoints have no added pagination or sorting parameters.', '',
+  'Six Branches and six Admin Messages/UI refresh routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. No production API path, payload, or global middleware was changed. TESTED covers legacy contracts, HTTP and real staging MariaDB checks; Branches preview mutations are intentionally blocked with 405. Admin Messages preview mutations require test-actor authentication and write only synthetic records in an isolated message database; delivery uses a test sink. Baseline message routes lack authorization and use polling, so production promotion requires a separate authorization/transport review. Original read endpoints have no added pagination or sorting parameters.', '',
   '| Method | Path / expression | Original location | Migrated | Tested | Production |',
   '| --- | --- | --- | --- | --- | --- |',
 ];
@@ -40,4 +43,4 @@ for (const row of inventory) {
 }
 lines.push('', 'Middleware order, cluster/scheduler initialization, authorization, and external integration contracts remain separate migration checkpoints. Existing md-reporting and intake-workflow modules are recorded as baseline dependencies, not newly migrated work.', '');
 writeFileSync(projectRoot + 'docs/API-INVENTORY.md', lines.join('\n'));
-console.log(`Inventoried ${inventory.length} route registrations; ${inventory.filter((r) => r.migrated).length} Branches registrations migrated in candidate only.`);
+console.log(`Inventoried ${inventory.length} route registrations; ${inventory.filter((r) => r.migrated).length} registrations migrated in candidate only.`);

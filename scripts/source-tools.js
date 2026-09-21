@@ -5,6 +5,9 @@ import { fileURLToPath } from 'node:url';
 
 export const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 export const branchPaths = new Set(['/api/branches', '/api/branches/:id', '/api/branches/search-nearby', '/api/branches/autocomplete']);
+export const adminPaths = new Set(['/api/ui-refresh', '/api/admin-broadcast', '/api/admin-broadcast/history']);
+export const adminHelperNames = new Set(['serializeAdminBroadcastRecord', 'getActiveAdminBroadcast', 'adminBroadcastAppliesToAgent', 'getAdminBroadcastExpiryDate']);
+export const adminConstantNames = new Set(['ADMIN_BROADCAST_SCOPES', 'ADMIN_BROADCAST_EXPIRIES']);
 export function parseSource(source) {
   return parse(source, { ecmaVersion: 'latest', sourceType: 'module', locations: true });
 }

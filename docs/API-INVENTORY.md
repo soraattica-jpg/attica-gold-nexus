@@ -4,7 +4,7 @@ Generated from the hash-verified production snapshot; no server was imported or 
 
 122 route registrations (1 dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.
 
-The six Branches routes are migrated only in the isolated candidate. Production continues using server.js. No production API path, payload, or global middleware was changed. TESTED covers legacy contracts, HTTP and real staging MariaDB checks; preview mutations are intentionally blocked with 405. Original read endpoints have no added pagination or sorting parameters.
+Six Branches and six Admin Messages/UI refresh routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. No production API path, payload, or global middleware was changed. TESTED covers legacy contracts, HTTP and real staging MariaDB checks; Branches preview mutations are intentionally blocked with 405. Admin Messages preview mutations require test-actor authentication and write only synthetic records in an isolated message database; delivery uses a test sink. Baseline message routes lack authorization and use polling, so production promotion requires a separate authorization/transport review. Original read endpoints have no added pagination or sorting parameters.
 
 | Method | Path / expression | Original location | Migrated | Tested | Production |
 | --- | --- | --- | --- | --- | --- |
@@ -89,18 +89,18 @@ The six Branches routes are migrated only in the isolated candidate. Production 
 | POST | /api/send-sms | server.js:29684 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/sms-log | server.js:29741 | PENDING (candidate) | PENDING | Legacy |
 | ALL | /api/sms/dlr | server.js:29751 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/ui-refresh | server.js:29834 | PENDING (candidate) | PENDING | Legacy |
-| POST | /api/ui-refresh | server.js:29838 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/admin-broadcast | server.js:29851 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/admin-broadcast/history | server.js:29886 | PENDING (candidate) | PENDING | Legacy |
-| POST | /api/admin-broadcast | server.js:29904 | PENDING (candidate) | PENDING | Legacy |
-| DELETE | /api/admin-broadcast | server.js:29951 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/ui-refresh | server.js:29834 | MIGRATED (candidate) | TESTED | Legacy |
+| POST | /api/ui-refresh | server.js:29838 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/admin-broadcast | server.js:29851 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/admin-broadcast/history | server.js:29886 | MIGRATED (candidate) | TESTED | Legacy |
+| POST | /api/admin-broadcast | server.js:29904 | MIGRATED (candidate) | TESTED | Legacy |
+| DELETE | /api/admin-broadcast | server.js:29951 | MIGRATED (candidate) | TESTED | Legacy |
 | POST | /api/frontend-errors | server.js:29973 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/agents | server.js:29997 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/agents/:id | server.js:30003 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/agent-sessions | server.js:30089 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/agents | server.js:30116 | PENDING (candidate) | PENDING | Legacy |
-| PUT | /api/agents/:id | server.js:30128 | PENDING (candidate) | PENDING | Legacy |
+| PUT | /api/agents/:id | server.js:30128 | PARTIAL (message-only) (candidate) | TESTED (message-only) | Legacy |
 | POST | /api/agents/:id/call-slot/claim | server.js:30353 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/agents/:id/call-slot/release | server.js:30392 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/agents/:id/call-state/reset | server.js:30425 | PENDING (candidate) | PENDING | Legacy |
