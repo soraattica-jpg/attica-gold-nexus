@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-09-21T11:21:59.894847+00:00",
+  "verifiedAt": "2026-09-21T11:41:23.284111+00:00",
   "productionParity": [
     {
       "path": "/api/branches",
@@ -46,11 +46,11 @@
   ],
   "branchesPreviewWritesHTTP": 405,
   "cleanRestart": {
-    "before": "114971",
-    "after": "117452"
+    "before": "158211",
+    "after": "158607"
   },
   "automaticRecovery": {
-    "afterCrash": "117619"
+    "afterCrash": "158722"
   },
   "requestLogging": true,
   "errorLogging": true,

@@ -1476,11 +1476,11 @@
     "file": "server.js",
     "line": 31371,
     "endLine": 31391,
-    "feature": "calls",
-    "migrated": false,
+    "feature": "customer-history",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -1490,11 +1490,11 @@
     "file": "server.js",
     "line": 31393,
     "endLine": 31464,
-    "feature": "customer-profile",
-    "migrated": false,
+    "feature": "customer-history",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -1560,11 +1560,11 @@
     "file": "server.js",
     "line": 31584,
     "endLine": 31620,
-    "feature": "intake-forms",
-    "migrated": false,
+    "feature": "customer-history",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -1616,11 +1616,11 @@
     "file": "server.js",
     "line": 31678,
     "endLine": 31698,
-    "feature": "calls",
-    "migrated": false,
+    "feature": "customer-history",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {

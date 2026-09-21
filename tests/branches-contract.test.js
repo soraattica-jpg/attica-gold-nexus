@@ -6,7 +6,7 @@ import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
 import { createApp } from '../app.js';
 import { createBranchesModule, mountBranchesCatalog, mountBranchesAutocomplete } from '../modules/branches/index.js';
-import { parseSource, readBaseline, branchPaths, adminPaths, adminHelperNames, adminConstantNames, routeCall, projectRoot } from '../scripts/source-tools.js';
+import { parseSource, readBaseline, branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, routeCall, projectRoot } from '../scripts/source-tools.js';
 import { createFixtureDb, createFixtureGeocoding } from './fixtures/staging.js';
 
 const baseline = readBaseline();
@@ -133,11 +133,11 @@ test('all unmigrated candidate statements match production baseline exactly', ()
   const candidate = readFileSync(projectRoot + 'runtime/server.js', 'utf8');
   const skipBaseline = (node) => (node.type === 'FunctionDeclaration' && (node.id.name === 'serializeBranchRow' || adminHelperNames.has(node.id.name)))
     || (node.type === 'VariableDeclaration' && adminConstantNames.has(node.declarations[0]?.id.name))
-    || (node.expression && routeCall(node.expression) && (branchPaths.has(node.expression.arguments[0]?.value) || adminPaths.has(node.expression.arguments[0]?.value)));
-  const skipCandidate = (node) => (node.type === 'ImportDeclaration' && ['../modules/branches/index.js', '../modules/admin-messages/index.js'].includes(node.source.value))
+    || (node.expression && routeCall(node.expression) && (branchPaths.has(node.expression.arguments[0]?.value) || adminPaths.has(node.expression.arguments[0]?.value) || customerHistoryPaths.has(node.expression.arguments[0]?.value)));
+  const skipCandidate = (node) => (node.type === 'ImportDeclaration' && ['../modules/branches/index.js', '../modules/admin-messages/index.js', '../modules/customer-history/index.js'].includes(node.source.value))
     || (node.type === 'ThrowStatement')
-    || (node.type === 'VariableDeclaration' && ['branchesController', 'adminMessagesController', 'legacyMessageAuthorization'].includes(node.declarations[0]?.id.name))
-    || (node.expression?.type === 'CallExpression' && ['mountBranchesCatalog', 'mountBranchesAutocomplete', 'mountAdminMessages', 'mountIndividualMessage'].includes(node.expression.callee.name));
+    || (node.type === 'VariableDeclaration' && ['branchesController', 'adminMessagesController', 'legacyMessageAuthorization', 'customerHistoryController', 'legacyCustomerHistoryAuthorization'].includes(node.declarations[0]?.id.name))
+    || (node.expression?.type === 'CallExpression' && ['mountBranchesCatalog', 'mountBranchesAutocomplete', 'mountAdminMessages', 'mountIndividualMessage', 'mountCustomerCallsByPhone', 'mountCustomerProfile', 'mountIntakeHistory', 'mountCustomerCallHistory'].includes(node.expression.callee.name));
   const old = ast.body.filter((n) => !skipBaseline(n)).map((n) => baseline.slice(n.start, n.end));
   const next = parseSource(candidate).body.filter((n) => !skipCandidate(n)).map((n) => candidate.slice(n.start, n.end));
   // Compare hashes so a failure cannot print legacy embedded credentials.
@@ -159,6 +159,10 @@ test('full candidate preserves endpoint registration order', () => {
       actual.push("get('/api/branches'", "post('/api/branches'", "put('/api/branches/:id'", "delete('/api/branches/:id'", "get('/api/branches/search-nearby'");
     }
     if (expression.callee?.name === 'mountBranchesAutocomplete') actual.push("get('/api/branches/autocomplete'");
+    if (expression.callee?.name === 'mountCustomerCallsByPhone') actual.push("get('/api/calls/phone'");
+    if (expression.callee?.name === 'mountCustomerProfile') actual.push("get('/api/customer-profile'");
+    if (expression.callee?.name === 'mountIntakeHistory') actual.push("get('/api/intake-forms/phone'");
+    if (expression.callee?.name === 'mountCustomerCallHistory') actual.push("get('/api/calls/customer-history'");
   }
   assert.deepEqual(actual, expected);
 });

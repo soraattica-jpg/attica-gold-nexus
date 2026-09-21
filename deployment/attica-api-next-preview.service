@@ -1,5 +1,5 @@
 [Unit]
-Description=Attica isolated read-only staging API
+Description=Attica isolated modular staging API
 After=network.target mysql.service
 StartLimitIntervalSec=0
 

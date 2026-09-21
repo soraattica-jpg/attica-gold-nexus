@@ -4,7 +4,7 @@ Generated from the hash-verified production snapshot; no server was imported or 
 
 122 route registrations (1 dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.
 
-Six Branches and six Admin Messages/UI refresh routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. No production API path, payload, or global middleware was changed. TESTED covers legacy contracts, HTTP and real staging MariaDB checks; Branches preview mutations are intentionally blocked with 405. Admin Messages preview mutations require test-actor authentication and write only synthetic records in an isolated message database; delivery uses a test sink. Baseline message routes lack authorization and use polling, so production promotion requires a separate authorization/transport review. Original read endpoints have no added pagination or sorting parameters.
+Six Branches, six Admin Messages/UI refresh routes and four Customer History routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History uses a synthetic SELECT-only database and shared primary/alternate/customer-ID resolution. Remote customer-data sync remains pending. No production API path, payload, or global middleware was changed.
 
 | Method | Path / expression | Original location | Migrated | Tested | Production |
 | --- | --- | --- | --- | --- | --- |
@@ -113,17 +113,17 @@ Six Branches and six Admin Messages/UI refresh routes are migrated only in the i
 | GET | /api/save-call-ivr | server.js:31265 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/call-language/:callerId | server.js:31343 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/call-ivr/:callerId | server.js:31353 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/calls/phone | server.js:31371 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/customer-profile | server.js:31393 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/calls/phone | server.js:31371 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/customer-profile | server.js:31393 | MIGRATED (candidate) | TESTED | Legacy |
 | POST | /api/intake-forms | server.js:31494 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/intake-workflow/pending | server.js:31555 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/intake-workflow | server.js:31570 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/intake-workflow | server.js:31575 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/intake-forms/phone | server.js:31584 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/intake-forms/phone | server.js:31584 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/transfer-context | server.js:31622 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/transfer-context | server.js:31634 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/transfer-context/resolve | server.js:31666 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/calls/customer-history | server.js:31678 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/calls/customer-history | server.js:31678 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/calls/date-details | server.js:31700 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/calls/export | server.js:31716 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/calls/report-summary | server.js:31858 | PENDING (candidate) | PENDING | Legacy |
