@@ -36,9 +36,13 @@ Six message/UI-refresh endpoints and the private-message-only portion of PUT /ap
 
 Four read routes are extracted with shared customer-ID/primary/alternate-mobile resolution. Exact source locations, collaborator boundaries and verification are in `docs/CUSTOMER-HISTORY.md` and `docs/CUSTOMER-HISTORY-VERIFICATION.json`. The preview uses a synthetic SELECT-only MariaDB schema. Remote customer-data sync remains legacy.
 
+## In progress: phase 4, Reports
+
+The first two read-only endpoints (`/api/stats` and `/api/calls/date-details`) are MIGRATED + TESTED. See `docs/REPORTS-CORE.md`. Report summary, server-side list pagination, exports and marketing reports remain pending and must be moved before Reports is called complete.
+
 ## Following feature slices
 
-1. Reports, then Billing / bill lookup with filter, snapshot and attribution parity.
+1. Complete Reports summary/list/export, then Billing / bill lookup with filter, snapshot and attribution parity.
 2. SMS abstraction retaining Kaleyra/SolutionsInfini; URL shortening remains separate. No real sends in tests.
 3. Follow-ups, Agent Intake, Agent Status.
 4. Outgoing Dialer, Incoming Calls, Asterisk / AMI / Queues last.
@@ -56,12 +60,12 @@ Keep 2–4 low-risk modules isolated before considering promotion. Do not replac
 
 ## Current production status
 
-Phases 1–3 make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Branches uses a SELECT-only snapshot, Admin Messages uses synthetic staging-only records and a test sink, and Customer History uses a synthetic SELECT-only schema. SIP trunks, queue strategy, routing and messaging configuration are outside this change.
+Phases 1–3 and the phase 4 core slice make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Branches uses a SELECT-only snapshot, Admin Messages uses synthetic staging-only records and a test sink, and Customer History/Reports use a synthetic SELECT-only schema. SIP trunks, queue strategy, routing and messaging configuration are outside this change.
 
 ## Verification follow-up
 
 - `docs/REVIEW-VERIFICATION.json`: seven read-only HTTP parity probes against production, normal restart, crash recovery, logging, deployed frontend scan and unchanged production file hashes.
-- `npm test`: 110 passing tests; `npm run test:database`: ten passing real MariaDB tests. The modules cover contracts, database behavior and denied production access; Customer History adds shared identity, profile and newest-first history checks.
+- `npm test`: 115 passing tests; `npm run test:database`: twelve passing real MariaDB tests. The modules cover contracts, database behavior and denied production access; Reports core adds aggregation, validation and agent-filter checks.
 - `deployment/attica-api-next-preview.service`: installed and enabled, `Restart=always`, structured journald logs, loopback binding, blocked access to production source, configuration and database files.
 - Credentials: `/etc/attica-next/preview-db.json` (SELECT-only snapshot) and `/etc/attica-next/contract-db.json` (writes only to the separate contract-test database). Both are root-only and outside Git. Branches receives only its read credential through systemd LoadCredential. The Admin Messages preview additionally reads ignored, root-only `.private/messages-preview-db.json` and `.private/message-actors.json`; its contract tests use `.private/messages-contract-db.json`. No production credentials are used by either adapter.
 - Branches and unrelated preview mutations reject POST/PUT/DELETE with 405 by design. Admin Messages test-authenticated mutations are allowed only against synthetic staging data. Compatibility of the underlying mutation handlers is tested directly with original handlers on the contract-test database. Do not describe the public preview's write-block policy as the production mutation contract.
@@ -69,6 +73,6 @@ Phases 1–3 make no production deployment. The production service remains `/roo
 - Live geocoding services are not enabled on port 3101. Google/Photon order, failure fallbacks and request arguments are covered through injected test adapters; real provider/network availability is not certified by this verification.
 - Production source/service/proxy and call handling remain unchanged. No live mutation endpoints were exercised.
 
-## Next feature: Reports
+## Next feature: Reports summary/list/export
 
-Customer History is complete for the isolated preview, not production promotion. Reports is next, followed by Billing / bill lookup. Customer History remains a shared dependency for the later Agent Intake work.
+Complete report summary, server-side list pagination and streaming exports before starting Billing / bill lookup. Customer History remains a shared dependency for the later Agent Intake work.

@@ -286,11 +286,11 @@
     "file": "server.js",
     "line": 23622,
     "endLine": 23655,
-    "feature": "stats",
-    "migrated": false,
+    "feature": "reports-core",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -1630,11 +1630,11 @@
     "file": "server.js",
     "line": 31700,
     "endLine": 31714,
-    "feature": "calls",
-    "migrated": false,
+    "feature": "reports-core",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {

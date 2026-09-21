@@ -4,7 +4,7 @@ Generated from the hash-verified production snapshot; no server was imported or 
 
 122 route registrations (1 dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.
 
-Six Branches, six Admin Messages/UI refresh routes and four Customer History routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History uses a synthetic SELECT-only database and shared primary/alternate/customer-ID resolution. Remote customer-data sync remains pending. No production API path, payload, or global middleware was changed.
+Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, and two core Reports routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History and Reports use synthetic SELECT-only data. Report summary/list/export and remote customer-data sync remain pending. No production API path, payload, or global middleware was changed.
 
 | Method | Path / expression | Original location | Migrated | Tested | Production |
 | --- | --- | --- | --- | --- | --- |
@@ -28,7 +28,7 @@ Six Branches, six Admin Messages/UI refresh routes and four Customer History rou
 | POST | /api/admin/incoming-2of5-gate/control | server.js:23518 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/customerdata/list | server.js:23547 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/customerdata | server.js:23567 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/stats | server.js:23622 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/stats | server.js:23622 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/recordings/:name | server.js:23658 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/recordings | server.js:23688 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/missed/today | server.js:23695 | PENDING (candidate) | PENDING | Legacy |
@@ -124,7 +124,7 @@ Six Branches, six Admin Messages/UI refresh routes and four Customer History rou
 | POST | /api/transfer-context | server.js:31634 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/transfer-context/resolve | server.js:31666 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/calls/customer-history | server.js:31678 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/calls/date-details | server.js:31700 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/calls/date-details | server.js:31700 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/calls/export | server.js:31716 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/calls/report-summary | server.js:31858 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/calls/list | server.js:32013 | PENDING (candidate) | PENDING | Legacy |

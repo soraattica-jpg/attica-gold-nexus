@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
+import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
 
 const source = readBaseline();
 const ast = parseSource(source);
@@ -7,6 +7,7 @@ const edits = [];
 let removed = 0;
 let adminRemoved = 0;
 let customerHistoryRemoved = 0;
+let reportCoreRemoved = 0;
 for (const statement of ast.body) {
   if ((statement.type === 'FunctionDeclaration' && adminHelperNames.has(statement.id.name))
     || (statement.type === 'VariableDeclaration' && adminConstantNames.has(statement.declarations[0]?.id.name))) {
@@ -53,6 +54,22 @@ const legacyCustomerHistoryAuthorization = () => (_req, _res, next) => next();
     edits.push({ start: statement.start, end: statement.end, text: `${setup}${mount}(app, customerHistoryController, legacyCustomerHistoryAuthorization);` });
     customerHistoryRemoved++;
   }
+  if (registration && routeCall(registration) && reportCorePaths.has(registration.arguments[0]?.value)) {
+    const path=registration.arguments[0].value;
+    const setup=path==='/api/stats'?`const reportsController=createReportsModule({
+  businessDate:getBusinessDateString,
+  dashboardSummary:getDashboardStatsSummaryFromDatabase,
+  queueMetrics:getDashboardAutoDialQueueMetrics,
+  hourly:buildFilteredHourlyCallsFromDatabase,
+  dateRows:fetchCachedDedupedReportRows,
+  serializeRows:async (rows)=>rows,
+  summarizeRows:summarizeSerializedCalls,
+}).controller;
+const legacyReportsAuthorization=()=> (_req,_res,next)=>next();
+`:'';
+    const mount=path==='/api/stats'?'mountDashboardStats':'mountCallDateDetails';
+    edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,reportsController,legacyReportsAuthorization);`});reportCoreRemoved++;
+  }
   if (statement.type === 'FunctionDeclaration' && statement.id.name === 'serializeBranchRow') {
     edits.push({ start: statement.start, end: statement.end, text: `const branchesController = createBranchesModule({
   db: pool,
@@ -69,12 +86,13 @@ const legacyCustomerHistoryAuthorization = () => (_req, _res, next) => next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || edits.length !== 24) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 2 || edits.length !== 26) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createCustomerHistoryModule, mountCustomerCallsByPhone, mountCustomerProfile, mountIntakeHistory, mountCustomerCallHistory } from '../modules/customer-history/index.js';
+candidate = `import { createReportsModule, mountDashboardStats, mountCallDateDetails } from '../modules/reports/index.js';
+import { createCustomerHistoryModule, mountCustomerCallsByPhone, mountCustomerProfile, mountIntakeHistory, mountCustomerCallHistory } from '../modules/customer-history/index.js';
 import { createAdminMessagesModule, mountAdminMessages, mountIndividualMessage } from '../modules/admin-messages/index.js';
 import { createBranchesModule, mountBranchesCatalog, mountBranchesAutocomplete } from '../modules/branches/index.js';
 // This full candidate still contains legacy startup side effects. It is a
@@ -86,4 +104,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 16 routes mounted at original positions plus a message-only agent update interceptor.`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 18 routes mounted at original positions plus a message-only agent update interceptor.`);

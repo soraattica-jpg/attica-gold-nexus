@@ -1,5 +1,5 @@
 import { writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, customerHistoryPaths, parseSource, projectRoot, readBaseline, routeCall, walk } from './source-tools.js';
+import { branchPaths, adminPaths, customerHistoryPaths, reportCorePaths, parseSource, projectRoot, readBaseline, routeCall, walk } from './source-tools.js';
 
 const tested = process.argv.includes('--tested');
 const inventory = [];
@@ -12,13 +12,13 @@ for (const file of ['server.js', 'md-reporting.mjs', 'intake-workflow.mjs']) {
     for (const path of paths) {
       const literal = path.type === 'Literal' && typeof path.value === 'string';
       const routePath = literal ? path.value : source.slice(path.start, path.end);
-      const migrated = file === 'server.js' && (branchPaths.has(routePath) || adminPaths.has(routePath) || customerHistoryPaths.has(routePath));
+      const migrated = file === 'server.js' && (branchPaths.has(routePath) || adminPaths.has(routePath) || customerHistoryPaths.has(routePath) || reportCorePaths.has(routePath));
       const individual = file === 'server.js' && routePath === '/api/agents/:id' && node.callee.property.name === 'put';
       // app.get(setting) is filtered by routeCall's handler requirement.
       inventory.push({
         method: node.callee.property.name.toUpperCase(), path: routePath,
         dynamic: !literal, file, line: node.loc.start.line, endLine: node.loc.end.line,
-        feature: branchPaths.has(routePath) ? 'branches' : adminPaths.has(routePath) || individual ? 'admin-messages' : customerHistoryPaths.has(routePath) ? 'customer-history' : (literal ? routePath.split('/').filter(Boolean)[1] || 'root' : 'dynamic registration'),
+        feature: branchPaths.has(routePath) ? 'branches' : adminPaths.has(routePath) || individual ? 'admin-messages' : customerHistoryPaths.has(routePath) ? 'customer-history' : reportCorePaths.has(routePath) ? 'reports-core' : (literal ? routePath.split('/').filter(Boolean)[1] || 'root' : 'dynamic registration'),
         migrated,
         partialMigration: individual ? 'adminMessage-only payload; generic agent update remains unchanged' : null,
         migrationStatus: migrated ? 'MIGRATED' : individual ? 'PARTIAL (message-only)' : 'PENDING',
@@ -33,7 +33,7 @@ const lines = [
   '# Attica API migration inventory', '',
   'Generated from the hash-verified production snapshot; no server was imported or started.', '',
   `${inventory.length} route registrations (${inventory.filter((r) => r.dynamic).length} dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.`, '',
-  'Six Branches, six Admin Messages/UI refresh routes and four Customer History routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History uses a synthetic SELECT-only database and shared primary/alternate/customer-ID resolution. Remote customer-data sync remains pending. No production API path, payload, or global middleware was changed.', '',
+  'Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, and two core Reports routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History and Reports use synthetic SELECT-only data. Report summary/list/export and remote customer-data sync remain pending. No production API path, payload, or global middleware was changed.', '',
   '| Method | Path / expression | Original location | Migrated | Tested | Production |',
   '| --- | --- | --- | --- | --- | --- |',
 ];

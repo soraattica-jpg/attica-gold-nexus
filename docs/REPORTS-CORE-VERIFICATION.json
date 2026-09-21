@@ -1,15 +1,16 @@
 {
-  "verifiedAt": "2026-09-21T11:46:28.679Z",
+  "verifiedAt": "2026-09-21T11:46:27.901Z",
   "previewPort": 3101,
-  "dataset": "synthetic-select-only",
+  "scope": [
+    "GET /api/stats",
+    "GET /api/calls/date-details"
+  ],
   "checks": [
     "Authentication required",
-    "Primary/+91/alternate identity parity",
-    "Customer-ID fallback",
-    "Newest-first calls and intakes",
-    "Reusable profile fields",
-    "Database writes and production access denied",
-    "Preview restart persistence"
+    "Complete date aggregation",
+    "Server-side agent filter",
+    "Legacy validation payload",
+    "Preview restart"
   ],
   "productionFilesUnchanged": {
     "md-reporting.mjs": true,
