@@ -258,11 +258,11 @@
     "file": "server.js",
     "line": 23547,
     "endLine": 23565,
-    "feature": "customerdata",
-    "migrated": false,
+    "feature": "billing-lookup",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -272,11 +272,11 @@
     "file": "server.js",
     "line": 23567,
     "endLine": 23619,
-    "feature": "customerdata",
-    "migrated": false,
+    "feature": "billing-lookup",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {

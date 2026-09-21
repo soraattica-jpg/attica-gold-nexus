@@ -4,7 +4,7 @@ Generated from the hash-verified production snapshot; no server was imported or 
 
 122 route registrations (1 dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.
 
-Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, and five core Reports routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History and Reports use synthetic SELECT-only data. Marketing reports and remote customer-data sync remain pending. No production API path, payload, or global middleware was changed.
+Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, five core Reports routes, and two Billing/customer-data lookup routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History, Reports and Billing use synthetic SELECT-only data; preview Billing makes no external customer-data requests. Marketing reports and billing background sync remain pending. No production API path, payload, or global middleware was changed.
 
 | Method | Path / expression | Original location | Migrated | Tested | Production |
 | --- | --- | --- | --- | --- | --- |
@@ -26,8 +26,8 @@ Six Branches, six Admin Messages/UI refresh routes, four Customer History routes
 | GET | /api/admin/incoming-2of5-gate/status | server.js:23468 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/admin/incoming-5of10-gate/status | server.js:23468 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/admin/incoming-2of5-gate/control | server.js:23518 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/customerdata/list | server.js:23547 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/customerdata | server.js:23567 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/customerdata/list | server.js:23547 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/customerdata | server.js:23567 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/stats | server.js:23622 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/recordings/:name | server.js:23658 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/recordings | server.js:23688 | PENDING (candidate) | PENDING | Legacy |

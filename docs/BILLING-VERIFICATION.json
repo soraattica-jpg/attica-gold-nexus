@@ -1,14 +1,19 @@
 {
-  "verifiedAt": "2026-09-21T12:05:25.806Z",
+  "verifiedAt": "2026-09-21T12:05:15.835Z",
   "previewPort": 3101,
   "dataset": "synthetic-select-only",
+  "externalBillingSync": false,
+  "scope": [
+    "GET /api/customerdata/list",
+    "GET /api/customerdata"
+  ],
   "checks": [
     "Authentication required",
-    "Primary/+91/alternate identity parity",
-    "Customer-ID fallback",
-    "Newest-first calls and intakes",
-    "Reusable profile fields",
+    "Date list and stable billing fields",
+    "Normalized +91 lookup",
+    "Strict and combined lookup behavior",
     "Database writes and production access denied",
+    "No external customer-data calls in preview",
     "Preview restart persistence"
   ],
   "productionFilesUnchanged": {

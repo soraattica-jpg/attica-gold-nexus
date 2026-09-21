@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
+import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
 
 const source = readBaseline();
 const ast = parseSource(source);
@@ -8,6 +8,7 @@ let removed = 0;
 let adminRemoved = 0;
 let customerHistoryRemoved = 0;
 let reportCoreRemoved = 0;
+let billingRemoved = 0;
 for (const statement of ast.body) {
   if ((statement.type === 'FunctionDeclaration' && adminHelperNames.has(statement.id.name))
     || (statement.type === 'VariableDeclaration' && adminConstantNames.has(statement.declarations[0]?.id.name))) {
@@ -87,6 +88,25 @@ const legacyReportsAuthorization=()=> (_req,_res,next)=>next();
     const mount=path==='/api/stats'?'mountDashboardStats':path==='/api/calls/date-details'?'mountCallDateDetails':path==='/api/calls/export'?'mountCallExport':path==='/api/calls/report-summary'?'mountReportSummary':'mountCallList';
     edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,reportsController,legacyReportsAuthorization);`});reportCoreRemoved++;
   }
+  if (registration && routeCall(registration) && billingPaths.has(registration.arguments[0]?.value)) {
+    const path=registration.arguments[0].value;
+    const setup=path==='/api/customerdata/list'?`const billingController=createBillingModule({
+  normalizeDate:normalizeQueryDate,
+  normalizeContact:normalizeAutoDialPhone,
+  listRows:fetchRemoteCustomerDataRowsByDate,
+  lastSyncedAt:async(date)=>{const [[row]]=await pool.query('SELECT MAX(synced_at) AS last_synced_at FROM attica_remote_customer_data WHERE record_date=?',[date]);return row?.last_synced_at;},
+  toIsoString:toApiIsoString,
+  syncIfStale:()=>syncRemoteCustomerDataCacheIfStale(CUSTOMER_DATA_REMOTE_REPORT_SYNC_MS),
+  cachedRemoteByPhone:fetchCachedRemoteCustomerDataRowsByPhone,
+  localByPhone:fetchLocalCustomerDataRowsByPhone,
+  remoteLookup:async(contact,timeoutMs)=>{let timeout=null;try{const controller=new AbortController();timeout=setTimeout(()=>controller.abort(),timeoutMs);const response=await fetch(\`https://atticagold.biz/FlutterProject/customerdata.php?contact=\${encodeURIComponent(contact)}\`,{headers:{Accept:'application/json'},signal:controller.signal});return {ok:response.ok,payload:response.ok?await response.json():[]};}finally{if(timeout)clearTimeout(timeout);}},
+  hasPayloadRows:hasCustomerDataPayloadRows,
+}).controller;
+const legacyBillingAuthorization=()=> (_req,_res,next)=>next();
+` : '';
+    const mount=path==='/api/customerdata/list'?'mountBillingList':'mountBillingLookup';
+    edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,billingController,legacyBillingAuthorization);`});billingRemoved++;
+  }
   if (statement.type === 'FunctionDeclaration' && statement.id.name === 'serializeBranchRow') {
     edits.push({ start: statement.start, end: statement.end, text: `const branchesController = createBranchesModule({
   db: pool,
@@ -103,12 +123,13 @@ const legacyReportsAuthorization=()=> (_req,_res,next)=>next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || edits.length !== 29) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || edits.length !== 31) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createReportsModule, createDatabaseCallList, createDatabaseCallExport, mountDashboardStats, mountCallDateDetails, mountCallExport, mountReportSummary, mountCallList } from '../modules/reports/index.js';
+candidate = `import { createBillingModule, mountBillingList, mountBillingLookup } from '../modules/billing/index.js';
+import { createReportsModule, createDatabaseCallList, createDatabaseCallExport, mountDashboardStats, mountCallDateDetails, mountCallExport, mountReportSummary, mountCallList } from '../modules/reports/index.js';
 import { createCustomerHistoryModule, mountCustomerCallsByPhone, mountCustomerProfile, mountIntakeHistory, mountCustomerCallHistory } from '../modules/customer-history/index.js';
 import { createAdminMessagesModule, mountAdminMessages, mountIndividualMessage } from '../modules/admin-messages/index.js';
 import { createBranchesModule, mountBranchesCatalog, mountBranchesAutocomplete } from '../modules/branches/index.js';
@@ -121,4 +142,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 21 routes mounted at original positions plus a message-only agent update interceptor.`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 23 routes mounted at original positions plus a message-only agent update interceptor.`);
