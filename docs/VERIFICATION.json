@@ -1,0 +1,41 @@
+{
+  "verifiedAt": "2026-09-21T10:53:47.965306+00:00",
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionService": [
+    "MainPID=12206",
+    "ActiveState=active",
+    "ActiveEnterTimestamp=Mon 2026-09-21 10:36:17 UTC"
+  ],
+  "previewResults": {
+    "/health": {
+      "status": 200,
+      "stagingHeader": "synthetic-data-only",
+      "rows": null
+    },
+    "/api/branches": {
+      "status": 200,
+      "stagingHeader": "synthetic-data-only",
+      "rows": 1
+    },
+    "/api/branches/autocomplete?q=Te": {
+      "status": 200,
+      "stagingHeader": "synthetic-data-only",
+      "rows": 1
+    },
+    "/api/branches/search-nearby?lat=12.9&lng=77.6": {
+      "status": 200,
+      "stagingHeader": "synthetic-data-only",
+      "rows": 1
+    }
+  },
+  "previewWritesBlocked": true,
+  "testCount": 35,
+  "testResult": "pass",
+  "productionDeployment": false
+}

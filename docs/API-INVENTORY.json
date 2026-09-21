@@ -1,0 +1,1100 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/blocked-numbers",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 22059,
+    "feature": "blocked-numbers",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/blocked-numbers/:phone",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 22080,
+    "feature": "blocked-numbers",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/calls",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 22126,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/calls/duplicate-audit",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 22165,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/calls",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 22235,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/followups",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 22951,
+    "feature": "followups",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/followups/load-rnr-disconnected",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 22990,
+    "feature": "followups",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/followups",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23170,
+    "feature": "followups",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/followups/:id",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23262,
+    "feature": "followups",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/breaks",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23270,
+    "feature": "breaks",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/breaks",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23337,
+    "feature": "breaks",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/rates",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23434,
+    "feature": "rates",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/rates",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23441,
+    "feature": "rates",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/rates",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23448,
+    "feature": "rates",
+    "migrated": false
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/rates",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23455,
+    "feature": "rates",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/incoming-2of5-gate/status",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23468,
+    "feature": "admin",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin/incoming-5of10-gate/status",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23468,
+    "feature": "admin",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin/incoming-2of5-gate/control",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23518,
+    "feature": "admin",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/customerdata/list",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23547,
+    "feature": "customerdata",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/customerdata",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23567,
+    "feature": "customerdata",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/stats",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23622,
+    "feature": "stats",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/recordings/:name",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23658,
+    "feature": "recordings",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/recordings",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23688,
+    "feature": "recordings",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/missed/today",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23695,
+    "feature": "missed",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/missed",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23720,
+    "feature": "missed",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/missed/:id/callback",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23759,
+    "feature": "missed",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/live-waiting-queue",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23766,
+    "feature": "live-waiting-queue",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/agent-languages",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23790,
+    "feature": "agent-languages",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/agent-languages",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23799,
+    "feature": "agent-languages",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/live-agents",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23929,
+    "feature": "live-agents",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/live-call-monitor",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 23936,
+    "feature": "live-call-monitor",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/calls/conference",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24027,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/calls/transfer",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24086,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/justdial/lead-receiver",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24390,
+    "feature": "justdial",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/justdial/lead_receiver",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24390,
+    "feature": "justdial",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/justdial-leads/lead-receiver",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24390,
+    "feature": "justdial-leads",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/justdial-leads/lead_receiver",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24390,
+    "feature": "justdial-leads",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/justdial/leads",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24528,
+    "feature": "justdial",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/lead-source-counts/today",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24550,
+    "feature": "lead-source-counts",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/auto-dial/source-coverage-report",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24647,
+    "feature": "auto-dial",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/justdial/leads/export-followups",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24668,
+    "feature": "justdial",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/justdial/leads/:leadId/queue-autodial",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24697,
+    "feature": "justdial",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/website-leads/form-receiver",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24961,
+    "feature": "website-leads",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/website-leads/form_receiver",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24961,
+    "feature": "website-leads",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/website-leads/form-push",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 24961,
+    "feature": "website-leads",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/website-leads/lead-receiver",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 25007,
+    "feature": "website-leads",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/seo-marketing/leads",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 26821,
+    "feature": "seo-marketing",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/seo-marketing/lead-to-bill/summary",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 26867,
+    "feature": "seo-marketing",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/seo-marketing/lead-to-bill/details",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 26896,
+    "feature": "seo-marketing",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/seo-marketing/google/status",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 26931,
+    "feature": "seo-marketing",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/warroom/marketing/spend",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 26950,
+    "feature": "warroom",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/warroom/marketing/spend/export",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 26971,
+    "feature": "warroom",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/seo-marketing/leads/export",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 26989,
+    "feature": "seo-marketing",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/website-leads",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27026,
+    "feature": "website-leads",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/website-leads/export-followups",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27075,
+    "feature": "website-leads",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/website-leads/:leadId/queue-autodial",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27110,
+    "feature": "website-leads",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/blog-leads",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27376,
+    "feature": "blog-leads",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/blog-leads/export-followups",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27413,
+    "feature": "blog-leads",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/internal/meta-leads/ingest",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27444,
+    "feature": "internal",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/meta-leads",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27507,
+    "feature": "meta-leads",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/meta-leads/export-followups",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27560,
+    "feature": "meta-leads",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/meta-leads/:leadId/queue-autodial",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27589,
+    "feature": "meta-leads",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/pledge-places",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27849,
+    "feature": "pledge-places",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/pledge-places",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27855,
+    "feature": "pledge-places",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/auto-dial/control",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27862,
+    "feature": "auto-dial",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/auto-dial/control",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27868,
+    "feature": "auto-dial",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/google-leads",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27910,
+    "feature": "google-leads",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/auto-dial/leads",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 27983,
+    "feature": "auto-dial",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/auto-dial/import",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 28140,
+    "feature": "auto-dial",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/auto-dial/agent/:agentId/current",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 28152,
+    "feature": "auto-dial",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/auto-dial/leads/:id",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 28765,
+    "feature": "auto-dial",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/status-followups",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29290,
+    "feature": "status-followups",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/status-followups/:id",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29312,
+    "feature": "status-followups",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/branches",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29405,
+    "feature": "branches",
+    "migrated": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/branches",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29422,
+    "feature": "branches",
+    "migrated": true
+  },
+  {
+    "method": "PUT",
+    "path": "/api/branches/:id",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29435,
+    "feature": "branches",
+    "migrated": true
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/branches/:id",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29451,
+    "feature": "branches",
+    "migrated": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/branches/search-nearby",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29459,
+    "feature": "branches",
+    "migrated": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/send-sms",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29684,
+    "feature": "send-sms",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/sms-log",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29741,
+    "feature": "sms-log",
+    "migrated": false
+  },
+  {
+    "method": "ALL",
+    "path": "/api/sms/dlr",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29751,
+    "feature": "sms",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/ui-refresh",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29834,
+    "feature": "ui-refresh",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/ui-refresh",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29838,
+    "feature": "ui-refresh",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin-broadcast",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29851,
+    "feature": "admin-broadcast",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/admin-broadcast/history",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29886,
+    "feature": "admin-broadcast",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/admin-broadcast",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29904,
+    "feature": "admin-broadcast",
+    "migrated": false
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/admin-broadcast",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29951,
+    "feature": "admin-broadcast",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/frontend-errors",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29973,
+    "feature": "frontend-errors",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/agents",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 29997,
+    "feature": "agents",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/agents/:id",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30003,
+    "feature": "agents",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/agent-sessions",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30089,
+    "feature": "agent-sessions",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/agents",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30116,
+    "feature": "agents",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/agents/:id",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30128,
+    "feature": "agents",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/agents/:id/call-slot/claim",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30353,
+    "feature": "agents",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/agents/:id/call-slot/release",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30392,
+    "feature": "agents",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/agents/:id/call-state/reset",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30425,
+    "feature": "agents",
+    "migrated": false
+  },
+  {
+    "method": "PUT",
+    "path": "/api/agents/:id/password",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30459,
+    "feature": "agents",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/login",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30479,
+    "feature": "login",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/branches/autocomplete",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30581,
+    "feature": "branches",
+    "migrated": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/places/autocomplete",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30596,
+    "feature": "places",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/places/geocode",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 30676,
+    "feature": "places",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/save-call-language",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31255,
+    "feature": "save-call-language",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/save-call-ivr",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31265,
+    "feature": "save-call-ivr",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/call-language/:callerId",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31343,
+    "feature": "call-language",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/call-ivr/:callerId",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31353,
+    "feature": "call-ivr",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/calls/phone",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31371,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/customer-profile",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31393,
+    "feature": "customer-profile",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/intake-forms",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31494,
+    "feature": "intake-forms",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/intake-workflow/pending",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31555,
+    "feature": "intake-workflow",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/intake-workflow",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31570,
+    "feature": "intake-workflow",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/intake-workflow",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31575,
+    "feature": "intake-workflow",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/intake-forms/phone",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31584,
+    "feature": "intake-forms",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/transfer-context",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31622,
+    "feature": "transfer-context",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/transfer-context",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31634,
+    "feature": "transfer-context",
+    "migrated": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/transfer-context/resolve",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31666,
+    "feature": "transfer-context",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/calls/customer-history",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31678,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/calls/date-details",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31700,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/calls/export",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31716,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/calls/report-summary",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 31858,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/calls/list",
+    "dynamic": false,
+    "file": "server.js",
+    "line": 32013,
+    "feature": "calls",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "`/api/md-dashboard/${path}`",
+    "dynamic": true,
+    "file": "md-reporting.mjs",
+    "line": 272,
+    "feature": "dynamic registration",
+    "migrated": false
+  },
+  {
+    "method": "GET",
+    "path": "/api/md-dashboard/export",
+    "dynamic": false,
+    "file": "md-reporting.mjs",
+    "line": 277,
+    "feature": "md-dashboard",
+    "migrated": false
+  }
+]
