@@ -1,0 +1,30 @@
+{
+  "verifiedAt": "2026-09-21T12:12:41.419Z",
+  "previewPort": 3101,
+  "delivery": "fake-only",
+  "providerContract": "kaleyra",
+  "scope": [
+    "POST /api/send-sms",
+    "GET /api/sms-log",
+    "ALL /api/sms/dlr"
+  ],
+  "checks": [
+    "Authentication on send/log",
+    "Stored Smler URL and unchanged approved text",
+    "Fake provider only",
+    "Submitted and delivered audit states",
+    "Idempotent DLR row update",
+    "DLR token removed from stored payload",
+    "Production database access denied",
+    "Preview restart persistence"
+  ],
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "productionDeployment": false
+}

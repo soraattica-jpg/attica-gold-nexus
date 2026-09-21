@@ -4,7 +4,7 @@ Generated from the hash-verified production snapshot; no server was imported or 
 
 122 route registrations (1 dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.
 
-Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, five core Reports routes, and two Billing/customer-data lookup routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History, Reports and Billing use synthetic SELECT-only data; preview Billing makes no external customer-data requests. Marketing reports and billing background sync remain pending. No production API path, payload, or global middleware was changed.
+Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, five core Reports routes, two Billing/customer-data lookup routes, and three Kaleyra SMS routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History, Reports and Billing use synthetic SELECT-only data; SMS uses isolated writable test records and a fake Kaleyra sink. No preview request calls Kaleyra or the external customer-data API. Marketing reports and billing background sync remain pending. No production API path, payload, or global middleware was changed.
 
 | Method | Path / expression | Original location | Migrated | Tested | Production |
 | --- | --- | --- | --- | --- | --- |
@@ -86,9 +86,9 @@ Six Branches, six Admin Messages/UI refresh routes, four Customer History routes
 | PUT | /api/branches/:id | server.js:29435 | MIGRATED (candidate) | TESTED | Legacy |
 | DELETE | /api/branches/:id | server.js:29451 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/branches/search-nearby | server.js:29459 | MIGRATED (candidate) | TESTED | Legacy |
-| POST | /api/send-sms | server.js:29684 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/sms-log | server.js:29741 | PENDING (candidate) | PENDING | Legacy |
-| ALL | /api/sms/dlr | server.js:29751 | PENDING (candidate) | PENDING | Legacy |
+| POST | /api/send-sms | server.js:29684 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/sms-log | server.js:29741 | MIGRATED (candidate) | TESTED | Legacy |
+| ALL | /api/sms/dlr | server.js:29751 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/ui-refresh | server.js:29834 | MIGRATED (candidate) | TESTED | Legacy |
 | POST | /api/ui-refresh | server.js:29838 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/admin-broadcast | server.js:29851 | MIGRATED (candidate) | TESTED | Legacy |

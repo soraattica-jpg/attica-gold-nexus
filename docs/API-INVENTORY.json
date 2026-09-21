@@ -1098,11 +1098,11 @@
     "file": "server.js",
     "line": 29684,
     "endLine": 29739,
-    "feature": "send-sms",
-    "migrated": false,
+    "feature": "sms-kaleyra",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -1112,11 +1112,11 @@
     "file": "server.js",
     "line": 29741,
     "endLine": 29747,
-    "feature": "sms-log",
-    "migrated": false,
+    "feature": "sms-kaleyra",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -1126,11 +1126,11 @@
     "file": "server.js",
     "line": 29751,
     "endLine": 29831,
-    "feature": "sms",
-    "migrated": false,
+    "feature": "sms-kaleyra",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {

@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
+import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
 
 const source = readBaseline();
 const ast = parseSource(source);
@@ -9,6 +9,7 @@ let adminRemoved = 0;
 let customerHistoryRemoved = 0;
 let reportCoreRemoved = 0;
 let billingRemoved = 0;
+let smsRemoved = 0;
 for (const statement of ast.body) {
   if ((statement.type === 'FunctionDeclaration' && adminHelperNames.has(statement.id.name))
     || (statement.type === 'VariableDeclaration' && adminConstantNames.has(statement.declarations[0]?.id.name))) {
@@ -107,6 +108,19 @@ const legacyBillingAuthorization=()=> (_req,_res,next)=>next();
     const mount=path==='/api/customerdata/list'?'mountBillingList':'mountBillingLookup';
     edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,billingController,legacyBillingAuthorization);`});billingRemoved++;
   }
+  if (registration && routeCall(registration) && smsPaths.has(registration.arguments[0]?.value)) {
+    const path=registration.arguments[0].value;
+    const setup=path==='/api/send-sms'?`const kaleyraProvider=createKaleyraClient({
+  apiDomain:KALEYRA_API_DOMAIN,sender:KALEYRA_SENDER,smsType:KALEYRA_SMS_TYPE,templateId:KALEYRA_TEMPLATE_ID,publicBaseUrl:KALEYRA_PUBLIC_BASE_URL,
+  readApiKey:readKaleyraApiKey,readSid:readKaleyraSid,readDlrToken:readKaleyraDlrToken,
+});
+const smsController=createSmsModule(createDatabaseSmsRepository(pool),kaleyraProvider,{logger:console}).controller;
+const legacySmsAuthorization=()=> (_req,_res,next)=>next();
+` : '';
+    const mount=path==='/api/send-sms'?'mountSendSms':path==='/api/sms-log'?'mountSmsLog':'mountSmsDelivery';
+    const auth=path==='/api/sms/dlr'?'':',legacySmsAuthorization';
+    edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,smsController${auth});`});smsRemoved++;
+  }
   if (statement.type === 'FunctionDeclaration' && statement.id.name === 'serializeBranchRow') {
     edits.push({ start: statement.start, end: statement.end, text: `const branchesController = createBranchesModule({
   db: pool,
@@ -123,12 +137,14 @@ const legacyBillingAuthorization=()=> (_req,_res,next)=>next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || edits.length !== 31) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || edits.length !== 34) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createBillingModule, mountBillingList, mountBillingLookup } from '../modules/billing/index.js';
+candidate = `import { createKaleyraClient } from '../integrations/sms/providers/kaleyra.client.js';
+import { createSmsModule, createDatabaseSmsRepository, mountSendSms, mountSmsLog, mountSmsDelivery } from '../modules/sms/index.js';
+import { createBillingModule, mountBillingList, mountBillingLookup } from '../modules/billing/index.js';
 import { createReportsModule, createDatabaseCallList, createDatabaseCallExport, mountDashboardStats, mountCallDateDetails, mountCallExport, mountReportSummary, mountCallList } from '../modules/reports/index.js';
 import { createCustomerHistoryModule, mountCustomerCallsByPhone, mountCustomerProfile, mountIntakeHistory, mountCustomerCallHistory } from '../modules/customer-history/index.js';
 import { createAdminMessagesModule, mountAdminMessages, mountIndividualMessage } from '../modules/admin-messages/index.js';
@@ -142,4 +158,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 23 routes mounted at original positions plus a message-only agent update interceptor.`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 26 routes mounted at original positions plus a message-only agent update interceptor.`);
