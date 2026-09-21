@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
+import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
 
 const source = readBaseline();
 const ast = parseSource(source);
@@ -11,6 +11,7 @@ let reportCoreRemoved = 0;
 let billingRemoved = 0;
 let smsRemoved = 0;
 let followupRemoved = 0;
+let intakeRemoved = 0;
 for (const statement of ast.body) {
   if ((statement.type === 'FunctionDeclaration' && adminHelperNames.has(statement.id.name))
     || (statement.type === 'VariableDeclaration' && adminConstantNames.has(statement.declarations[0]?.id.name))) {
@@ -139,6 +140,22 @@ const legacyFollowupsAuthorization=()=> (_req,_res,next)=>next();
     const mount=path==='/api/followups'?(method==='get'?'mountFollowupsList':'mountFollowupsSave'):path==='/api/followups/load-rnr-disconnected'?'mountFollowupsLoad':path==='/api/followups/:id'?'mountFollowupsUpdate':path==='/api/status-followups'?'mountStatusFollowupsList':'mountStatusFollowupsUpdate';
     edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,followupsController,legacyFollowupsAuthorization);`});followupRemoved++;
   }
+  if(registration&&routeCall(registration)&&intakePaths.has(registration.arguments[0]?.value)){
+    const path=registration.arguments[0].value,method=registration.callee.property.name;
+    const setup=path==='/api/intake-forms'?`const intakeController=createIntakeModule({
+  saveForm:(requestBody)=>withCallSaveLock(requestBody,(lockConnection)=>runTransactionWithRetries(async(connection)=>upsertIntakeFormRecord(connection,requestBody),{attempts:3,baseDelayMs:75,label:\`save intake form \${cleanCanonicalCallId(requestBody?.id,50)||cleanCanonicalIntakeToken(requestBody?.intakeToken)||'unknown'}\`,connection:lockConnection})),
+  syncIvr:saveCallIvrCache,customerIdForPhone:getCustomerUidForPhone,toIso:toApiIsoString,
+  readPending:intakeWorkflows.readPending,
+  pendingCall:async(workflow,agentId)=>{const [[agent]]=await pool.query('SELECT extension FROM attica_agents WHERE id=?',[agentId]);const endpoint=agent&&getAgentLiveEndpointState(agent.extension);if(!isAgentEndpointExplicitlyIdle(endpoint))return null;const [[call]]=await pool.query('SELECT * FROM attica_calls WHERE id=? AND agent_id=?',[workflow.callId,agentId]);return call?serializeCallRow(call):null;},
+  readWorkflow:intakeWorkflows.read,mutateWorkflow:intakeWorkflows.mutate,isRetryable:isRetryableMysqlTransactionError,
+  normalizeAgentId,cleanCallId:(value)=>cleanCanonicalCallId(value,120),cleanErrorCode:(value)=>cleanJustDialString(value,80),
+  onSyncError:(error)=>console.error('Failed to sync IVR cache after intake save:',error),
+}).controller;
+const legacyIntakeAuthorization=()=> (_req,_res,next)=>next();
+`:'';
+    const mount=path==='/api/intake-forms'?'mountIntakeFormSave':path==='/api/intake-workflow/pending'?'mountIntakePending':method==='get'?'mountIntakeRead':'mountIntakeMutate';
+    edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,intakeController,legacyIntakeAuthorization);`});intakeRemoved++;
+  }
   if (statement.type === 'FunctionDeclaration' && statement.id.name === 'serializeBranchRow') {
     edits.push({ start: statement.start, end: statement.end, text: `const branchesController = createBranchesModule({
   db: pool,
@@ -155,12 +172,13 @@ const legacyFollowupsAuthorization=()=> (_req,_res,next)=>next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || edits.length !== 40) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || edits.length !== 44) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createFollowupsModule, mountFollowupsList, mountFollowupsLoad, mountFollowupsSave, mountFollowupsUpdate, mountStatusFollowupsList, mountStatusFollowupsUpdate } from '../modules/followups/index.js';
+candidate = `import { createIntakeModule, mountIntakeFormSave, mountIntakePending, mountIntakeRead, mountIntakeMutate } from '../modules/intake/index.js';
+import { createFollowupsModule, mountFollowupsList, mountFollowupsLoad, mountFollowupsSave, mountFollowupsUpdate, mountStatusFollowupsList, mountStatusFollowupsUpdate } from '../modules/followups/index.js';
 import { createKaleyraClient } from '../integrations/sms/providers/kaleyra.client.js';
 import { createSmsModule, createDatabaseSmsRepository, mountSendSms, mountSmsLog, mountSmsDelivery } from '../modules/sms/index.js';
 import { createBillingModule, mountBillingList, mountBillingLookup } from '../modules/billing/index.js';
@@ -177,4 +195,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 32 routes mounted at original positions plus a message-only agent update interceptor.`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 36 routes mounted at original positions plus a message-only agent update interceptor.`);

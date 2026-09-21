@@ -6,6 +6,7 @@ import { createPreviewReports } from './config/preview-reports.js';
 import { createPreviewBilling } from './config/preview-billing.js';
 import { createPreviewSms } from './config/preview-sms.js';
 import { createPreviewFollowups } from './config/preview-followups.js';
+import { createPreviewIntake } from './config/preview-intake.js';
 import { createPreviewDatabase } from './config/preview-database.js';
 import { createFixtureDb, createFixtureGeocoding } from './tests/fixtures/staging.js';
 
@@ -22,7 +23,8 @@ const reports = dataMode === 'staging-database' ? await createPreviewReports() :
 const billing = dataMode === 'staging-database' ? await createPreviewBilling() : null;
 const sms = dataMode === 'staging-database' ? await createPreviewSms() : null;
 const followups = dataMode === 'staging-database' ? await createPreviewFollowups() : null;
-const app = createApp({ db, geocoding: createFixtureGeocoding(), staging: true, dataMode, adminMessages, customerHistory, reports, billing, sms, followups });
+const intake = dataMode === 'staging-database' ? await createPreviewIntake() : null;
+const app = createApp({ db, geocoding: createFixtureGeocoding(), staging: true, dataMode, adminMessages, customerHistory, reports, billing, sms, followups, intake });
 const server = app.listen(port, '127.0.0.1', () => {
   console.log(JSON.stringify({ event: 'startup', port, host: '127.0.0.1', dataMode, branchesReadOnly: true, customerHistoryReadOnly: true, messageDelivery: adminMessages ? 'test-only' : null }));
 });
@@ -35,6 +37,7 @@ server.on('error', async (error) => {
   await billing?.close();
   await sms?.close();
   await followups?.close();
+  await intake?.close();
   process.exitCode = 1;
 });
 let stopping = false;
@@ -51,6 +54,7 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
       await billing?.close();
       await sms?.close();
       await followups?.close();
+      await intake?.close();
       clearTimeout(deadline);
       process.exit(0);
     });

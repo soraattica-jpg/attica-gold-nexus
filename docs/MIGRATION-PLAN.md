@@ -52,9 +52,13 @@ Send, log and delivery-callback routes now use an SMS service plus an injected K
 
 Six follow-up and status-queue registrations are MIGRATED + TESTED. Exact source ranges and isolation details are in `docs/FOLLOWUPS.md` and `docs/FOLLOWUPS-VERIFICATION.json`. The preview uses a dedicated writable synthetic schema, starts no jobs and exposes no Asterisk/dialer adapter. Production candidate wiring retains the existing queue and auto-dial collaborators.
 
+## Completed: phase 8, Agent Intake routes preview
+
+Four intake form/workflow registrations are MIGRATED + TESTED. Candidate wiring retains the existing intake workflow engine and locked upsert behavior. Preview uses an isolated synthetic schema and verifies revision conflicts, explicit manual submission, no auto-submit deadline, pending restore and restart persistence. See `docs/INTAKE.md` and `docs/INTAKE-VERIFICATION.json`.
+
 ## Following feature slices
 
-1. Agent Intake, Agent Status.
+1. Agent Status.
 2. Outgoing Dialer, Incoming Calls, Asterisk / AMI / Queues last.
 
 Keep 2–4 low-risk modules isolated before considering promotion. Do not replace existing business rules with simplified sample functions. WATI remains a separate optional integration slice.
@@ -70,7 +74,7 @@ Keep 2–4 low-risk modules isolated before considering promotion. Do not replac
 
 ## Current production status
 
-Phases 1–7 make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Branches uses a SELECT-only snapshot, Admin Messages uses synthetic staging-only records and a test sink, Customer History, Reports and Billing use synthetic SELECT-only schemas, SMS uses an isolated writable test schema plus fake provider, and Follow-Ups uses an isolated synthetic schema with no dialer. SIP trunks, queue strategy and routing configuration are outside this change.
+Phases 1–8 make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Branches uses a SELECT-only snapshot, Admin Messages uses synthetic staging-only records and a test sink, Customer History, Reports and Billing use synthetic SELECT-only schemas, SMS uses an isolated writable test schema plus fake provider, Follow-Ups uses an isolated synthetic schema with no dialer, and Agent Intake uses an isolated schema without timers or telephony. SIP trunks, queue strategy and routing configuration are outside this change.
 
 ## Verification follow-up
 
