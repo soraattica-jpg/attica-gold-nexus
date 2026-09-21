@@ -1,18 +1,28 @@
 {
-  "verifiedAt": "2026-09-21T12:39:13Z",
+  "verifiedAt": "2026-09-21T12:56:46.187Z",
   "baselineServerRegistrations": 120,
   "registrationMigrated": 120,
-  "featureExtracted": 39,
-  "compatibilityRegisteredPaths": 81,
-  "compatibilityMountStatements": 75,
+  "controllerServiceExtracted": 45,
+  "featureOwnedLegacyHandlerPaths": 75,
+  "featureOwnedMountStatements": 69,
+  "genericCompatibilityMounts": 0,
+  "featureOwners": 7,
   "pendingRegistrations": 0,
   "tests": {
-    "contractHttpStructureLogging": 151,
+    "contractHttpStructureLogging": 155,
     "realMariaDb": 25,
     "candidateSyntax": "passed",
     "routeOrder": "passed",
-    "compatibilityHandlerArgumentHashes": "passed",
+    "legacyHandlerArgumentHashes": "passed",
+    "routeOwnershipContracts": "passed",
     "allFeaturePreviewVerifiers": "passed"
+  },
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
   },
   "services": {
     "production": "active-unchanged",

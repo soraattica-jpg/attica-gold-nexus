@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-09-21T12:50:47.107Z",
+  "verifiedAt": "2026-09-21T12:55:54.506Z",
   "scope": [
     "GET/PUT/POST/DELETE /api/rates",
     "GET/PUT /api/pledge-places"

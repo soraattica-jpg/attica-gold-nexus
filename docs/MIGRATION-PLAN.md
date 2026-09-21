@@ -66,7 +66,7 @@ Four metal-rate registrations and two pledge-place registrations are extracted i
 
 ## Completed: all remaining route registrations
 
-Every remaining `server.js` route declaration now registers through `modules/compatibility-routes`. The 69 compatibility mount statements cover 75 paths including aliases; original paths, middleware/handlers and order are byte-preserved and hash-tested. This finishes the requested registration migration without rewriting call-critical implementation logic. See `docs/REGISTRATION-COMPATIBILITY.md`.
+Every `server.js` route declaration now has an explicit feature owner. The 69 preserved-handler mount statements cover 75 paths including aliases across seven bounded feature modules; original paths, middleware/handlers and order are byte-preserved and hash-tested. The generic compatibility registry is removed. See `docs/FEATURE-ROUTE-OWNERSHIP.md`.
 
 ## Following feature slices
 
@@ -91,14 +91,14 @@ Phases 1–9 and the complete registration boundary make no production deploymen
 ## Verification follow-up
 
 - `docs/REVIEW-VERIFICATION.json`: seven read-only HTTP parity probes against production, normal restart, crash recovery, logging, deployed frontend scan and unchanged production file hashes.
-- `npm test`: 153 passing tests; `npm run test:database`: 25 passing real MariaDB tests. Registration tests verify all 120 paths, exact order, and byte-preserved compatibility handler arguments.
+- `npm test`: 155 passing tests; `npm run test:database`: 25 passing real MariaDB tests. Registration tests verify all 120 paths, exact order, feature ownership, method contracts and byte-preserved legacy handler arguments.
 - `deployment/attica-api-next-preview.service`: installed and enabled, `Restart=always`, structured journald logs, loopback binding, blocked access to production source, configuration and database files.
 - Credentials: `/etc/attica-next/preview-db.json` (SELECT-only snapshot) and `/etc/attica-next/contract-db.json` (writes only to the separate contract-test database). Both are root-only and outside Git. Branches receives only its read credential through systemd LoadCredential. The Admin Messages preview additionally reads ignored, root-only `.private/messages-preview-db.json` and `.private/message-actors.json`; its contract tests use `.private/messages-contract-db.json`. No production credentials are used by either adapter.
-- Branches and unrelated preview mutations reject POST/PUT/DELETE with 405 by design. Admin Messages test-authenticated mutations are allowed only against synthetic staging data. Compatibility of the underlying mutation handlers is tested directly with original handlers on the contract-test database. Do not describe the public preview's write-block policy as the production mutation contract.
+- Branches and unrelated preview mutations reject POST/PUT/DELETE with 405 by design. Admin Messages test-authenticated mutations are allowed only against synthetic staging data. Parity of the underlying mutation handlers is tested directly with original handlers on the contract-test database. Do not describe the public preview's write-block policy as the production mutation contract.
 - Production list ignores page/limit/sort/filter inputs and returns every active branch. Autocomplete uses `q` and LIMIT 15; nearby uses location or coordinates and LIMIT 10. This refactor preserves those behaviors rather than adding pagination.
 - Live geocoding services are not enabled on port 3101. Google/Photon order, failure fallbacks and request arguments are covered through injected test adapters; real provider/network availability is not certified by this verification.
 - Production source/service/proxy and call handling remain unchanged. No live mutation endpoints were exercised.
 
 ## Next feature-extraction track
 
-The registration goal is complete. Continue decomposing compatibility-mounted business handlers by risk: reference/admin data, marketing reports, billing, agent mutations, lead ingestion, follow-up/autodial operations, calls, and finally Asterisk/AMI/queues. Each extraction must replace one compatibility mount without changing its route contract or order.
+The registration goal is complete. Continue decomposing feature-owned preserved business handlers by risk: reference/admin data, marketing reports, billing, agent mutations, lead ingestion, follow-up/autodial operations, calls, and finally Asterisk/AMI/queues. Each deeper extraction must replace one preserved handler with a controller/service implementation without changing its route contract or order.

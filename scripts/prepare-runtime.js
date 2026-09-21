@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, agentStatusPaths, referenceDataPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
+import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, agentStatusPaths, referenceDataPaths, legacyRouteOwner, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
 
 const source = readBaseline();
 const ast = parseSource(source);
@@ -187,15 +187,22 @@ const legacyAgentStatusAuthorization=()=> (_req,_res,next)=>next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-const replacedRouteStarts=new Set(edits.filter(edit=>edit.end>edit.start).map(edit=>edit.start));let compatibilityRemoved=0;
-for(const statement of ast.body){const registration=statement.expression;if(!registration||!routeCall(registration)||replacedRouteStarts.has(statement.start))continue;const method=registration.callee.property.name,args=registration.arguments.map(argument=>source.slice(argument.start,argument.end)).join(','),individual=method==='put'&&registration.arguments[0]?.value==='/api/agents/:id'?'mountIndividualMessage(app,adminMessagesController,legacyMessageAuthorization);\n':'';edits.push({start:statement.start,end:statement.end,text:`${individual}mountCompatibilityRoute(app,'${method}',${args});`});compatibilityRemoved++;}
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || agentStatusRemoved !== 3 || referenceDataRemoved !== 6 || compatibilityRemoved !== 69 || edits.length !== 121) throw new Error(`Unexpected baseline layout; refusing an incomplete extraction.`);
+const replacedRouteStarts=new Set(edits.filter(edit=>edit.end>edit.start).map(edit=>edit.start));let ownedLegacyRemoved=0;
+const ownerMount={callRecords:'mountCallRecordsRoute',agentManagement:'mountAgentManagementRoute',callControl:'mountCallControlRoute',leadIngestion:'mountLeadIngestionRoute',marketing:'mountMarketingRoute',autoDial:'mountAutoDialRoute',locationIvr:'mountLocationIvrRoute'};
+for(const statement of ast.body){const registration=statement.expression;if(!registration||!routeCall(registration)||replacedRouteStarts.has(statement.start))continue;const method=registration.callee.property.name,pathArgument=registration.arguments[0],paths=pathArgument.type==='ArrayExpression'?pathArgument.elements.map(item=>item?.value):[pathArgument.value],owners=[...new Set(paths.map(legacyRouteOwner))];if(owners.length!==1||!owners[0]||!ownerMount[owners[0]])throw new Error(`Unowned remaining route at baseline line ${statement.loc.start.line}`);const args=registration.arguments.map(argument=>source.slice(argument.start,argument.end)).join(','),individual=method==='put'&&registration.arguments[0]?.value==='/api/agents/:id'?'mountIndividualMessage(app,adminMessagesController,legacyMessageAuthorization);\n':'';edits.push({start:statement.start,end:statement.end,text:`${individual}${ownerMount[owners[0]]}(app,'${method}',${args});`});ownedLegacyRemoved++;}
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || agentStatusRemoved !== 3 || referenceDataRemoved !== 6 || ownedLegacyRemoved !== 69 || edits.length !== 121) throw new Error(`Unexpected baseline layout; refusing an incomplete extraction.`);
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createReferenceDataModule, mountRatesList, mountRatesUpdate, mountRatesCreate, mountRatesDelete, mountPledgePlacesList, mountPledgePlacesUpdate } from '../modules/reference-data/index.js';
-import { mountCompatibilityRoute } from '../modules/compatibility-routes/index.js';
+candidate = `import { mountCallRecordsRoute } from '../modules/call-records/index.js';
+import { mountAgentManagementRoute } from '../modules/agent-management/index.js';
+import { mountCallControlRoute } from '../modules/call-control/index.js';
+import { mountLeadIngestionRoute } from '../modules/lead-ingestion/index.js';
+import { mountMarketingRoute } from '../modules/marketing/index.js';
+import { mountAutoDialRoute } from '../modules/auto-dial/index.js';
+import { mountLocationIvrRoute } from '../modules/location-ivr/index.js';
+import { createReferenceDataModule, mountRatesList, mountRatesUpdate, mountRatesCreate, mountRatesDelete, mountPledgePlacesList, mountPledgePlacesUpdate } from '../modules/reference-data/index.js';
 import { createAgentStatusModule, mountAgentsList, mountAgentDetail, mountAgentSessions } from '../modules/agent-status/index.js';
 import { createIntakeModule, mountIntakeFormSave, mountIntakePending, mountIntakeRead, mountIntakeMutate } from '../modules/intake/index.js';
 import { createFollowupsModule, mountFollowupsList, mountFollowupsLoad, mountFollowupsSave, mountFollowupsUpdate, mountStatusFollowupsList, mountStatusFollowupsUpdate } from '../modules/followups/index.js';
@@ -215,4 +222,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length-candidate.split('\n').length} fewer server.js lines; all 120 registrations modular (45 extracted; 69 compatibility mounts cover 75 paths including aliases).`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length-candidate.split('\n').length} fewer server.js lines; all 120 registrations have feature owners (45 service-extracted; 75 preserve legacy handlers behind feature route contracts).`);
