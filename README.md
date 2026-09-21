@@ -1,6 +1,6 @@
 # Attica API: incremental modularization
 
-Branches, Admin Messages, Customer History, core call Reports, Billing/customer-data lookup, Kaleyra SMS, Follow-Ups and Agent Intake routes are extracted and tested in `/root/attica-api-next`. Production remains `/root/attica-api`, port 3001, with its process and source unchanged. No production frontend points to the preview.
+Branches, Admin Messages, Customer History, core call Reports, Billing/customer-data lookup, Kaleyra SMS, Follow-Ups, Agent Intake, Agent Status reads, and Rates/Pledge Places are extracted and tested in `/root/attica-api-next`. Production remains `/root/attica-api`, port 3001, with its process and source unchanged. No production frontend points to the preview.
 
 ## Run and verify
 
@@ -17,11 +17,12 @@ node scripts/verify-customer-history-preview.mjs
 node scripts/verify-reports-preview.mjs
 node scripts/verify-billing-preview.mjs
 node scripts/verify-sms-preview.mjs
+node scripts/verify-reference-data-preview.mjs
 ```
 
 The verification scripts restart **only** `attica-api-next-preview.service`; `verify-preview.py` also deliberately crashes it to test automatic recovery and performs read-only production Branches comparisons. The message verifier sends only synthetic announcements to the isolated preview and clears them afterward. Never change its target to production.
 
-Current results: **151 contract/HTTP/structure/logging tests + 25 real MariaDB tests passed**. The generated candidate also passes syntax checks.
+Current results: **153 contract/HTTP/structure/logging tests + 25 real MariaDB tests passed**. The generated candidate also passes syntax checks.
 
 ## Preview service
 
@@ -35,6 +36,7 @@ Current results: **151 contract/HTTP/structure/logging tests + 25 real MariaDB t
 - Follow-Ups: list/load/save/update and status queue routes use an isolated synthetic database. No scheduler, auto-dialer or telephony action exists in preview.
 - Agent Intake: form save, pending restore, workflow read and explicit mutation use an isolated schema. Draft restart persistence is verified and there is no preview auto-submit timer or telephony adapter.
 - Agent Status reads: agent list, detail and session history are exposed from synthetic preview data without Asterisk/PJSIP access.
+- Reference data: rates and pledge-place CRUD is authenticated and process-local; restart restores fixtures and no database is accessed.
 - Test delivery: injected in-memory event sink, no production sockets or recipients. Authenticated test administrators can inspect `/__test/admin-message-events`; payloads contain invalidation metadata only. Persisted state supplies reconnect/next-intake displays.
 - Logs: `journalctl -u attica-api-next-preview.service`; correlated request/error records omit query values, bodies and SQL details.
 - Credentials: Branches uses root-only `/etc/attica-next` via systemd credentials. Messaging uses root-only, ignored `.private/` config/test actors. No credentials in Git or verification output.
@@ -47,6 +49,7 @@ The installed service's original description still says read-only; Branches is r
 ## Architecture and evidence
 
 - `modules/branches/`: six routes, controller, service and repository.
+- `modules/reference-data/`: four rate and two pledge-place routes with injected persistence.
 - `modules/admin-messages/`: six message/UI refresh routes plus message-only agent update interception, controller, service, repository, validation and tests.
 - `modules/customer-history/`: four customer lookup/profile/history routes with one shared identity resolver.
 - `modules/reports/`: five core call-report routes with full-dataset aggregation, server-side pagination and streaming CSV export.
@@ -54,12 +57,12 @@ The installed service's original description still says read-only; Branches is r
 - `modules/sms/` and `integrations/sms/providers/kaleyra.client.js`: SMS orchestration, audit persistence, DLR handling and the existing Kaleyra provider contract.
 - `events/test-admin-message-sink.js`: test transport and reconnect/display adapter, separate from business logic.
 - `config/preview-admin-messages.js` and `middleware/preview-message-auth.js`: isolated persistence and test-actor authorization.
-- `docs/API-INVENTORY.md`: all 120 `server.js` path registrations MIGRATED + TESTED at the registration boundary; 39 have full feature extraction and 81 retain byte-preserved handlers through the compatibility registry.
+- `docs/API-INVENTORY.md`: all 120 `server.js` path registrations MIGRATED + TESTED at the registration boundary; 45 have full feature extraction and 75 retain byte-preserved handlers through the compatibility registry.
 - `docs/MIGRATION-PLAN.md` and `docs/ADMIN-MESSAGES-NEXT.md`: exact original source locations, preserved behavior, remaining gates.
 - `docs/ADMIN-MESSAGES-VERIFICATION.json` and `docs/REVIEW-VERIFICATION.json`: running preview, restart, database boundary and production-isolation evidence. `docs/VERIFICATION.json` is historical first-phase evidence.
 
 Legacy Admin Messages uses polling/refresh tokens, not an existing feature WebSocket. The preview adds no live socket delivery. Legacy message routes also lack route-level authorization; production auth integration is an explicit pre-promotion gate. Concurrent broadcasts retain the original newest-record selection and nontransactional replacement; private-message expiry/audit does not exist in the baseline. See the detailed module report before promotion.
 
-This completes the route-registration migration, not the full business-logic decomposition. The generated candidate removes 1,408 lines from the original server, and startup remains unconditionally disabled. Compatibility-mounted handlers still contain legacy side effects and the candidate must never be launched. The private baseline and runtime are excluded from Git because the legacy source contains embedded credentials; `docs/BASELINE.json` records the hashes.
+This completes the route-registration migration, not the full business-logic decomposition. The generated candidate removes about 1,440 lines from the original server, and startup remains unconditionally disabled. Compatibility-mounted handlers still contain legacy side effects and the candidate must never be launched. The private baseline and runtime are excluded from Git because the legacy source contains embedded credentials; `docs/BASELINE.json` records the hashes.
 
-Further work is feature-by-feature extraction of the 81 compatibility-registered paths, with call handling, Asterisk, AMI and queues last. Kaleyra/SolutionsInfini remains the SMS provider; Smler URLs, Asterisk, SIP, queues and dialer behavior remain unchanged.
+Further work is feature-by-feature extraction of the 75 compatibility-registered paths, with call handling, Asterisk, AMI and queues last. Kaleyra/SolutionsInfini remains the SMS provider; Smler URLs, Asterisk, SIP, queues and dialer behavior remain unchanged.

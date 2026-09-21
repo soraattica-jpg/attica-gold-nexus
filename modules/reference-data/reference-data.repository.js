@@ -1,0 +1,1 @@
+export function createReferenceDataRepository(a){for(const k of['listRates','updateRate','createRate','deleteRate','listPledgePlaces','updatePledgePlaces'])if(typeof a?.[k]!=='function')throw new Error(`Reference data adapter missing: ${k}`);return a;}

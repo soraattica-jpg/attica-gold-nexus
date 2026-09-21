@@ -1,5 +1,5 @@
 import { writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, agentStatusPaths, parseSource, projectRoot, readBaseline, routeCall, walk } from './source-tools.js';
+import { branchPaths, adminPaths, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, agentStatusPaths, referenceDataPaths, parseSource, projectRoot, readBaseline, routeCall, walk } from './source-tools.js';
 
 const tested = process.argv.includes('--tested');
 const inventory = [];
@@ -13,7 +13,7 @@ for (const file of ['server.js', 'md-reporting.mjs', 'intake-workflow.mjs']) {
       const literal = path.type === 'Literal' && typeof path.value === 'string';
       const routePath = literal ? path.value : source.slice(path.start, path.end);
       const isAgentStatus = agentStatusPaths.has(routePath) && node.callee.property.name === 'get';
-      const extracted = file === 'server.js' && (branchPaths.has(routePath) || adminPaths.has(routePath) || customerHistoryPaths.has(routePath) || reportCorePaths.has(routePath) || billingPaths.has(routePath) || smsPaths.has(routePath) || followupPaths.has(routePath) || intakePaths.has(routePath) || isAgentStatus);
+      const extracted = file === 'server.js' && (branchPaths.has(routePath) || adminPaths.has(routePath) || customerHistoryPaths.has(routePath) || reportCorePaths.has(routePath) || billingPaths.has(routePath) || smsPaths.has(routePath) || followupPaths.has(routePath) || intakePaths.has(routePath) || isAgentStatus || referenceDataPaths.has(routePath));
       const compatibility = file === 'server.js' && !extracted;
       const migrated = extracted || compatibility;
       const individual = file === 'server.js' && routePath === '/api/agents/:id' && node.callee.property.name === 'put';
@@ -21,7 +21,7 @@ for (const file of ['server.js', 'md-reporting.mjs', 'intake-workflow.mjs']) {
       inventory.push({
         method: node.callee.property.name.toUpperCase(), path: routePath,
         dynamic: !literal, file, line: node.loc.start.line, endLine: node.loc.end.line,
-        feature: branchPaths.has(routePath) ? 'branches' : adminPaths.has(routePath) || individual ? 'admin-messages' : customerHistoryPaths.has(routePath) ? 'customer-history' : reportCorePaths.has(routePath) ? 'reports-core' : billingPaths.has(routePath) ? 'billing-lookup' : smsPaths.has(routePath) ? 'sms-kaleyra' : followupPaths.has(routePath) ? 'followups' : intakePaths.has(routePath) ? 'intake' : isAgentStatus ? 'agent-status' : (literal ? routePath.split('/').filter(Boolean)[1] || 'root' : 'dynamic registration'),
+        feature: branchPaths.has(routePath) ? 'branches' : adminPaths.has(routePath) || individual ? 'admin-messages' : customerHistoryPaths.has(routePath) ? 'customer-history' : reportCorePaths.has(routePath) ? 'reports-core' : billingPaths.has(routePath) ? 'billing-lookup' : smsPaths.has(routePath) ? 'sms-kaleyra' : followupPaths.has(routePath) ? 'followups' : intakePaths.has(routePath) ? 'intake' : isAgentStatus ? 'agent-status' : referenceDataPaths.has(routePath) ? 'reference-data' : (literal ? routePath.split('/').filter(Boolean)[1] || 'root' : 'dynamic registration'),
         migrated, registrationMigrated: migrated, businessLogicExtracted: extracted, compatibilityRegistration: compatibility,
         partialMigration: individual ? 'adminMessage-only payload; generic agent update remains unchanged' : null,
         migrationStatus: extracted ? 'MIGRATED' : compatibility ? 'MIGRATED (registration boundary)' : 'PENDING',

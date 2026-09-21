@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-09-21T12:50:47.107Z",
+  "scope": [
+    "GET/PUT/POST/DELETE /api/rates",
+    "GET/PUT /api/pledge-places"
+  ],
+  "checks": [
+    "Authentication",
+    "Rate lifecycle",
+    "Validation contract",
+    "Pledge-place lifecycle",
+    "Restart resets synthetic mutations",
+    "Production isolation"
+  ],
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "productionDeployment": false
+}

@@ -60,13 +60,17 @@ Four intake form/workflow registrations are MIGRATED + TESTED. Candidate wiring 
 
 Agent list, detail and session-history reads are MIGRATED + TESTED. Production candidate adapters preserve runtime/PJSIP overlays; preview returns synthetic status records and performs no Asterisk/PJSIP access. Agent mutations and call-state controls remain separate call-critical work. See `docs/AGENT-STATUS.md`.
 
+## Completed: phase 9B, Rates and pledge-place reference data
+
+Four metal-rate registrations and two pledge-place registrations are extracted into `modules/reference-data`. The preview uses authenticated, process-local synthetic state and proves restart reset without database access. Candidate wiring retains the original MariaDB and pledge-place adapters. See `docs/REFERENCE-DATA.md` and `docs/REFERENCE-DATA-VERIFICATION.json`.
+
 ## Completed: all remaining route registrations
 
-Every remaining `server.js` route declaration now registers through `modules/compatibility-routes`. The 75 compatibility mount statements cover 81 paths including aliases; original paths, middleware/handlers and order are byte-preserved and hash-tested. This finishes the requested registration migration without rewriting call-critical implementation logic. See `docs/REGISTRATION-COMPATIBILITY.md`.
+Every remaining `server.js` route declaration now registers through `modules/compatibility-routes`. The 69 compatibility mount statements cover 75 paths including aliases; original paths, middleware/handlers and order are byte-preserved and hash-tested. This finishes the requested registration migration without rewriting call-critical implementation logic. See `docs/REGISTRATION-COMPATIBILITY.md`.
 
 ## Following feature slices
 
-1. Agent Status.
+1. Low-risk reference and utility data.
 2. Outgoing Dialer, Incoming Calls, Asterisk / AMI / Queues last.
 
 Keep 2–4 low-risk modules isolated before considering promotion. Do not replace existing business rules with simplified sample functions. WATI remains a separate optional integration slice.
@@ -87,7 +91,7 @@ Phases 1–9 and the complete registration boundary make no production deploymen
 ## Verification follow-up
 
 - `docs/REVIEW-VERIFICATION.json`: seven read-only HTTP parity probes against production, normal restart, crash recovery, logging, deployed frontend scan and unchanged production file hashes.
-- `npm test`: 151 passing tests; `npm run test:database`: 25 passing real MariaDB tests. Registration tests verify all 120 paths, exact order, and byte-preserved compatibility handler arguments.
+- `npm test`: 153 passing tests; `npm run test:database`: 25 passing real MariaDB tests. Registration tests verify all 120 paths, exact order, and byte-preserved compatibility handler arguments.
 - `deployment/attica-api-next-preview.service`: installed and enabled, `Restart=always`, structured journald logs, loopback binding, blocked access to production source, configuration and database files.
 - Credentials: `/etc/attica-next/preview-db.json` (SELECT-only snapshot) and `/etc/attica-next/contract-db.json` (writes only to the separate contract-test database). Both are root-only and outside Git. Branches receives only its read credential through systemd LoadCredential. The Admin Messages preview additionally reads ignored, root-only `.private/messages-preview-db.json` and `.private/message-actors.json`; its contract tests use `.private/messages-contract-db.json`. No production credentials are used by either adapter.
 - Branches and unrelated preview mutations reject POST/PUT/DELETE with 405 by design. Admin Messages test-authenticated mutations are allowed only against synthetic staging data. Compatibility of the underlying mutation handlers is tested directly with original handlers on the contract-test database. Do not describe the public preview's write-block policy as the production mutation contract.

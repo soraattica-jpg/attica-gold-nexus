@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, agentStatusPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
+import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, agentStatusPaths, referenceDataPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
 
 const source = readBaseline();
 const ast = parseSource(source);
@@ -13,6 +13,7 @@ let smsRemoved = 0;
 let followupRemoved = 0;
 let intakeRemoved = 0;
 let agentStatusRemoved = 0;
+let referenceDataRemoved = 0;
 for (const statement of ast.body) {
   if ((statement.type === 'FunctionDeclaration' && adminHelperNames.has(statement.id.name))
     || (statement.type === 'VariableDeclaration' && adminConstantNames.has(statement.declarations[0]?.id.name))) {
@@ -166,6 +167,10 @@ const legacyAgentStatusAuthorization=()=> (_req,_res,next)=>next();
 `:'';
     const mount=path==='/api/agents'?'mountAgentsList':path==='/api/agents/:id'?'mountAgentDetail':'mountAgentSessions';edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,agentStatusController,legacyAgentStatusAuthorization);`});agentStatusRemoved++;
   }
+  if(registration&&routeCall(registration)&&referenceDataPaths.has(registration.arguments[0]?.value)){
+    const path=registration.arguments[0].value,method=registration.callee.property.name,setup=path==='/api/rates'&&method==='get'?`const referenceDataController=createReferenceDataModule({defaultPledgePlaces:DEFAULT_PLEDGE_PLACES,listRates:async()=>{const [rows]=await pool.query('SELECT label, value FROM attica_metal_rates');return rows;},updateRate:(value,label)=>pool.query('UPDATE attica_metal_rates SET value=? WHERE label=?',[value,label]),createRate:(label,value)=>pool.query('INSERT INTO attica_metal_rates (label,value) VALUES (?,?)',[label,value]),deleteRate:(label)=>pool.query('DELETE FROM attica_metal_rates WHERE label=?',[label]),listPledgePlaces:readPledgePlaces,updatePledgePlaces}).controller;const legacyReferenceDataAuthorization=()=> (_req,_res,next)=>next();\n`:'';
+    const mount=path==='/api/rates'?(method==='get'?'mountRatesList':method==='put'?'mountRatesUpdate':method==='post'?'mountRatesCreate':'mountRatesDelete'):(method==='get'?'mountPledgePlacesList':'mountPledgePlacesUpdate');edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,referenceDataController,legacyReferenceDataAuthorization);`});referenceDataRemoved++;
+  }
   if (statement.type === 'FunctionDeclaration' && statement.id.name === 'serializeBranchRow') {
     edits.push({ start: statement.start, end: statement.end, text: `const branchesController = createBranchesModule({
   db: pool,
@@ -184,12 +189,13 @@ const legacyAgentStatusAuthorization=()=> (_req,_res,next)=>next();
 }
 const replacedRouteStarts=new Set(edits.filter(edit=>edit.end>edit.start).map(edit=>edit.start));let compatibilityRemoved=0;
 for(const statement of ast.body){const registration=statement.expression;if(!registration||!routeCall(registration)||replacedRouteStarts.has(statement.start))continue;const method=registration.callee.property.name,args=registration.arguments.map(argument=>source.slice(argument.start,argument.end)).join(','),individual=method==='put'&&registration.arguments[0]?.value==='/api/agents/:id'?'mountIndividualMessage(app,adminMessagesController,legacyMessageAuthorization);\n':'';edits.push({start:statement.start,end:statement.end,text:`${individual}mountCompatibilityRoute(app,'${method}',${args});`});compatibilityRemoved++;}
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || agentStatusRemoved !== 3 || compatibilityRemoved !== 75 || edits.length !== 121) throw new Error(`Unexpected baseline layout; refusing an incomplete extraction (${removed},${adminRemoved},${customerHistoryRemoved},${reportCoreRemoved},${billingRemoved},${smsRemoved},${followupRemoved},${intakeRemoved},${agentStatusRemoved},${compatibilityRemoved}; edits=${edits.length}).`);
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || agentStatusRemoved !== 3 || referenceDataRemoved !== 6 || compatibilityRemoved !== 69 || edits.length !== 121) throw new Error(`Unexpected baseline layout; refusing an incomplete extraction.`);
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { mountCompatibilityRoute } from '../modules/compatibility-routes/index.js';
+candidate = `import { createReferenceDataModule, mountRatesList, mountRatesUpdate, mountRatesCreate, mountRatesDelete, mountPledgePlacesList, mountPledgePlacesUpdate } from '../modules/reference-data/index.js';
+import { mountCompatibilityRoute } from '../modules/compatibility-routes/index.js';
 import { createAgentStatusModule, mountAgentsList, mountAgentDetail, mountAgentSessions } from '../modules/agent-status/index.js';
 import { createIntakeModule, mountIntakeFormSave, mountIntakePending, mountIntakeRead, mountIntakeMutate } from '../modules/intake/index.js';
 import { createFollowupsModule, mountFollowupsList, mountFollowupsLoad, mountFollowupsSave, mountFollowupsUpdate, mountStatusFollowupsList, mountStatusFollowupsUpdate } from '../modules/followups/index.js';
@@ -209,4 +215,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length-candidate.split('\n').length} fewer server.js lines; all 120 server.js registrations cross a module boundary (39 extracted; 75 compatibility mounts cover 81 path registrations including aliases).`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length-candidate.split('\n').length} fewer server.js lines; all 120 registrations modular (45 extracted; 69 compatibility mounts cover 75 paths including aliases).`);

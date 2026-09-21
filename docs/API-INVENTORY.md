@@ -19,10 +19,10 @@ All 120 server.js path registrations now cross a module boundary in the isolated
 | PUT | /api/followups/:id | server.js:23262 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/breaks | server.js:23270 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
 | POST | /api/breaks | server.js:23337 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
-| GET | /api/rates | server.js:23434 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
-| PUT | /api/rates | server.js:23441 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
-| POST | /api/rates | server.js:23448 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
-| DELETE | /api/rates | server.js:23455 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
+| GET | /api/rates | server.js:23434 | MIGRATED (candidate) | TESTED | Legacy |
+| PUT | /api/rates | server.js:23441 | MIGRATED (candidate) | TESTED | Legacy |
+| POST | /api/rates | server.js:23448 | MIGRATED (candidate) | TESTED | Legacy |
+| DELETE | /api/rates | server.js:23455 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/admin/incoming-2of5-gate/status | server.js:23468 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
 | GET | /api/admin/incoming-5of10-gate/status | server.js:23468 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
 | POST | /api/admin/incoming-2of5-gate/control | server.js:23518 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
@@ -70,8 +70,8 @@ All 120 server.js path registrations now cross a module boundary in the isolated
 | GET | /api/meta-leads | server.js:27507 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
 | POST | /api/meta-leads/export-followups | server.js:27560 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
 | POST | /api/meta-leads/:leadId/queue-autodial | server.js:27589 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
-| GET | /api/pledge-places | server.js:27849 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
-| PUT | /api/pledge-places | server.js:27855 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
+| GET | /api/pledge-places | server.js:27849 | MIGRATED (candidate) | TESTED | Legacy |
+| PUT | /api/pledge-places | server.js:27855 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/auto-dial/control | server.js:27862 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
 | PUT | /api/auto-dial/control | server.js:27868 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
 | GET | /api/google-leads | server.js:27910 | MIGRATED (registration boundary) (candidate) | TESTED (handler preserved) | Legacy |
