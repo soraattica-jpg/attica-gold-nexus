@@ -12,6 +12,7 @@ export const customerHistoryPaths = new Set(['/api/calls/phone','/api/customer-p
 export const reportCorePaths = new Set(['/api/stats','/api/calls/date-details','/api/calls/export','/api/calls/report-summary','/api/calls/list']);
 export const billingPaths = new Set(['/api/customerdata/list','/api/customerdata']);
 export const smsPaths = new Set(['/api/send-sms','/api/sms-log','/api/sms/dlr']);
+export const followupPaths = new Set(['/api/followups','/api/followups/load-rnr-disconnected','/api/followups/:id','/api/status-followups','/api/status-followups/:id']);
 export function parseSource(source) {
   return parse(source, { ecmaVersion: 'latest', sourceType: 'module', locations: true });
 }

@@ -1,0 +1,30 @@
+{
+  "verifiedAt": "2026-09-21T12:23:26.073Z",
+  "previewPort": 3101,
+  "scope": [
+    "GET /api/followups",
+    "POST /api/followups/load-rnr-disconnected",
+    "POST /api/followups",
+    "PUT /api/followups/:id",
+    "GET /api/status-followups",
+    "PUT /api/status-followups/:id"
+  ],
+  "checks": [
+    "Authenticated contracts",
+    "MariaDB persistence",
+    "RNR/disconnected dry run",
+    "No telephony execution",
+    "Status queue lifecycle",
+    "Production database denied",
+    "Preview restart recovery"
+  ],
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "productionDeployment": false
+}

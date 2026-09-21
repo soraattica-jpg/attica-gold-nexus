@@ -48,9 +48,13 @@ Two read endpoints are extracted with their date-list and normalized-phone looku
 
 Send, log and delivery-callback routes now use an SMS service plus an injected Kaleyra provider client. Exact route locations, payload/audit behavior and fake-delivery isolation are in `docs/SMS-KALEYRA.md` and `docs/SMS-VERIFICATION.json`. Preview sends go only to an in-memory fake sink and isolated SMS schema; no provider credential or network request is used.
 
+## Completed: phase 7, Follow-Ups preview
+
+Six follow-up and status-queue registrations are MIGRATED + TESTED. Exact source ranges and isolation details are in `docs/FOLLOWUPS.md` and `docs/FOLLOWUPS-VERIFICATION.json`. The preview uses a dedicated writable synthetic schema, starts no jobs and exposes no Asterisk/dialer adapter. Production candidate wiring retains the existing queue and auto-dial collaborators.
+
 ## Following feature slices
 
-1. Follow-ups, Agent Intake, Agent Status.
+1. Agent Intake, Agent Status.
 2. Outgoing Dialer, Incoming Calls, Asterisk / AMI / Queues last.
 
 Keep 2–4 low-risk modules isolated before considering promotion. Do not replace existing business rules with simplified sample functions. WATI remains a separate optional integration slice.
@@ -66,12 +70,12 @@ Keep 2–4 low-risk modules isolated before considering promotion. Do not replac
 
 ## Current production status
 
-Phases 1–6 make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Branches uses a SELECT-only snapshot, Admin Messages uses synthetic staging-only records and a test sink, Customer History, Reports and Billing use synthetic SELECT-only schemas, and SMS uses an isolated writable test schema plus fake provider. SIP trunks, queue strategy and routing configuration are outside this change.
+Phases 1–7 make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Branches uses a SELECT-only snapshot, Admin Messages uses synthetic staging-only records and a test sink, Customer History, Reports and Billing use synthetic SELECT-only schemas, SMS uses an isolated writable test schema plus fake provider, and Follow-Ups uses an isolated synthetic schema with no dialer. SIP trunks, queue strategy and routing configuration are outside this change.
 
 ## Verification follow-up
 
 - `docs/REVIEW-VERIFICATION.json`: seven read-only HTTP parity probes against production, normal restart, crash recovery, logging, deployed frontend scan and unchanged production file hashes.
-- `npm test`: 139 passing tests; `npm run test:database`: 19 passing real MariaDB tests. SMS tests cover exact approved text/URL selection, provider payload, audit transitions, DLR normalization/idempotence and production isolation.
+- `npm test`: 143 passing tests; `npm run test:database`: 22 passing real MariaDB tests. Follow-Up tests cover contracts, persistence, RNR/disconnected dry-run behavior, restart recovery and production isolation.
 - `deployment/attica-api-next-preview.service`: installed and enabled, `Restart=always`, structured journald logs, loopback binding, blocked access to production source, configuration and database files.
 - Credentials: `/etc/attica-next/preview-db.json` (SELECT-only snapshot) and `/etc/attica-next/contract-db.json` (writes only to the separate contract-test database). Both are root-only and outside Git. Branches receives only its read credential through systemd LoadCredential. The Admin Messages preview additionally reads ignored, root-only `.private/messages-preview-db.json` and `.private/message-actors.json`; its contract tests use `.private/messages-contract-db.json`. No production credentials are used by either adapter.
 - Branches and unrelated preview mutations reject POST/PUT/DELETE with 405 by design. Admin Messages test-authenticated mutations are allowed only against synthetic staging data. Compatibility of the underlying mutation handlers is tested directly with original handlers on the contract-test database. Do not describe the public preview's write-block policy as the production mutation contract.
@@ -79,6 +83,6 @@ Phases 1–6 make no production deployment. The production service remains `/roo
 - Live geocoding services are not enabled on port 3101. Google/Photon order, failure fallbacks and request arguments are covered through injected test adapters; real provider/network availability is not certified by this verification.
 - Production source/service/proxy and call handling remain unchanged. No live mutation endpoints were exercised.
 
-## Next feature: Follow-ups
+## Next feature: Agent Intake
 
-Migrate follow-up reads and scheduling mutations with queue eligibility, due-time, RNR/disconnected inclusion, deduplication and agent ownership parity. Use isolated synthetic records and disable all dialer/job side effects in preview. Customer History remains a shared dependency for the later Agent Intake work.
+Migrate draft, final submission and reusable customer-prefill behavior while preserving idempotency, form lifecycle and the existing call identity contract. Customer History remains the shared lookup dependency. Keep hangup, hold, transfer and telephony state outside this slice until the call-control phases.

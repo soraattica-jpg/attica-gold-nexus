@@ -4,7 +4,7 @@ Generated from the hash-verified production snapshot; no server was imported or 
 
 122 route registrations (1 dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.
 
-Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, five core Reports routes, two Billing/customer-data lookup routes, and three Kaleyra SMS routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History, Reports and Billing use synthetic SELECT-only data; SMS uses isolated writable test records and a fake Kaleyra sink. No preview request calls Kaleyra or the external customer-data API. Marketing reports and billing background sync remain pending. No production API path, payload, or global middleware was changed.
+Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, five core Reports routes, two Billing/customer-data lookup routes, three Kaleyra SMS routes, and six Follow-Ups routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History, Reports and Billing use synthetic SELECT-only data; SMS and Follow-Ups use isolated writable test records with external delivery/dialing disabled. No preview request calls Kaleyra, Asterisk, the dialer or the external customer-data API. Marketing reports and billing background sync remain pending. No production API path, payload, or global middleware was changed.
 
 | Method | Path / expression | Original location | Migrated | Tested | Production |
 | --- | --- | --- | --- | --- | --- |
@@ -13,10 +13,10 @@ Six Branches, six Admin Messages/UI refresh routes, four Customer History routes
 | GET | /api/calls | server.js:22126 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/calls/duplicate-audit | server.js:22165 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/calls | server.js:22235 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/followups | server.js:22951 | PENDING (candidate) | PENDING | Legacy |
-| POST | /api/followups/load-rnr-disconnected | server.js:22990 | PENDING (candidate) | PENDING | Legacy |
-| POST | /api/followups | server.js:23170 | PENDING (candidate) | PENDING | Legacy |
-| PUT | /api/followups/:id | server.js:23262 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/followups | server.js:22951 | MIGRATED (candidate) | PENDING | Legacy |
+| POST | /api/followups/load-rnr-disconnected | server.js:22990 | MIGRATED (candidate) | PENDING | Legacy |
+| POST | /api/followups | server.js:23170 | MIGRATED (candidate) | PENDING | Legacy |
+| PUT | /api/followups/:id | server.js:23262 | MIGRATED (candidate) | PENDING | Legacy |
 | GET | /api/breaks | server.js:23270 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/breaks | server.js:23337 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/rates | server.js:23434 | PENDING (candidate) | PENDING | Legacy |
@@ -26,9 +26,9 @@ Six Branches, six Admin Messages/UI refresh routes, four Customer History routes
 | GET | /api/admin/incoming-2of5-gate/status | server.js:23468 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/admin/incoming-5of10-gate/status | server.js:23468 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/admin/incoming-2of5-gate/control | server.js:23518 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/customerdata/list | server.js:23547 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/customerdata | server.js:23567 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/stats | server.js:23622 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/customerdata/list | server.js:23547 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/customerdata | server.js:23567 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/stats | server.js:23622 | MIGRATED (candidate) | PENDING | Legacy |
 | GET | /api/recordings/:name | server.js:23658 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/recordings | server.js:23688 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/missed/today | server.js:23695 | PENDING (candidate) | PENDING | Legacy |
@@ -79,55 +79,55 @@ Six Branches, six Admin Messages/UI refresh routes, four Customer History routes
 | POST | /api/auto-dial/import | server.js:28140 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/auto-dial/agent/:agentId/current | server.js:28152 | PENDING (candidate) | PENDING | Legacy |
 | PUT | /api/auto-dial/leads/:id | server.js:28765 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/status-followups | server.js:29290 | PENDING (candidate) | PENDING | Legacy |
-| PUT | /api/status-followups/:id | server.js:29312 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/branches | server.js:29405 | MIGRATED (candidate) | TESTED | Legacy |
-| POST | /api/branches | server.js:29422 | MIGRATED (candidate) | TESTED | Legacy |
-| PUT | /api/branches/:id | server.js:29435 | MIGRATED (candidate) | TESTED | Legacy |
-| DELETE | /api/branches/:id | server.js:29451 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/branches/search-nearby | server.js:29459 | MIGRATED (candidate) | TESTED | Legacy |
-| POST | /api/send-sms | server.js:29684 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/sms-log | server.js:29741 | MIGRATED (candidate) | TESTED | Legacy |
-| ALL | /api/sms/dlr | server.js:29751 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/ui-refresh | server.js:29834 | MIGRATED (candidate) | TESTED | Legacy |
-| POST | /api/ui-refresh | server.js:29838 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/admin-broadcast | server.js:29851 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/admin-broadcast/history | server.js:29886 | MIGRATED (candidate) | TESTED | Legacy |
-| POST | /api/admin-broadcast | server.js:29904 | MIGRATED (candidate) | TESTED | Legacy |
-| DELETE | /api/admin-broadcast | server.js:29951 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/status-followups | server.js:29290 | MIGRATED (candidate) | PENDING | Legacy |
+| PUT | /api/status-followups/:id | server.js:29312 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/branches | server.js:29405 | MIGRATED (candidate) | PENDING | Legacy |
+| POST | /api/branches | server.js:29422 | MIGRATED (candidate) | PENDING | Legacy |
+| PUT | /api/branches/:id | server.js:29435 | MIGRATED (candidate) | PENDING | Legacy |
+| DELETE | /api/branches/:id | server.js:29451 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/branches/search-nearby | server.js:29459 | MIGRATED (candidate) | PENDING | Legacy |
+| POST | /api/send-sms | server.js:29684 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/sms-log | server.js:29741 | MIGRATED (candidate) | PENDING | Legacy |
+| ALL | /api/sms/dlr | server.js:29751 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/ui-refresh | server.js:29834 | MIGRATED (candidate) | PENDING | Legacy |
+| POST | /api/ui-refresh | server.js:29838 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/admin-broadcast | server.js:29851 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/admin-broadcast/history | server.js:29886 | MIGRATED (candidate) | PENDING | Legacy |
+| POST | /api/admin-broadcast | server.js:29904 | MIGRATED (candidate) | PENDING | Legacy |
+| DELETE | /api/admin-broadcast | server.js:29951 | MIGRATED (candidate) | PENDING | Legacy |
 | POST | /api/frontend-errors | server.js:29973 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/agents | server.js:29997 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/agents/:id | server.js:30003 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/agent-sessions | server.js:30089 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/agents | server.js:30116 | PENDING (candidate) | PENDING | Legacy |
-| PUT | /api/agents/:id | server.js:30128 | PARTIAL (message-only) (candidate) | TESTED (message-only) | Legacy |
+| PUT | /api/agents/:id | server.js:30128 | PARTIAL (message-only) (candidate) | PENDING | Legacy |
 | POST | /api/agents/:id/call-slot/claim | server.js:30353 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/agents/:id/call-slot/release | server.js:30392 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/agents/:id/call-state/reset | server.js:30425 | PENDING (candidate) | PENDING | Legacy |
 | PUT | /api/agents/:id/password | server.js:30459 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/login | server.js:30479 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/branches/autocomplete | server.js:30581 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/branches/autocomplete | server.js:30581 | MIGRATED (candidate) | PENDING | Legacy |
 | GET | /api/places/autocomplete | server.js:30596 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/places/geocode | server.js:30676 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/save-call-language | server.js:31255 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/save-call-ivr | server.js:31265 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/call-language/:callerId | server.js:31343 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/call-ivr/:callerId | server.js:31353 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/calls/phone | server.js:31371 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/customer-profile | server.js:31393 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/calls/phone | server.js:31371 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/customer-profile | server.js:31393 | MIGRATED (candidate) | PENDING | Legacy |
 | POST | /api/intake-forms | server.js:31494 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/intake-workflow/pending | server.js:31555 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/intake-workflow | server.js:31570 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/intake-workflow | server.js:31575 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/intake-forms/phone | server.js:31584 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/intake-forms/phone | server.js:31584 | MIGRATED (candidate) | PENDING | Legacy |
 | GET | /api/transfer-context | server.js:31622 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/transfer-context | server.js:31634 | PENDING (candidate) | PENDING | Legacy |
 | POST | /api/transfer-context/resolve | server.js:31666 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/calls/customer-history | server.js:31678 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/calls/date-details | server.js:31700 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/calls/export | server.js:31716 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/calls/report-summary | server.js:31858 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/calls/list | server.js:32013 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/calls/customer-history | server.js:31678 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/calls/date-details | server.js:31700 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/calls/export | server.js:31716 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/calls/report-summary | server.js:31858 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/calls/list | server.js:32013 | MIGRATED (candidate) | PENDING | Legacy |
 | GET | /api/md-dashboard/${path} | md-reporting.mjs:272 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/md-dashboard/export | md-reporting.mjs:277 | PENDING (candidate) | PENDING | Legacy |
 

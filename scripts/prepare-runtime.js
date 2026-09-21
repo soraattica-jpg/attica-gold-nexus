@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
+import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
 
 const source = readBaseline();
 const ast = parseSource(source);
@@ -10,6 +10,7 @@ let customerHistoryRemoved = 0;
 let reportCoreRemoved = 0;
 let billingRemoved = 0;
 let smsRemoved = 0;
+let followupRemoved = 0;
 for (const statement of ast.body) {
   if ((statement.type === 'FunctionDeclaration' && adminHelperNames.has(statement.id.name))
     || (statement.type === 'VariableDeclaration' && adminConstantNames.has(statement.declarations[0]?.id.name))) {
@@ -121,6 +122,23 @@ const legacySmsAuthorization=()=> (_req,_res,next)=>next();
     const auth=path==='/api/sms/dlr'?'':',legacySmsAuthorization';
     edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,smsController${auth});`});smsRemoved++;
   }
+  if (registration && routeCall(registration) && followupPaths.has(registration.arguments[0]?.value)) {
+    const path=registration.arguments[0].value,method=registration.callee.property.name;
+    const setup=path==='/api/followups'&&method==='get'?`const followupsController=createFollowupsModule({
+  maxLimit:MAX_DASHBOARD_FETCH_LIMIT,defaultLimit:DEFAULT_LIST_API_LIMIT,expire:expireOldFollowUps,
+  list:async(limit)=>{const [rows]=await pool.query(\`SELECT * FROM attica_followups WHERE IFNULL(is_active,1)=1 AND status IN ('Pending','Rescheduled') AND \${FOLLOWUP_NOT_DUPLICATE_REMOVED_SQL} AND (followup_expires_at IS NULL OR followup_expires_at >= \${MYSQL_QUEUE_NOW_SQL}) ORDER BY created_at DESC LIMIT ?\`,[limit]);return rows;},
+  serialize:(r)=>{const sourceMeta=deriveFollowUpSourceMetadata(r);return {id:r.id,customerName:r.customer_name,phone:r.phone,branch:r.branch,followUpAt:r.follow_up_at?r.follow_up_at.toISOString():'',status:r.status,agentId:r.agent_id,agentName:r.agent_name,notes:r.notes,outcome:r.outcome||'',updatedAt:r.updated_at?r.updated_at.toISOString():(r.created_at?r.created_at.toISOString():''),sourceCallId:sourceMeta.sourceCallId,sourceStatus:sourceMeta.sourceStatus};},
+  loadRnrDisconnected:(options)=>runWithDbLockRetry(\`loadRnrDisconnectedCallsToFollowUpQueue:manual:\${options.lookbackDays}\`,()=>loadRnrDisconnectedCallsToFollowUpQueue(options),5),
+  save:saveAgentFollowUp,update:updateAgentFollowUp,
+  statusList:async()=>{const [rows]=await pool.query(\`SELECT s.*,a.status AS auto_dial_status_current,a.scheduled_for AS auto_dial_scheduled_for,a.scheduled_agent_id AS auto_dial_scheduled_agent_id,a.scheduled_agent_name AS auto_dial_scheduled_agent_name,a.assigned_agent_id AS auto_dial_assigned_agent_id,a.assigned_agent_name AS auto_dial_assigned_agent_name,a.last_error AS auto_dial_last_error FROM attica_status_followup_queue s LEFT JOIN attica_auto_dial_leads a ON a.id=s.auto_dial_lead_id WHERE s.is_active=1 AND (s.followup_expires_at IS NULL OR s.followup_expires_at >= \${MYSQL_QUEUE_NOW_SQL}) ORDER BY s.updated_at DESC LIMIT 500\`);return rows;},
+  serializeStatus:serializeStatusFollowUpQueueRow,
+  statusUpdate:async(queueId,body)=>{const nextStatus=normalizeFormStatusLabel(body.formStatus);if(!queueId)return {status:400,payload:{error:'Queue id required'}};const [rows]=await pool.query('SELECT * FROM attica_status_followup_queue WHERE id=? LIMIT 1',[queueId]),row=rows[0];if(!row)return {status:404,payload:{error:'Status follow-up not found'}};if(row.source_call_id&&nextStatus)await pool.query(\`UPDATE attica_calls SET form_status=?,callback_status=?,follow_up_flag=? WHERE id=?\`,[nextStatus,shouldQueueFormStatus(nextStatus)?'Pending':nextStatus,shouldQueueFormStatus(nextStatus)?1:0,row.source_call_id]);if(shouldQueueFormStatus(nextStatus)){await pool.query(\`UPDATE attica_auto_dial_leads SET lead_type=?,is_active=1,status='pending',assigned_agent_id=NULL,assigned_agent_name=NULL,assigned_at=NULL,dial_started_at=NULL,completed_at=NULL,queue_exit_reason=NULL,retry_allowed=1,open_dedupe_number=normalized_number,updated_at=NOW(),last_error='' WHERE id=?\`,[nextStatus,queueId]);await syncAutoDialLeadStatusToSources(queueId,'pending');await pool.query(\`UPDATE attica_followups SET status='Pending',is_active=1,outcome=?,updated_at=NOW() WHERE id=?\`,[\`Status follow-up: \${nextStatus}\`,row.follow_up_id]);await pool.query(\`UPDATE attica_status_followup_queue SET form_status=?,is_active=1,updated_at=NOW() WHERE id=?\`,[nextStatus,queueId]);void triggerAutoDialAssignment('event');return {status:200,payload:{success:true,active:true}};}const result=await closeStatusFollowUp(normalizeAutoDialPhone(row.phone),nextStatus);return {status:200,payload:{success:true,active:false,result}};},
+}).controller;
+const legacyFollowupsAuthorization=()=> (_req,_res,next)=>next();
+`:'';
+    const mount=path==='/api/followups'?(method==='get'?'mountFollowupsList':'mountFollowupsSave'):path==='/api/followups/load-rnr-disconnected'?'mountFollowupsLoad':path==='/api/followups/:id'?'mountFollowupsUpdate':path==='/api/status-followups'?'mountStatusFollowupsList':'mountStatusFollowupsUpdate';
+    edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,followupsController,legacyFollowupsAuthorization);`});followupRemoved++;
+  }
   if (statement.type === 'FunctionDeclaration' && statement.id.name === 'serializeBranchRow') {
     edits.push({ start: statement.start, end: statement.end, text: `const branchesController = createBranchesModule({
   db: pool,
@@ -137,12 +155,13 @@ const legacySmsAuthorization=()=> (_req,_res,next)=>next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || edits.length !== 34) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || edits.length !== 40) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createKaleyraClient } from '../integrations/sms/providers/kaleyra.client.js';
+candidate = `import { createFollowupsModule, mountFollowupsList, mountFollowupsLoad, mountFollowupsSave, mountFollowupsUpdate, mountStatusFollowupsList, mountStatusFollowupsUpdate } from '../modules/followups/index.js';
+import { createKaleyraClient } from '../integrations/sms/providers/kaleyra.client.js';
 import { createSmsModule, createDatabaseSmsRepository, mountSendSms, mountSmsLog, mountSmsDelivery } from '../modules/sms/index.js';
 import { createBillingModule, mountBillingList, mountBillingLookup } from '../modules/billing/index.js';
 import { createReportsModule, createDatabaseCallList, createDatabaseCallExport, mountDashboardStats, mountCallDateDetails, mountCallExport, mountReportSummary, mountCallList } from '../modules/reports/index.js';
@@ -158,4 +177,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 26 routes mounted at original positions plus a message-only agent update interceptor.`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 32 routes mounted at original positions plus a message-only agent update interceptor.`);

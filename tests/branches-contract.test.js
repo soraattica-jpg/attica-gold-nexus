@@ -6,7 +6,7 @@ import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
 import { createApp } from '../app.js';
 import { createBranchesModule, mountBranchesCatalog, mountBranchesAutocomplete } from '../modules/branches/index.js';
-import { parseSource, readBaseline, branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, routeCall, projectRoot } from '../scripts/source-tools.js';
+import { parseSource, readBaseline, branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, routeCall, projectRoot } from '../scripts/source-tools.js';
 import { createFixtureDb, createFixtureGeocoding } from './fixtures/staging.js';
 
 const baseline = readBaseline();
@@ -133,11 +133,11 @@ test('all unmigrated candidate statements match production baseline exactly', ()
   const candidate = readFileSync(projectRoot + 'runtime/server.js', 'utf8');
   const skipBaseline = (node) => (node.type === 'FunctionDeclaration' && (node.id.name === 'serializeBranchRow' || adminHelperNames.has(node.id.name)))
     || (node.type === 'VariableDeclaration' && adminConstantNames.has(node.declarations[0]?.id.name))
-    || (node.expression && routeCall(node.expression) && (branchPaths.has(node.expression.arguments[0]?.value) || adminPaths.has(node.expression.arguments[0]?.value) || customerHistoryPaths.has(node.expression.arguments[0]?.value) || reportCorePaths.has(node.expression.arguments[0]?.value) || billingPaths.has(node.expression.arguments[0]?.value) || smsPaths.has(node.expression.arguments[0]?.value)));
-  const skipCandidate = (node) => (node.type === 'ImportDeclaration' && ['../modules/branches/index.js', '../modules/admin-messages/index.js', '../modules/customer-history/index.js', '../modules/reports/index.js', '../modules/billing/index.js', '../modules/sms/index.js', '../integrations/sms/providers/kaleyra.client.js'].includes(node.source.value))
+    || (node.expression && routeCall(node.expression) && (branchPaths.has(node.expression.arguments[0]?.value) || adminPaths.has(node.expression.arguments[0]?.value) || customerHistoryPaths.has(node.expression.arguments[0]?.value) || reportCorePaths.has(node.expression.arguments[0]?.value) || billingPaths.has(node.expression.arguments[0]?.value) || smsPaths.has(node.expression.arguments[0]?.value) || followupPaths.has(node.expression.arguments[0]?.value)));
+  const skipCandidate = (node) => (node.type === 'ImportDeclaration' && ['../modules/branches/index.js', '../modules/admin-messages/index.js', '../modules/customer-history/index.js', '../modules/reports/index.js', '../modules/billing/index.js', '../modules/sms/index.js', '../modules/followups/index.js', '../integrations/sms/providers/kaleyra.client.js'].includes(node.source.value))
     || (node.type === 'ThrowStatement')
-    || (node.type === 'VariableDeclaration' && ['branchesController', 'adminMessagesController', 'legacyMessageAuthorization', 'customerHistoryController', 'legacyCustomerHistoryAuthorization', 'reportsController', 'legacyReportsAuthorization', 'billingController', 'legacyBillingAuthorization', 'kaleyraProvider', 'smsController', 'legacySmsAuthorization'].includes(node.declarations[0]?.id.name))
-    || (node.expression?.type === 'CallExpression' && ['mountBranchesCatalog', 'mountBranchesAutocomplete', 'mountAdminMessages', 'mountIndividualMessage', 'mountCustomerCallsByPhone', 'mountCustomerProfile', 'mountIntakeHistory', 'mountCustomerCallHistory', 'mountDashboardStats', 'mountCallDateDetails', 'mountCallExport', 'mountReportSummary', 'mountCallList', 'mountBillingList', 'mountBillingLookup', 'mountSendSms', 'mountSmsLog', 'mountSmsDelivery'].includes(node.expression.callee.name));
+    || (node.type === 'VariableDeclaration' && ['branchesController', 'adminMessagesController', 'legacyMessageAuthorization', 'customerHistoryController', 'legacyCustomerHistoryAuthorization', 'reportsController', 'legacyReportsAuthorization', 'billingController', 'legacyBillingAuthorization', 'kaleyraProvider', 'smsController', 'legacySmsAuthorization', 'followupsController', 'legacyFollowupsAuthorization'].includes(node.declarations[0]?.id.name))
+    || (node.expression?.type === 'CallExpression' && ['mountBranchesCatalog', 'mountBranchesAutocomplete', 'mountAdminMessages', 'mountIndividualMessage', 'mountCustomerCallsByPhone', 'mountCustomerProfile', 'mountIntakeHistory', 'mountCustomerCallHistory', 'mountDashboardStats', 'mountCallDateDetails', 'mountCallExport', 'mountReportSummary', 'mountCallList', 'mountBillingList', 'mountBillingLookup', 'mountSendSms', 'mountSmsLog', 'mountSmsDelivery', 'mountFollowupsList', 'mountFollowupsLoad', 'mountFollowupsSave', 'mountFollowupsUpdate', 'mountStatusFollowupsList', 'mountStatusFollowupsUpdate'].includes(node.expression.callee.name));
   const old = ast.body.filter((n) => !skipBaseline(n)).map((n) => baseline.slice(n.start, n.end));
   const next = parseSource(candidate).body.filter((n) => !skipCandidate(n)).map((n) => candidate.slice(n.start, n.end));
   // Compare hashes so a failure cannot print legacy embedded credentials.
@@ -173,6 +173,12 @@ test('full candidate preserves endpoint registration order', () => {
     if (expression.callee?.name === 'mountSendSms') actual.push("post('/api/send-sms'");
     if (expression.callee?.name === 'mountSmsLog') actual.push("get('/api/sms-log'");
     if (expression.callee?.name === 'mountSmsDelivery') actual.push("all('/api/sms/dlr'");
+    if (expression.callee?.name === 'mountFollowupsList') actual.push("get('/api/followups'");
+    if (expression.callee?.name === 'mountFollowupsLoad') actual.push("post('/api/followups/load-rnr-disconnected'");
+    if (expression.callee?.name === 'mountFollowupsSave') actual.push("post('/api/followups'");
+    if (expression.callee?.name === 'mountFollowupsUpdate') actual.push("put('/api/followups/:id'");
+    if (expression.callee?.name === 'mountStatusFollowupsList') actual.push("get('/api/status-followups'");
+    if (expression.callee?.name === 'mountStatusFollowupsUpdate') actual.push("put('/api/status-followups/:id'");
   }
   assert.deepEqual(actual, expected);
 });
