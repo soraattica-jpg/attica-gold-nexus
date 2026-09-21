@@ -4,7 +4,7 @@ Generated from the hash-verified production snapshot; no server was imported or 
 
 122 route registrations (1 dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.
 
-Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, five core Reports routes, two Billing/customer-data lookup routes, three Kaleyra SMS routes, six Follow-Ups routes and four Agent Intake routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Preview data is isolated; external delivery, dialing, Asterisk and auto-submit jobs are disabled. No preview request calls Kaleyra, Asterisk, the dialer or the external customer-data API. Marketing reports and billing background sync remain pending. No production API path, payload, or global middleware was changed.
+Thirty-nine registrations are migrated in the isolated candidate: Branches, Admin Messages, Customer History, core Reports, Billing lookup, Kaleyra SMS, Follow-Ups, Agent Intake, and three Agent Status reads. PUT /api/agents/:id is extracted only for adminMessage-only payloads; other agent mutations remain legacy. Production continues using server.js. Preview data is isolated; external delivery, dialing, Asterisk, PJSIP and auto-submit jobs are disabled. No production API path, payload, or global middleware was changed.
 
 | Method | Path / expression | Original location | Migrated | Tested | Production |
 | --- | --- | --- | --- | --- | --- |
@@ -96,9 +96,9 @@ Six Branches, six Admin Messages/UI refresh routes, four Customer History routes
 | POST | /api/admin-broadcast | server.js:29904 | MIGRATED (candidate) | PENDING | Legacy |
 | DELETE | /api/admin-broadcast | server.js:29951 | MIGRATED (candidate) | PENDING | Legacy |
 | POST | /api/frontend-errors | server.js:29973 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/agents | server.js:29997 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/agents/:id | server.js:30003 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/agent-sessions | server.js:30089 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/agents | server.js:29997 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/agents/:id | server.js:30003 | MIGRATED (candidate) | PENDING | Legacy |
+| GET | /api/agent-sessions | server.js:30089 | MIGRATED (candidate) | PENDING | Legacy |
 | POST | /api/agents | server.js:30116 | PENDING (candidate) | PENDING | Legacy |
 | PUT | /api/agents/:id | server.js:30128 | PARTIAL (message-only) (candidate) | PENDING | Legacy |
 | POST | /api/agents/:id/call-slot/claim | server.js:30353 | PENDING (candidate) | PENDING | Legacy |

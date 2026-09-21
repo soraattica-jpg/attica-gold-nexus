@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
+import { branchPaths, adminPaths, adminHelperNames, adminConstantNames, customerHistoryPaths, reportCorePaths, billingPaths, smsPaths, followupPaths, intakePaths, agentStatusPaths, parseSource, projectRoot, readBaseline, routeCall } from './source-tools.js';
 
 const source = readBaseline();
 const ast = parseSource(source);
@@ -12,6 +12,7 @@ let billingRemoved = 0;
 let smsRemoved = 0;
 let followupRemoved = 0;
 let intakeRemoved = 0;
+let agentStatusRemoved = 0;
 for (const statement of ast.body) {
   if ((statement.type === 'FunctionDeclaration' && adminHelperNames.has(statement.id.name))
     || (statement.type === 'VariableDeclaration' && adminConstantNames.has(statement.declarations[0]?.id.name))) {
@@ -156,6 +157,18 @@ const legacyIntakeAuthorization=()=> (_req,_res,next)=>next();
     const mount=path==='/api/intake-forms'?'mountIntakeFormSave':path==='/api/intake-workflow/pending'?'mountIntakePending':method==='get'?'mountIntakeRead':'mountIntakeMutate';
     edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,intakeController,legacyIntakeAuthorization);`});intakeRemoved++;
   }
+  if(registration&&routeCall(registration)&&agentStatusPaths.has(registration.arguments[0]?.value)&&registration.callee.property.name==='get'){
+    const path=registration.arguments[0].value;
+    const setup=path==='/api/agents'?`const agentStatusController=createAgentStatusModule({
+  normalizeAgentId,
+  list:loadAgentRecordsForEndpoint,
+  detail:async(agentId)=>{if(!agentId)return{status:400,payload:{error:'Agent id required'}};const [[agentRow]]=await pool.query(\`SELECT id,name,email,role,extension,shift,status,admin_message,is_logged_in,login_time,logout_time,last_login_at,last_logout_at,active_duration,break_time,follow_up_started_at,follow_up_duration,incoming_access,outgoing_access,follow_up_access,active_call_id,active_call_direction,active_call_started_at,call_state_updated_at,last_call_ended_at,last_login_ip,last_public_login_ip,last_workstation_ip,last_workstation_ip_seen_at,last_login_device_id FROM attica_agents WHERE id=? LIMIT 1\`,[agentId]);if(!agentRow?.id)return{status:404,payload:{error:'Agent not found'}};const [breakRows]=await pool.query(\`SELECT agent_id,break_type,started_at,created_at FROM attica_break_logs WHERE agent_id=? AND end_time IS NULL\`,[agentId]);let liveChannels=[];try{liveChannels=readAsteriskConciseChannels();}catch{}const pjsipContactIpByExtension=parsePjsipContactIpByExtension(readPjsipContactOutput());const [agent]=applyRuntimeAgentStatus([agentRow],breakRows,{liveChannels}).map(entry=>serializeAgentRecord({...entry,sip_contact_ip:pjsipContactIpByExtension.get(normalizeSipExtension(entry.extension))||''}));return{status:200,payload:attachCurrentUiRefreshStateToAgents([agent])[0]};},
+  sessions:async(query)=>{const limit=Math.max(1,Math.min(1000,parsePositiveInteger(query.limit,300))),rawDays=String(query.days||'').trim(),days=rawDays?Math.max(0,Math.min(365,parsePositiveInteger(rawDays,14))):0,where=[],params=[];if(days>0){where.push('COALESCE(login_at,logout_at,created_at,updated_at)>=DATE_SUB(NOW(),INTERVAL ? DAY)');params.push(days);}const [rows]=await pool.query(\`SELECT id,agent_id,agent_name,role,extension,login_at,logout_at,login_time,logout_time,login_ip,public_login_ip,workstation_ip,workstation_ip_seen_at,device_id,active_duration,break_time,created_at,updated_at FROM attica_agent_sessions \${where.length?\`WHERE \${where.join(' AND ')}\`:''} ORDER BY login_at DESC,id DESC LIMIT ?\`,[...params,limit]);return rows.map(serializeAgentSessionRecord);},
+}).controller;
+const legacyAgentStatusAuthorization=()=> (_req,_res,next)=>next();
+`:'';
+    const mount=path==='/api/agents'?'mountAgentsList':path==='/api/agents/:id'?'mountAgentDetail':'mountAgentSessions';edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,agentStatusController,legacyAgentStatusAuthorization);`});agentStatusRemoved++;
+  }
   if (statement.type === 'FunctionDeclaration' && statement.id.name === 'serializeBranchRow') {
     edits.push({ start: statement.start, end: statement.end, text: `const branchesController = createBranchesModule({
   db: pool,
@@ -172,12 +185,13 @@ const legacyIntakeAuthorization=()=> (_req,_res,next)=>next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || edits.length !== 44) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || billingRemoved !== 2 || smsRemoved !== 3 || followupRemoved !== 6 || intakeRemoved !== 4 || agentStatusRemoved !== 3 || edits.length !== 47) throw new Error(`Unexpected baseline layout; refusing an incomplete extraction (${removed},${adminRemoved},${customerHistoryRemoved},${reportCoreRemoved},${billingRemoved},${smsRemoved},${followupRemoved},${intakeRemoved},${agentStatusRemoved}; edits=${edits.length}).`);
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createIntakeModule, mountIntakeFormSave, mountIntakePending, mountIntakeRead, mountIntakeMutate } from '../modules/intake/index.js';
+candidate = `import { createAgentStatusModule, mountAgentsList, mountAgentDetail, mountAgentSessions } from '../modules/agent-status/index.js';
+import { createIntakeModule, mountIntakeFormSave, mountIntakePending, mountIntakeRead, mountIntakeMutate } from '../modules/intake/index.js';
 import { createFollowupsModule, mountFollowupsList, mountFollowupsLoad, mountFollowupsSave, mountFollowupsUpdate, mountStatusFollowupsList, mountStatusFollowupsUpdate } from '../modules/followups/index.js';
 import { createKaleyraClient } from '../integrations/sms/providers/kaleyra.client.js';
 import { createSmsModule, createDatabaseSmsRepository, mountSendSms, mountSmsLog, mountSmsDelivery } from '../modules/sms/index.js';
@@ -195,4 +209,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 36 routes mounted at original positions plus a message-only agent update interceptor.`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 39 routes mounted at original positions plus a message-only agent update interceptor.`);

@@ -14,6 +14,7 @@ export const billingPaths = new Set(['/api/customerdata/list','/api/customerdata
 export const smsPaths = new Set(['/api/send-sms','/api/sms-log','/api/sms/dlr']);
 export const followupPaths = new Set(['/api/followups','/api/followups/load-rnr-disconnected','/api/followups/:id','/api/status-followups','/api/status-followups/:id']);
 export const intakePaths = new Set(['/api/intake-forms','/api/intake-workflow/pending','/api/intake-workflow']);
+export const agentStatusPaths = new Set(['/api/agents','/api/agents/:id','/api/agent-sessions']);
 export function parseSource(source) {
   return parse(source, { ecmaVersion: 'latest', sourceType: 'module', locations: true });
 }

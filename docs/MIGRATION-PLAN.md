@@ -56,6 +56,10 @@ Six follow-up and status-queue registrations are MIGRATED + TESTED. Exact source
 
 Four intake form/workflow registrations are MIGRATED + TESTED. Candidate wiring retains the existing intake workflow engine and locked upsert behavior. Preview uses an isolated synthetic schema and verifies revision conflicts, explicit manual submission, no auto-submit deadline, pending restore and restart persistence. See `docs/INTAKE.md` and `docs/INTAKE-VERIFICATION.json`.
 
+## Completed: phase 9A, Agent Status reads
+
+Agent list, detail and session-history reads are MIGRATED + TESTED. Production candidate adapters preserve runtime/PJSIP overlays; preview returns synthetic status records and performs no Asterisk/PJSIP access. Agent mutations and call-state controls remain separate call-critical work. See `docs/AGENT-STATUS.md`.
+
 ## Following feature slices
 
 1. Agent Status.
