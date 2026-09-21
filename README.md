@@ -1,6 +1,6 @@
 # Attica API: incremental modularization
 
-Branches, Admin Messages and Customer History are extracted and tested in `/root/attica-api-next`. Production remains `/root/attica-api`, port 3001, with its process and source unchanged. No production frontend points to the preview.
+Branches, Admin Messages, Customer History and core call Reports are extracted and tested in `/root/attica-api-next`. Production remains `/root/attica-api`, port 3001, with its process and source unchanged. No production frontend points to the preview.
 
 ## Run and verify
 
@@ -19,7 +19,7 @@ node scripts/verify-reports-preview.mjs
 
 The verification scripts restart **only** `attica-api-next-preview.service`; `verify-preview.py` also deliberately crashes it to test automatic recovery and performs read-only production Branches comparisons. The message verifier sends only synthetic announcements to the isolated preview and clears them afterward. Never change its target to production.
 
-Current results: **115 contract/HTTP/structure/logging tests + 12 real MariaDB tests passed**. The generated candidate also passes syntax checks.
+Current results: **124 contract/HTTP/structure/logging tests + 14 real MariaDB tests passed**. The generated candidate also passes syntax checks.
 
 ## Preview service
 
@@ -27,7 +27,7 @@ Current results: **115 contract/HTTP/structure/logging tests + 12 real MariaDB t
 - Branches: SELECT-only account on `attica_api_next_preview` (253 snapshot rows, 197 active). Mutations remain blocked with 405; underlying contracts are verified against original handlers on `attica_api_next_contract`.
 - Admin Messages: test-authenticated requests only, synthetic TEST_* agents/messages on `attica_next_messages_preview`. Separate contract database `attica_next_messages_contract`. Both message accounts are denied production table access.
 - Customer History: authenticated reads against synthetic `attica_next_customer_history`; its account is SELECT-only and cannot access production tables.
-- Reports core: authenticated `/api/stats` and `/api/calls/date-details` reads over the same synthetic SELECT-only calls dataset.
+- Reports core: five authenticated dashboard/detail/summary/list/export routes over the same synthetic SELECT-only calls dataset; list pagination counts the complete matching population and CSV export streams the full filtered scope.
 - Test delivery: injected in-memory event sink, no production sockets or recipients. Authenticated test administrators can inspect `/__test/admin-message-events`; payloads contain invalidation metadata only. Persisted state supplies reconnect/next-intake displays.
 - Logs: `journalctl -u attica-api-next-preview.service`; correlated request/error records omit query values, bodies and SQL details.
 - Credentials: Branches uses root-only `/etc/attica-next` via systemd credentials. Messaging uses root-only, ignored `.private/` config/test actors. No credentials in Git or verification output.
@@ -42,15 +42,15 @@ The installed service's original description still says read-only; Branches is r
 - `modules/branches/`: six routes, controller, service and repository.
 - `modules/admin-messages/`: six message/UI refresh routes plus message-only agent update interception, controller, service, repository, validation and tests.
 - `modules/customer-history/`: four customer lookup/profile/history routes with one shared identity resolver.
-- `modules/reports/`: first two core read routes; report summary/list/export remain pending.
+- `modules/reports/`: five core call-report routes with full-dataset aggregation, server-side pagination and streaming CSV export.
 - `events/test-admin-message-sink.js`: test transport and reconnect/display adapter, separate from business logic.
 - `config/preview-admin-messages.js` and `middleware/preview-message-auth.js`: isolated persistence and test-actor authorization.
-- `docs/API-INVENTORY.md`: 18 routes MIGRATED + TESTED; PUT agent update explicitly PARTIAL for adminMessage-only payloads.
+- `docs/API-INVENTORY.md`: 21 routes MIGRATED + TESTED; PUT agent update explicitly PARTIAL for adminMessage-only payloads.
 - `docs/MIGRATION-PLAN.md` and `docs/ADMIN-MESSAGES-NEXT.md`: exact original source locations, preserved behavior, remaining gates.
 - `docs/ADMIN-MESSAGES-VERIFICATION.json` and `docs/REVIEW-VERIFICATION.json`: running preview, restart, database boundary and production-isolation evidence. `docs/VERIFICATION.json` is historical first-phase evidence.
 
 Legacy Admin Messages uses polling/refresh tokens, not an existing feature WebSocket. The preview adds no live socket delivery. Legacy message routes also lack route-level authorization; production auth integration is an explicit pre-promotion gate. Concurrent broadcasts retain the original newest-record selection and nontransactional replacement; private-message expiry/audit does not exist in the baseline. See the detailed module report before promotion.
 
-This is not a completed monolith rewrite. The full generated candidate removes 490 net lines from the original 34,845-line server, and startup remains unconditionally disabled. It still contains legacy side effects and must never be launched. The private baseline and runtime are excluded from Git because the legacy source contains embedded credentials; `docs/BASELINE.json` records the hashes.
+This is not a completed monolith rewrite. The full generated candidate removes 897 lines from the original 34,845-line server, and startup remains unconditionally disabled. It still contains legacy side effects and must never be launched. The private baseline and runtime are excluded from Git because the legacy source contains embedded credentials; `docs/BASELINE.json` records the hashes.
 
-Next: complete Reports summary/list/export, then Billing lookup, SMS abstraction retaining Kaleyra, Follow-ups, Agent Intake, Agent Status, and call-critical modules last. Kaleyra/SolutionsInfini, Smler URLs, Asterisk, SIP, queues and dialer behavior remain unchanged.
+Next: Billing lookup, then SMS abstraction retaining Kaleyra, Follow-ups, Agent Intake, Agent Status, and call-critical modules last. Kaleyra/SolutionsInfini, Smler URLs, Asterisk, SIP, queues and dialer behavior remain unchanged.

@@ -33,7 +33,7 @@ const lines = [
   '# Attica API migration inventory', '',
   'Generated from the hash-verified production snapshot; no server was imported or started.', '',
   `${inventory.length} route registrations (${inventory.filter((r) => r.dynamic).length} dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.`, '',
-  'Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, and two core Reports routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History and Reports use synthetic SELECT-only data. Report summary/list/export and remote customer-data sync remain pending. No production API path, payload, or global middleware was changed.', '',
+  'Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, and five core Reports routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History and Reports use synthetic SELECT-only data. Marketing reports and remote customer-data sync remain pending. No production API path, payload, or global middleware was changed.', '',
   '| Method | Path / expression | Original location | Migrated | Tested | Production |',
   '| --- | --- | --- | --- | --- | --- |',
 ];

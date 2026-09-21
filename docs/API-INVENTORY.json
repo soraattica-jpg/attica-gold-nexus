@@ -1644,11 +1644,11 @@
     "file": "server.js",
     "line": 31716,
     "endLine": 31831,
-    "feature": "calls",
-    "migrated": false,
+    "feature": "reports-core",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -1658,11 +1658,11 @@
     "file": "server.js",
     "line": 31858,
     "endLine": 32010,
-    "feature": "calls",
-    "migrated": false,
+    "feature": "reports-core",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {
@@ -1672,11 +1672,11 @@
     "file": "server.js",
     "line": 32013,
     "endLine": 32170,
-    "feature": "calls",
-    "migrated": false,
+    "feature": "reports-core",
+    "migrated": true,
     "partialMigration": null,
-    "migrationStatus": "PENDING",
-    "testStatus": "PENDING",
+    "migrationStatus": "MIGRATED",
+    "testStatus": "TESTED",
     "deploymentStatus": "LEGACY_PRODUCTION"
   },
   {

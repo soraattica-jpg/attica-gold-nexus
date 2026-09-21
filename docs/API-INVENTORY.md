@@ -4,7 +4,7 @@ Generated from the hash-verified production snapshot; no server was imported or 
 
 122 route registrations (1 dynamic expressions). ALL covers multiple HTTP methods; aliases appear separately. Dynamic registrations require runtime expansion before claiming an endpoint total.
 
-Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, and two core Reports routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History and Reports use synthetic SELECT-only data. Report summary/list/export and remote customer-data sync remain pending. No production API path, payload, or global middleware was changed.
+Six Branches, six Admin Messages/UI refresh routes, four Customer History routes, and five core Reports routes are migrated only in the isolated candidate. PUT /api/agents/:id is extracted only for adminMessage-only payloads; all other agent updates remain legacy. Production continues using server.js. Customer History and Reports use synthetic SELECT-only data. Marketing reports and remote customer-data sync remain pending. No production API path, payload, or global middleware was changed.
 
 | Method | Path / expression | Original location | Migrated | Tested | Production |
 | --- | --- | --- | --- | --- | --- |
@@ -125,9 +125,9 @@ Six Branches, six Admin Messages/UI refresh routes, four Customer History routes
 | POST | /api/transfer-context/resolve | server.js:31666 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/calls/customer-history | server.js:31678 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/calls/date-details | server.js:31700 | MIGRATED (candidate) | TESTED | Legacy |
-| GET | /api/calls/export | server.js:31716 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/calls/report-summary | server.js:31858 | PENDING (candidate) | PENDING | Legacy |
-| GET | /api/calls/list | server.js:32013 | PENDING (candidate) | PENDING | Legacy |
+| GET | /api/calls/export | server.js:31716 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/calls/report-summary | server.js:31858 | MIGRATED (candidate) | TESTED | Legacy |
+| GET | /api/calls/list | server.js:32013 | MIGRATED (candidate) | TESTED | Legacy |
 | GET | /api/md-dashboard/${path} | md-reporting.mjs:272 | PENDING (candidate) | PENDING | Legacy |
 | GET | /api/md-dashboard/export | md-reporting.mjs:277 | PENDING (candidate) | PENDING | Legacy |
 

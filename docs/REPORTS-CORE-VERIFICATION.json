@@ -1,14 +1,20 @@
 {
-  "verifiedAt": "2026-09-21T11:46:27.901Z",
+  "verifiedAt": "2026-09-21T11:57:10.577Z",
   "previewPort": 3101,
   "scope": [
     "GET /api/stats",
-    "GET /api/calls/date-details"
+    "GET /api/calls/date-details",
+    "GET /api/calls/report-summary",
+    "GET /api/calls/list",
+    "GET /api/calls/export"
   ],
   "checks": [
     "Authentication required",
-    "Complete date aggregation",
+    "Complete date/range aggregation",
     "Server-side agent filter",
+    "Full-population source filtering",
+    "Server-side count before page slicing",
+    "Streaming CSV filtered scope",
     "Legacy validation payload",
     "Preview restart"
   ],

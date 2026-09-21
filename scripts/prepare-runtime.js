@@ -64,10 +64,27 @@ const legacyCustomerHistoryAuthorization = () => (_req, _res, next) => next();
   dateRows:fetchCachedDedupedReportRows,
   serializeRows:async (rows)=>rows,
   summarizeRows:summarizeSerializedCalls,
+  summaryCache:reportSummaryCache,
+  summaryCacheTtl:REPORT_SUMMARY_CACHE_TTL_MS,
+  summaryCacheKey:buildReportSummaryCacheKey,
+  readSharedSummary:readSharedReportSummaryCache,
+  writeSharedSummary:writeSharedReportSummaryCache,
+  normalizeDisposition:(value)=>cleanJustDialString(normalizeFormStatusLabel(value),100).toLowerCase(),
+  normalizeSource:normalizeReportSourceFilterValue,
+  filteredRows:(filters)=>fetchSerializedCallsByFilters(filters,{includeDisplayNames:true,hydrateCustomerProfiles:false,includeLeadSources:true,includeIntakeOnly:false,dedupe:false,forExport:true,limit:MAX_REPORT_EXPORT_ROWS}),
+  filteredSummary:summarizeFilteredCallsFromDatabase,
+  filteredHourly:buildFilteredHourlyCallsFromDatabase,
+  filteredBreakdowns:buildFilteredReportBreakdownsFromDatabase,
+  buildAnalytics:buildReportAnalytics,
+  maxListLimit:MAX_LIST_API_LIMIT,
+  defaultListLimit:DEFAULT_LIST_API_LIMIT,
+  compactRows:compactCallListRows,
+  databaseList:createDatabaseCallList({db:pool,buildFilters:buildCallFilters,visibilitySql:CALL_ROW_VISIBILITY_SQL,nonDuplicateSql:NON_DUPLICATE_REMOVED_CALL_SQL,nonArtifactSql:NON_REPORT_ARTIFACT_CALL_SQL,listSelectSql:CALL_LIGHTWEIGHT_LIST_SELECT_SQL,rowSortSql:CALL_ROW_SORT_SQL,openMissedSql:OPEN_MISSED_CALLBACK_STATUS_SQL,countableIncomingSql:countableIncomingCallSql,backfill:backfillRecordingMetadataOnCallRows,serialize:serializeCallRowsBasic,compact:compactCallListRows}),
+  exportCsv:createDatabaseCallExport({db:pool,buildFilters:buildCallFilters,visibilitySql:CALL_ROW_VISIBILITY_SQL,nonDuplicateSql:NON_DUPLICATE_REMOVED_CALL_SQL,nonArtifactSql:NON_REPORT_ARTIFACT_CALL_SQL,listSelectSql:CALL_REPORT_LIST_SELECT_SQL,rowSortSql:CALL_ROW_SORT_SQL,serialize:serializeCallRowsWithDisplayNames,normalizeSource:normalizeReportSourceFilterValue,columns:REPORT_EXPORT_HEADERS,escapeCell:escapeCsvCell,buildRow:buildReportCsvRow,businessDate:getBusinessDateString}),
 }).controller;
 const legacyReportsAuthorization=()=> (_req,_res,next)=>next();
 `:'';
-    const mount=path==='/api/stats'?'mountDashboardStats':'mountCallDateDetails';
+    const mount=path==='/api/stats'?'mountDashboardStats':path==='/api/calls/date-details'?'mountCallDateDetails':path==='/api/calls/export'?'mountCallExport':path==='/api/calls/report-summary'?'mountReportSummary':'mountCallList';
     edits.push({start:statement.start,end:statement.end,text:`${setup}${mount}(app,reportsController,legacyReportsAuthorization);`});reportCoreRemoved++;
   }
   if (statement.type === 'FunctionDeclaration' && statement.id.name === 'serializeBranchRow') {
@@ -86,12 +103,12 @@ const legacyReportsAuthorization=()=> (_req,_res,next)=>next();
   edits.push({ start: statement.start, end: statement.end, text });
   removed++;
 }
-if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 2 || edits.length !== 26) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
+if (removed !== 6 || adminRemoved !== 6 || customerHistoryRemoved !== 4 || reportCoreRemoved !== 5 || edits.length !== 29) throw new Error('Unexpected baseline layout; refusing an incomplete extraction.');
 let candidate = source;
 for (const edit of edits.sort((a, b) => b.start - a.start)) {
   candidate = candidate.slice(0, edit.start) + edit.text + candidate.slice(edit.end);
 }
-candidate = `import { createReportsModule, mountDashboardStats, mountCallDateDetails } from '../modules/reports/index.js';
+candidate = `import { createReportsModule, createDatabaseCallList, createDatabaseCallExport, mountDashboardStats, mountCallDateDetails, mountCallExport, mountReportSummary, mountCallList } from '../modules/reports/index.js';
 import { createCustomerHistoryModule, mountCustomerCallsByPhone, mountCustomerProfile, mountIntakeHistory, mountCustomerCallHistory } from '../modules/customer-history/index.js';
 import { createAdminMessagesModule, mountAdminMessages, mountIndividualMessage } from '../modules/admin-messages/index.js';
 import { createBranchesModule, mountBranchesCatalog, mountBranchesAutocomplete } from '../modules/branches/index.js';
@@ -104,4 +121,4 @@ writeFileSync(projectRoot + 'runtime/server.js', candidate, { mode: 0o600 });
 for (const name of ['intake-workflow.mjs', 'md-reporting.mjs']) {
   writeFileSync(projectRoot + 'runtime/' + name, readBaseline(name), { mode: 0o600 });
 }
-console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 18 routes mounted at original positions plus a message-only agent update interceptor.`);
+console.log(`Prepared non-runnable full candidate: ${source.split('\n').length - candidate.split('\n').length} fewer server.js lines; 21 routes mounted at original positions plus a message-only agent update interceptor.`);

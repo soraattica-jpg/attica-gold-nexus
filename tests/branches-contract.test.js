@@ -137,7 +137,7 @@ test('all unmigrated candidate statements match production baseline exactly', ()
   const skipCandidate = (node) => (node.type === 'ImportDeclaration' && ['../modules/branches/index.js', '../modules/admin-messages/index.js', '../modules/customer-history/index.js', '../modules/reports/index.js'].includes(node.source.value))
     || (node.type === 'ThrowStatement')
     || (node.type === 'VariableDeclaration' && ['branchesController', 'adminMessagesController', 'legacyMessageAuthorization', 'customerHistoryController', 'legacyCustomerHistoryAuthorization', 'reportsController', 'legacyReportsAuthorization'].includes(node.declarations[0]?.id.name))
-    || (node.expression?.type === 'CallExpression' && ['mountBranchesCatalog', 'mountBranchesAutocomplete', 'mountAdminMessages', 'mountIndividualMessage', 'mountCustomerCallsByPhone', 'mountCustomerProfile', 'mountIntakeHistory', 'mountCustomerCallHistory', 'mountDashboardStats', 'mountCallDateDetails'].includes(node.expression.callee.name));
+    || (node.expression?.type === 'CallExpression' && ['mountBranchesCatalog', 'mountBranchesAutocomplete', 'mountAdminMessages', 'mountIndividualMessage', 'mountCustomerCallsByPhone', 'mountCustomerProfile', 'mountIntakeHistory', 'mountCustomerCallHistory', 'mountDashboardStats', 'mountCallDateDetails', 'mountCallExport', 'mountReportSummary', 'mountCallList'].includes(node.expression.callee.name));
   const old = ast.body.filter((n) => !skipBaseline(n)).map((n) => baseline.slice(n.start, n.end));
   const next = parseSource(candidate).body.filter((n) => !skipCandidate(n)).map((n) => candidate.slice(n.start, n.end));
   // Compare hashes so a failure cannot print legacy embedded credentials.
@@ -165,6 +165,9 @@ test('full candidate preserves endpoint registration order', () => {
     if (expression.callee?.name === 'mountCustomerCallHistory') actual.push("get('/api/calls/customer-history'");
     if (expression.callee?.name === 'mountDashboardStats') actual.push("get('/api/stats'");
     if (expression.callee?.name === 'mountCallDateDetails') actual.push("get('/api/calls/date-details'");
+    if (expression.callee?.name === 'mountCallExport') actual.push("get('/api/calls/export'");
+    if (expression.callee?.name === 'mountReportSummary') actual.push("get('/api/calls/report-summary'");
+    if (expression.callee?.name === 'mountCallList') actual.push("get('/api/calls/list'");
   }
   assert.deepEqual(actual, expected);
 });
