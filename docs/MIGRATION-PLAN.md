@@ -80,10 +80,12 @@ injected repository contract. See `docs/SEO-MARKETING.md`.
 The module is mounted on 3101 with a SELECT-only flattened reporting snapshot.
 It has route, IST-boundary, cache, authorization, pagination and scoped-export
 tests; the first real-data comparison matches summary and spend metrics for
-2026-09-21. It is deliberately not marked `MIGRATED + TESTED` yet because
-broader date/filter/export parity remains before cutover. New SEO/Marketing
-changes belong in this module first. A production hotfix may remain a minimal
-compatibility patch only while the candidate is validated.
+2026-09-21. CSV schemas and current-page/all-matching export scope now also
+match the live endpoints. It is deliberately not marked `MIGRATED + TESTED`
+yet because broader date/filter and field-value export parity remains before
+cutover. New SEO/Marketing changes belong in this module first. A production
+hotfix may remain a minimal compatibility patch only while the candidate is
+validated.
 
 ## Following feature slices
 
