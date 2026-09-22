@@ -50,3 +50,21 @@ The Meta-source dashboard card retains the production behavior shown above:
 the dashboard summary still reports the captured Google spend even though the
 lead filter is Meta. This is recorded as compatibility behavior for now, not a
 new attribution rule.
+
+## Export compatibility checks
+
+On 2026-09-22, the production and snapshot preview CSV exports were compared
+for 21 Sep 2026 with `page=2`, `limit=5` in both supported scopes. Their CSV
+header hashes matched exactly:
+
+| Export | Columns | Current page rows | All matching rows |
+| --- | ---: | ---: | ---: |
+| SEO/Marketing leads | 30 | 5 | 207 |
+| Campaign spend | 22 | 5 | 13 |
+
+The snapshot now uses the production CSV schemas for both endpoints, including
+the complete lead-attribution and spend fields. Snapshot-only unavailable
+attributes are emitted as empty cells rather than substituted from unrelated
+records. `exportScope=current` exports only the requested page; `all` exports
+the complete matching result. This verifies schema and pagination-scope
+compatibility, not a production cutover.

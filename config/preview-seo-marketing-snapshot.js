@@ -107,8 +107,46 @@ function metricRows(rows, query) {
   return rows;
 }
 
+const leadExportHeaders = [
+  'Lead Date', 'Lead Time', 'Lead ID', 'Customer Name', 'Customer Number', 'Source', 'Platform', 'Medium', 'Campaign ID', 'Campaign Name',
+  'Ad Set / Ad Group', 'Ad / Creative', 'Form', 'Keyword', 'Search Term', 'Landing Page / Blog', 'Current Stage', 'Business Stage', 'Disposition',
+  'Assigned Agent', 'Call Attempts', 'Connected Calls', 'Total Talk Time', 'Bill Status', 'Bill Date', 'Bill Count', 'Bill IDs', 'Bill Amount',
+  'Billed Weight', 'Import File Name',
+];
+
+const spendExportHeaders = [
+  'Date', 'Platform', 'Ad Account', 'Campaign ID', 'Campaign Name', 'Ad Set / Ad Group', 'Ad / Creative', 'Impressions', 'Clicks', 'Spend',
+  'Leads', 'Unique Leads', 'Qualified Leads', 'Billed Leads', 'Bill Records', 'Billing Amount', 'CPL', 'Cost per Qualified Lead', 'Cost per Bill',
+  'ROAS', 'Last Synced At', 'Sync Status',
+];
+
+function formatDuration(seconds) {
+  const value = Math.max(0, Math.floor(number(seconds)));
+  const hours = Math.floor(value / 3600);
+  const minutes = Math.floor((value % 3600) / 60);
+  const remainingSeconds = value % 60;
+  return [hours, minutes, remainingSeconds].map((part) => String(part).padStart(2, '0')).join(':');
+}
+
 function csv(headers, rows) {
-  return `\uFEFF${[headers, ...rows].map((row) => row.map((value) => `"${String(value ?? '').replaceAll('"', '""')}"`).join(',')).join('\r\n')}\r\n`;
+  return `\uFEFF${[headers, ...rows].map((row) => row.map((value) => `"${String(value ?? '').replaceAll('"', '""')}"`).join(',')).join('\r\n')}`;
+}
+
+function leadExportRow(row) {
+  return [
+    row.leadDate, row.leadTime, row.leadId, row.customerName, row.customerNumber, row.source, row.platform, '', '', row.campaignName,
+    '', '', '', row.keyword, '', '', row.currentStage, row.businessStage, row.disposition,
+    row.assignedAgentName || row.assignedAgentId, row.callAttempts, row.connectedCalls, formatDuration(row.totalTalkSeconds),
+    row.billStatus || (row.billCount ? 'Billed' : ''), row.billDate, row.billCount, row.billIds, row.billAmount, row.billingGrossWeight, '',
+  ];
+}
+
+function spendExportRow(row) {
+  return [
+    row.date, row.platform, row.adAccount, row.campaignId, row.campaignName, row.adSetOrAdGroup, row.adOrCreative,
+    row.impressions, row.clicks, row.spend, row.leads, row.uniqueLeads, row.qualifiedLeads, row.billedLeads, row.billRecords,
+    row.billingAmount, row.cpl, row.costPerQualifiedLead, row.costPerBill, row.roas, row.lastSyncedAt, row.syncStatus,
+  ];
 }
 
 export function createPreviewSeoMarketingSnapshot(db) {
@@ -222,12 +260,12 @@ export function createPreviewSeoMarketingSnapshot(db) {
     exportSpend: async (query) => {
       const rows = await loadSpend(query);
       const exportRows = normalized(query.exportScope) === 'current' ? rows.slice((query.page - 1) * query.limit, query.page * query.limit) : rows;
-      return { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="warroom-campaign-spend-${query.startDate}-to-${query.endDate}.csv"` }, body: csv(['Date', 'Campaign', 'Spend'], exportRows.map((row) => [row.date, row.campaignName, row.spend])) };
+      return { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="warroom-campaign-spend-${query.startDate}-to-${query.endDate}.csv"` }, body: csv(spendExportHeaders, exportRows.map(spendExportRow)) };
     },
     exportLeads: async (query) => {
       const report = await dashboard(query);
       const rows = normalized(query.exportScope) === 'current' ? report.rows : (normalized(query.metric) === 'bills' ? report.billConversionHistory : metricRows(await loadRows(query), query));
-      return { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="seo-marketing-leads-${query.startDate}-to-${query.endDate}.csv"` }, body: csv(['Lead Date', 'Lead ID', 'Customer', 'Number', 'Source', 'Campaign', 'Call Attempts', 'Connected Calls', 'Business Stage', 'Bill Count', 'Bill Amount'], rows.map((row) => [row.leadDate, row.leadId, row.customerName, row.customerNumber, row.source, row.campaignName, row.callAttempts, row.connectedCalls, row.businessStage, row.billCount, row.billAmount])) };
+      return { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="seo-marketing-leads-${query.startDate}-to-${query.endDate}.csv"` }, body: csv(leadExportHeaders, rows.map(leadExportRow)) };
     },
   };
   return { ...createSeoMarketingModule({ adapters, getBusinessDate: () => '2026-09-22', getRole: (req) => String(req.query?.role || req.get('x-user-role') || '') }), mode: 'reporting-snapshot' };
