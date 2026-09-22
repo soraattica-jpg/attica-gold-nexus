@@ -9,6 +9,7 @@ import { createPreviewFollowups } from './config/preview-followups.js';
 import { createPreviewIntake } from './config/preview-intake.js';
 import { createPreviewAgentStatus } from './config/preview-agent-status.js';
 import { createPreviewReferenceData } from './config/preview-reference-data.js';
+import { createPreviewSeoMarketing } from './config/preview-seo-marketing.js';
 import { createPreviewDatabase } from './config/preview-database.js';
 import { createFixtureDb, createFixtureGeocoding } from './tests/fixtures/staging.js';
 
@@ -28,7 +29,8 @@ const followups = dataMode === 'staging-database' ? await createPreviewFollowups
 const intake = dataMode === 'staging-database' ? await createPreviewIntake() : null;
 const agentStatus = dataMode === 'staging-database' ? createPreviewAgentStatus() : null;
 const referenceData = dataMode === 'staging-database' ? createPreviewReferenceData() : null;
-const app = createApp({ db, geocoding: createFixtureGeocoding(), staging: true, dataMode, adminMessages, customerHistory, reports, billing, sms, followups, intake, agentStatus, referenceData });
+const seoMarketing = dataMode === 'staging-database' ? createPreviewSeoMarketing() : null;
+const app = createApp({ db, geocoding: createFixtureGeocoding(), staging: true, dataMode, adminMessages, customerHistory, reports, billing, sms, followups, intake, agentStatus, referenceData, seoMarketing });
 const server = app.listen(port, '127.0.0.1', () => {
   console.log(JSON.stringify({ event: 'startup', port, host: '127.0.0.1', dataMode, branchesReadOnly: true, customerHistoryReadOnly: true, messageDelivery: adminMessages ? 'test-only' : null }));
 });

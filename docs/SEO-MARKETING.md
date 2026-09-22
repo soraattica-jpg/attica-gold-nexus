@@ -32,12 +32,13 @@ These are line ranges in the deployed production source as measured on
 - `seo-marketing.controller.js` and `seo-marketing.routes.js`: preserve the
   existing endpoint paths and response/error boundaries.
 
-This module is **not mounted on port 3101 yet**. Its repository needs a
-read-only reporting dataset and adapters for lead rows, bills and locally
-synchronized Google metrics. It cannot safely reuse the live implementation
-until those dependencies are injected without starting remote synchronization.
+This module is mounted only on loopback preview port 3101 with deterministic
+local fixtures. The SEO fixture has no reporting-database adapter, production
+credential, remote Meta/Google/Search Console request, provider delivery,
+background sync or telephony access. The fixture verifies route wiring and
+date/cache/export contracts; it is not a production-parity data source.
 
-## Compatibility gates before preview mounting
+## Compatibility gates before production-data parity or cutover
 
 1. Build a SELECT-only reporting schema or snapshot containing lead,
    attribution, call and bill fixtures.
@@ -46,8 +47,8 @@ until those dependencies are injected without starting remote synchronization.
 3. Compare each of the seven endpoint contracts against production for
    status, JSON fields, filters, pagination, IST date boundaries and exports.
 4. Verify current-page and all-matching exports separately.
-5. Mount only into the loopback preview, then update the API inventory from
-   `feature registration` to `MIGRATED + TESTED`.
+5. Compare the real-data adapters against production before updating the API
+   inventory from `feature registration` to `MIGRATED + TESTED`.
 
 No production route, source file, database, provider credential, background
 sync, dialer, SIP or queue behavior is changed by this candidate extraction.

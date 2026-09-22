@@ -11,9 +11,10 @@ import { mountAgentStatus } from './modules/agent-status/index.js';
 import { mountReferenceData } from './modules/reference-data/index.js';
 import { requestLogger, logParserError } from './middleware/request-logger.js';
 import { createBranchesModule, mountBranchesCatalog, mountBranchesAutocomplete } from './modules/branches/index.js';
+import { mountSeoMarketing } from './modules/seo-marketing/index.js';
 
 // Importing this factory opens no port and creates no connection, timer, or job.
-export function createApp({ db, geocoding, logger = console, staging = false, dataMode = 'synthetic', adminMessages = null, customerHistory = null, reports = null, billing = null, sms = null, followups = null, intake = null, agentStatus = null, referenceData = null }) {
+export function createApp({ db, geocoding, logger = console, staging = false, dataMode = 'synthetic', adminMessages = null, customerHistory = null, reports = null, billing = null, sms = null, followups = null, intake = null, agentStatus = null, referenceData = null, seoMarketing = null }) {
   const app = express();
   app.set('trust proxy', process.env.ATTICA_TRUST_PROXY || 'loopback, linklocal, uniquelocal');
   if (staging) app.use(requestLogger(logger));
@@ -29,7 +30,7 @@ export function createApp({ db, geocoding, logger = console, staging = false, da
   });
   if (staging) {
     app.use((_req, res, next) => { res.set('X-Attica-Staging', dataMode === 'synthetic' ? 'synthetic-data-only' : adminMessages ? 'staging-isolated-test-delivery' : 'staging-database-read-only'); next(); });
-    app.get('/health', (_req, res) => res.json({ status: 'ok', mode: 'staging', data: dataMode, features: ['branches', ...(adminMessages ? ['admin-messages'] : []), ...(customerHistory ? ['customer-history'] : []), ...(reports ? ['reports-core'] : []), ...(billing ? ['billing-lookup'] : []), ...(sms ? ['sms-kaleyra-fake'] : []), ...(followups ? ['followups-no-dialer'] : []), ...(intake ? ['intake-no-telephony'] : []), ...(agentStatus ? ['agent-status-synthetic'] : []), ...(referenceData ? ['reference-data-synthetic'] : [])], messageDelivery: adminMessages ? 'test-only' : null, smsDelivery: sms ? 'fake-only' : null, externalBillingSync: false, jobs: false, telephony: false }));
+    app.get('/health', (_req, res) => res.json({ status: 'ok', mode: 'staging', data: dataMode, features: ['branches', ...(adminMessages ? ['admin-messages'] : []), ...(customerHistory ? ['customer-history'] : []), ...(reports ? ['reports-core'] : []), ...(billing ? ['billing-lookup'] : []), ...(sms ? ['sms-kaleyra-fake'] : []), ...(followups ? ['followups-no-dialer'] : []), ...(intake ? ['intake-no-telephony'] : []), ...(agentStatus ? ['agent-status-synthetic'] : []), ...(referenceData ? ['reference-data-synthetic'] : []), ...(seoMarketing ? ['seo-marketing-local-fixture'] : [])], messageDelivery: adminMessages ? 'test-only' : null, smsDelivery: sms ? 'fake-only' : null, externalBillingSync: false, jobs: false, telephony: false }));
     if (adminMessages) {
       mountAdminMessages(app, adminMessages.controller, adminMessages.authorize);
       mountIndividualMessage(app, adminMessages.controller, adminMessages.authorize);
@@ -46,6 +47,7 @@ export function createApp({ db, geocoding, logger = console, staging = false, da
     if (intake) mountIntake(app,intake.controller,intake.authorize);
     if (agentStatus) mountAgentStatus(app,agentStatus.controller,agentStatus.authorize);
     if (referenceData) mountReferenceData(app,referenceData.controller,referenceData.authorize);
+    if (seoMarketing) mountSeoMarketing(app, seoMarketing.controller);
     app.use('/api', (req, res, next) => {
       if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return res.status(405).json({ error: 'Staging preview is read-only' });
       next();

@@ -77,11 +77,12 @@ The first reusable extraction is now in `modules/seo-marketing/`; it includes
 date normalization, cache policy, role checks, routes, controller and an
 injected repository contract. See `docs/SEO-MARKETING.md`.
 
-The module is deliberately not marked `MIGRATED + TESTED` yet: it needs a
-read-only reporting fixture and local metric adapters before it can be mounted
-on 3101. New SEO/Marketing changes belong in this module first. A production
-hotfix may remain a minimal compatibility patch only while the candidate is
-being validated.
+The module is mounted on 3101 with deterministic local fixtures and has route,
+IST-boundary, cache, authorization, pagination and scoped-export tests. It is
+deliberately not marked `MIGRATED + TESTED` yet: it still needs a read-only
+reporting schema and local metric adapters for production-data parity. New
+SEO/Marketing changes belong in this module first. A production hotfix may
+remain a minimal compatibility patch only while the candidate is validated.
 
 ## Following feature slices
 
