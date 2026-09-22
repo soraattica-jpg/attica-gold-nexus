@@ -1,5 +1,7 @@
 export const TATA_NEW = Object.freeze({
   code: 'TATA_NEW',
+  carrierCode: 'CAMPAIGN_CALLS',
+  incomingCallSource: 'Campaign Calls',
   peer: 'TATA_NEW',
   pilot: '8065200220',
   didStart: '8065200221',

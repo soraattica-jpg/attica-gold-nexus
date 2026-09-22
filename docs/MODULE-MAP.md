@@ -18,7 +18,7 @@ create a second implementation for the same business feature.
 | Rates and pledge-place masters | `modules/reference-data/` | Extracted preview |
 | SEO and marketing reporting | `modules/seo-marketing/` | In-progress reporting snapshot |
 | Agent mutations, login and call slots | `modules/agent-management/` | Legacy route owner; call-sensitive |
-| Call records, recordings and waiting queue | `modules/call-records/` | Legacy route owner |
+| Call records, attribution, recordings and waiting queue | `modules/call-records/` | Campaign circuit attribution extracted; remaining routes are legacy-owned |
 | Call monitoring, transfer and conference | `modules/call-control/` | Legacy route owner; call-critical |
 | Website, Meta, Google and Justdial ingestion | `modules/lead-ingestion/` | Legacy route owner |
 | Legacy marketing routes | `modules/marketing/` | Legacy route owner |

@@ -146,3 +146,10 @@ automatic failover. The PBX has separate inbound normalization/tagging for
 `TATA_NEW`, but carrier authentication and DID activation are still external
 commissioning gates. See `docs/TATA-DUAL-CIRCUIT.md`. This does not mark the
 remaining Asterisk/AMI/call-control monolith extraction complete.
+
+Campaign-circuit attribution now lives in
+`modules/call-records/call-attribution.service.js`. Incoming calls on pilot
+`8065200220` and DID range `8065200221–8065200399` are classified as business
+source `Campaign Calls` and carrier `CAMPAIGN_CALLS`. Outgoing calls on that
+physical circuit retain their existing Auto Dial, Follow-Up, Manual Dial or
+Outgoing source while storing `CAMPAIGN_CALLS` separately as the carrier.
