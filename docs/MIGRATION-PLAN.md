@@ -136,3 +136,13 @@ narrow compatibility shims or urgent hotfixes. Run `npm run check:large-files`
 for substantial changes. The current recorded legacy baseline is 34,943 lines,
 with a warning when it grows by more than 300 lines. See
 `docs/DEVELOPMENT-RULES.md` for the required workflow and thresholds.
+
+## Staged infrastructure: dual Tata circuits
+
+The new circuit's immutable metadata, DID/CLI validation, manual primary-route
+selection and channel-capacity rules now live in `integrations/asterisk/`.
+The existing circuit remains the selected live outbound route; there is no
+automatic failover. The PBX has separate inbound normalization/tagging for
+`TATA_NEW`, but carrier authentication and DID activation are still external
+commissioning gates. See `docs/TATA-DUAL-CIRCUIT.md`. This does not mark the
+remaining Asterisk/AMI/call-control monolith extraction complete.

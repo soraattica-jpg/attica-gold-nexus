@@ -24,7 +24,7 @@ node scripts/verify-route-ownership.mjs
 
 The verification scripts restart **only** `attica-api-next-preview.service`; `verify-preview.py` also deliberately crashes it to test automatic recovery and performs read-only production Branches comparisons. The message verifier sends only synthetic announcements to the isolated preview and clears them afterward. Never change its target to production.
 
-Current results: **164 contract/HTTP/structure/logging tests + 25 real MariaDB tests passed**. The generated candidate also passes syntax checks.
+Current results: **167 contract/HTTP/structure/logging tests + 25 real MariaDB tests passed**. The generated candidate also passes syntax checks.
 
 ## Preview service
 
@@ -55,6 +55,10 @@ The installed service's original description still says read-only; Branches is r
   policy, controller, route contract and injected repository boundary for the
   seven SEO/Marketing endpoints. It is in progress and not preview-mounted;
   see `docs/SEO-MARKETING.md`.
+- `integrations/asterisk/`: module-owned Tata circuit definitions, explicit
+  manual trunk selection and channel-capacity rules. The live selector remains
+  on the existing circuit until Tata confirms the new circuit authentication;
+  see `docs/TATA-DUAL-CIRCUIT.md`.
 - `modules/reference-data/`: four rate and two pledge-place routes with injected persistence.
 - `modules/call-records/`, `agent-management/`, `call-control/`, `lead-ingestion/`, `marketing/`, `auto-dial/`, and `location-ivr/`: strict owners for the remaining preserved legacy handlers.
 - `modules/admin-messages/`: six message/UI refresh routes plus message-only agent update interception, controller, service, repository, validation and tests.

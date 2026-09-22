@@ -34,7 +34,7 @@ create a second implementation for the same business feature.
 | WATI | Future `integrations/wati/` | Not extracted |
 | Meta | Future `integrations/meta/` | Not extracted |
 | Google advertising/search | `modules/seo-marketing/` reporting adapter | Snapshot only in preview |
-| Asterisk / AMI / SIP | Future `integrations/asterisk/` | Last migration phase |
+| Asterisk / AMI / SIP | `integrations/asterisk/` | Dual-Tata configuration and manual router staged; live call-control extraction remains last |
 
 Create a new feature directory only when no owner above applies. A new module
 uses routes, controller, service, repository, validation and tests as needed;
