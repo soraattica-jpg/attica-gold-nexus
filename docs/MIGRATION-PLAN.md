@@ -126,3 +126,13 @@ claim that live production has already been replaced.
 ## Next feature-extraction track
 
 The registration goal is complete. Continue decomposing feature-owned preserved business handlers by risk: reference/admin data, marketing reports, billing, agent mutations, lead ingestion, follow-up/autodial operations, calls, and finally Asterisk/AMI/queues. Each deeper extraction must replace one preserved handler with a controller/service implementation without changing its route contract or order.
+
+## Permanent module-first development rule
+
+All future changes begin with `docs/MODULE-MAP.md`, `docs/API-INVENTORY.md`
+and the existing module search. New business logic belongs in its owner module;
+the legacy production `server.js` is limited to bootstrap, route mounting,
+narrow compatibility shims or urgent hotfixes. Run `npm run check:large-files`
+for substantial changes. The current recorded legacy baseline is 34,943 lines,
+with a warning when it grows by more than 300 lines. See
+`docs/DEVELOPMENT-RULES.md` for the required workflow and thresholds.
