@@ -34,3 +34,19 @@ full CSV-schema parity are verified.
 The preview service is loopback-only, queries only `attica_api_next_preview`
 with its SELECT-only account, and has no access to the production `asterisk`
 database, provider APIs, telephony, jobs, SMS delivery or WebSockets.
+
+## Additional filter checks
+
+The following summary comparisons also matched exactly on 2026-09-22 after
+capturing their own range-specific spend snapshot:
+
+| Filter | Leads | Unique | Contacted | Connected | QL | Bills | Billing amount | Spend |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 20 Sep 2026, all sources | 150 | 143 | 22 | 8 | 0 | 11 | 1,196,573 | 27,116.06 |
+| 21 Sep 2026, Google LP Leads | 110 | 110 | 101 | 77 | 14 | 3 | 386,500 | 27,526.52 |
+| 21 Sep 2026, Meta Ads | 46 | 45 | 32 | 18 | 4 | 3 | 1,044,784 | 27,526.52 |
+
+The Meta-source dashboard card retains the production behavior shown above:
+the dashboard summary still reports the captured Google spend even though the
+lead filter is Meta. This is recorded as compatibility behavior for now, not a
+new attribution rule.
