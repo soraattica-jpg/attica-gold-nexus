@@ -12,6 +12,44 @@ CREATE TABLE IF NOT EXISTS attica_api_next_preview.seo_marketing_snapshot_metada
   refreshed_at DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS attica_api_next_preview.seo_marketing_spend_snapshot (
+  snapshot_start DATE NOT NULL,
+  snapshot_end DATE NOT NULL,
+  metric_date VARCHAR(80) NOT NULL,
+  platform VARCHAR(80) NOT NULL,
+  ad_account VARCHAR(80) NOT NULL DEFAULT '',
+  campaign_id VARCHAR(120) NOT NULL DEFAULT '',
+  campaign_name VARCHAR(255) NOT NULL DEFAULT '',
+  adset_or_adgroup VARCHAR(255) NOT NULL DEFAULT '',
+  ad_or_creative VARCHAR(255) NOT NULL DEFAULT '',
+  impressions BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  clicks BIGINT UNSIGNED NOT NULL DEFAULT 0,
+  spend DECIMAL(14,2) NOT NULL DEFAULT 0,
+  leads INT UNSIGNED NOT NULL DEFAULT 0,
+  unique_leads INT UNSIGNED NOT NULL DEFAULT 0,
+  qualified_leads INT UNSIGNED NOT NULL DEFAULT 0,
+  billed_leads INT UNSIGNED NOT NULL DEFAULT 0,
+  bill_records INT UNSIGNED NOT NULL DEFAULT 0,
+  billing_amount DECIMAL(14,2) NOT NULL DEFAULT 0,
+  cpl DECIMAL(14,2) NOT NULL DEFAULT 0,
+  cost_per_qualified_lead DECIMAL(14,2) NOT NULL DEFAULT 0,
+  cost_per_bill DECIMAL(14,2) NOT NULL DEFAULT 0,
+  roas DECIMAL(14,2) NOT NULL DEFAULT 0,
+  last_synced_at VARCHAR(80) NOT NULL DEFAULT '',
+  sync_status VARCHAR(80) NOT NULL DEFAULT '',
+  captured_at DATETIME NOT NULL,
+  KEY idx_seo_spend_snapshot_range (snapshot_start, snapshot_end),
+  KEY idx_seo_spend_snapshot_campaign (campaign_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS attica_api_next_preview.seo_marketing_spend_snapshot_metadata (
+  snapshot_start DATE NOT NULL,
+  snapshot_end DATE NOT NULL,
+  dashboard_total_spend DECIMAL(14,2) NOT NULL DEFAULT 0,
+  captured_at DATETIME NOT NULL,
+  PRIMARY KEY (snapshot_start, snapshot_end)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS attica_api_next_preview.seo_marketing_lead_snapshot_next;
 CREATE TABLE attica_api_next_preview.seo_marketing_lead_snapshot_next (
   source_key VARCHAR(32) NOT NULL,
@@ -119,8 +157,10 @@ CREATE TABLE attica_api_next_preview.seo_marketing_call_snapshot_next (
   latest_agent_name VARCHAR(150) NOT NULL DEFAULT '',
   latest_agent_id VARCHAR(40) NOT NULL DEFAULT '',
   latest_disposition VARCHAR(150) NOT NULL DEFAULT '',
+  latest_callback_status VARCHAR(150) NOT NULL DEFAULT '',
   latest_status VARCHAR(150) NOT NULL DEFAULT '',
   latest_direction VARCHAR(20) NOT NULL DEFAULT '',
+  latest_duration_seconds INT UNSIGNED NOT NULL DEFAULT 0,
   KEY idx_seo_call_snapshot_phone_date (phone, call_date),
   KEY idx_seo_call_snapshot_date (call_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -128,7 +168,7 @@ CREATE TABLE attica_api_next_preview.seo_marketing_call_snapshot_next (
 INSERT INTO attica_api_next_preview.seo_marketing_call_snapshot_next (
   call_date, phone, call_attempts, connected_calls, total_talk_seconds,
   latest_call_at, latest_agent_name, latest_agent_id, latest_disposition,
-  latest_status, latest_direction
+  latest_callback_status, latest_status, latest_direction, latest_duration_seconds
 )
 SELECT
   c.call_date,
@@ -139,9 +179,11 @@ SELECT
   MAX(c.created_at) AS latest_call_at,
   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(NULLIF(c.agent_name, ''), c.agent_id, '') ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1),
   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(c.agent_id, '') ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1),
-  SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(NULLIF(c.form_status, ''), NULLIF(c.disposition, ''), NULLIF(c.purpose, ''), '') ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1),
+  SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(NULLIF(c.form_status, ''), NULLIF(c.purpose, ''), NULLIF(c.callback_status, ''), NULLIF(c.status, ''), '') ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1),
+  SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(NULLIF(c.callback_status, ''), '') ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1),
   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(NULLIF(c.status, ''), '') ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1),
-  SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(NULLIF(c.direction, ''), '') ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1)
+  SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(NULLIF(c.direction, ''), '') ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1),
+  SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(c.talk_duration_seconds, 0) ORDER BY c.created_at DESC SEPARATOR 0x1F), 0x1F, 1)
 FROM asterisk.attica_calls c
 WHERE c.call_date >= '2026-05-01'
   AND c.call_date < DATE_ADD(CURDATE(), INTERVAL 1 DAY)
@@ -178,7 +220,7 @@ SELECT
   COALESCE(r.source_attribution, '')
 FROM asterisk.attica_remote_customer_data r
 WHERE RIGHT(REGEXP_REPLACE(COALESCE(r.contact, ''), '[^0-9]', ''), 10) REGEXP '^[0-9]{10}$'
-  AND LOWER(COALESCE(r.status, '')) IN ('billed', 'completed', 'release');
+  AND LOWER(COALESCE(r.status, '')) IN ('billed', 'release');
 
 DROP TABLE IF EXISTS attica_api_next_preview.seo_marketing_lead_snapshot;
 RENAME TABLE attica_api_next_preview.seo_marketing_lead_snapshot_next TO attica_api_next_preview.seo_marketing_lead_snapshot;

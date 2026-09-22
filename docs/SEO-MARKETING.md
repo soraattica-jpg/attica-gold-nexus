@@ -31,12 +31,14 @@ These are line ranges in the deployed production source as measured on
   seven route operations, preventing hidden SQL or provider access.
 - `seo-marketing.controller.js` and `seo-marketing.routes.js`: preserve the
   existing endpoint paths and response/error boundaries.
+- `config/preview-seo-marketing-snapshot.js`: reads only the flattened local
+  snapshot and recreates lead, call, bill, pagination and export behavior.
 
-This module is mounted only on loopback preview port 3101 with deterministic
-local fixtures. The SEO fixture has no reporting-database adapter, production
-credential, remote Meta/Google/Search Console request, provider delivery,
-background sync or telephony access. The fixture verifies route wiring and
-date/cache/export contracts; it is not a production-parity data source.
+This module is mounted only on loopback preview port 3101 with a flattened,
+range-bounded reporting snapshot. Deterministic local fixtures remain for unit
+contracts. Neither path has production credentials, remote
+Meta/Google/Search Console requests, provider delivery, background sync or
+telephony access.
 
 `scripts/refresh-seo-marketing-snapshot.sql` provisions the next gate: a
 flattened snapshot in `attica_api_next_preview` of eligible source leads,
@@ -48,6 +50,10 @@ The first snapshot was refreshed on 2026-09-22 for the reporting window from
 2026-05-01 through the current business date. It contains 58,534 lead rows,
 414,363 daily call aggregates and 23,647 valid bill rows. A direct check with
 the preview account confirmed reads succeed and attempted writes are rejected.
+The first real-data parity check is recorded in
+`docs/SEO-MARKETING-VERIFICATION.md`. Range-specific Google spend is copied
+by `scripts/refresh-seo-marketing-spend-snapshot.mjs`, which reads the local
+live reporting API and writes only to the isolated preview database.
 
 ## Compatibility gates before production-data parity or cutover
 
