@@ -50,6 +50,10 @@ The installed service's original description still says read-only; Branches is r
 ## Architecture and evidence
 
 - `modules/branches/`: six routes, controller, service and repository.
+- `modules/seo-marketing/`: IST date/query normalization, response-cache
+  policy, controller, route contract and injected repository boundary for the
+  seven SEO/Marketing endpoints. It is in progress and not preview-mounted;
+  see `docs/SEO-MARKETING.md`.
 - `modules/reference-data/`: four rate and two pledge-place routes with injected persistence.
 - `modules/call-records/`, `agent-management/`, `call-control/`, `lead-ingestion/`, `marketing/`, `auto-dial/`, and `location-ivr/`: strict owners for the remaining preserved legacy handlers.
 - `modules/admin-messages/`: six message/UI refresh routes plus message-only agent update interception, controller, service, repository, validation and tests.

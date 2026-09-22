@@ -68,6 +68,21 @@ Four metal-rate registrations and two pledge-place registrations are extracted i
 
 Every `server.js` route declaration now has an explicit feature owner. The 69 preserved-handler mount statements cover 75 paths including aliases across seven bounded feature modules; original paths, middleware/handlers and order are byte-preserved and hash-tested. The generic compatibility registry is removed. See `docs/FEATURE-ROUTE-OWNERSHIP.md`.
 
+## In progress: phase 10, SEO & Marketing reporting
+
+The active production SEO/Marketing dashboard contains a compatibility patch
+for IST date filters, response-cache refresh and scoped exports. Its current
+live source ranges are `server.js:25162–25267` and `server.js:26819–27043`.
+The first reusable extraction is now in `modules/seo-marketing/`; it includes
+date normalization, cache policy, role checks, routes, controller and an
+injected repository contract. See `docs/SEO-MARKETING.md`.
+
+The module is deliberately not marked `MIGRATED + TESTED` yet: it needs a
+read-only reporting fixture and local metric adapters before it can be mounted
+on 3101. New SEO/Marketing changes belong in this module first. A production
+hotfix may remain a minimal compatibility patch only while the candidate is
+being validated.
+
 ## Following feature slices
 
 1. Low-risk reference and utility data.
@@ -87,6 +102,11 @@ Keep 2–4 low-risk modules isolated before considering promotion. Do not replac
 ## Current production status
 
 Phases 1–9 and the complete registration boundary make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Extracted feature previews use isolated datasets; Agent Status is synthetic only. SIP trunks, queue strategy and routing configuration are outside this change.
+
+As of 22 September 2026, the live source is 34,943 lines. No legacy block has
+been deleted from production yet, so the production reduction count is zero.
+The candidate's 67-line entrypoint is a target architecture measure, not a
+claim that live production has already been replaced.
 
 ## Verification follow-up
 
