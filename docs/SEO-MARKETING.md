@@ -38,6 +38,17 @@ credential, remote Meta/Google/Search Console request, provider delivery,
 background sync or telephony access. The fixture verifies route wiring and
 date/cache/export contracts; it is not a production-parity data source.
 
+`scripts/refresh-seo-marketing-snapshot.sql` provisions the next gate: a
+flattened snapshot in `attica_api_next_preview` of eligible source leads,
+daily call facts and valid bills. It deliberately excludes raw webhook
+payloads, recordings, tokens and provider secrets. The script is an
+administrator-run staging refresh; the preview service remains SELECT-only.
+
+The first snapshot was refreshed on 2026-09-22 for the reporting window from
+2026-05-01 through the current business date. It contains 58,534 lead rows,
+414,363 daily call aggregates and 23,647 valid bill rows. A direct check with
+the preview account confirmed reads succeed and attempted writes are rejected.
+
 ## Compatibility gates before production-data parity or cutover
 
 1. Build a SELECT-only reporting schema or snapshot containing lead,

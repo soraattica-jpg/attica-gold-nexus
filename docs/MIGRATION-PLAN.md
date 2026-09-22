@@ -79,8 +79,9 @@ injected repository contract. See `docs/SEO-MARKETING.md`.
 
 The module is mounted on 3101 with deterministic local fixtures and has route,
 IST-boundary, cache, authorization, pagination and scoped-export tests. It is
-deliberately not marked `MIGRATED + TESTED` yet: it still needs a read-only
-reporting schema and local metric adapters for production-data parity. New
+deliberately not marked `MIGRATED + TESTED` yet. A SELECT-only flattened
+reporting snapshot now exists in the isolated preview database; local metric
+adapters and production response parity checks remain before cutover. New
 SEO/Marketing changes belong in this module first. A production hotfix may
 remain a minimal compatibility patch only while the candidate is validated.
 
