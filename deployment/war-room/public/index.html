@@ -1,0 +1,1368 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Attica Digital War Room</title>
+    <link rel="icon" type="image/png" href="/assets/favicon.png" />
+    <link rel="apple-touch-icon" href="/assets/attica_gold_logo.png" />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #171717;
+        --muted: #6b7280;
+        --line: #e8e2d9;
+        --gold: #d9a514;
+        --gold-bright: #f5c400;
+        --brown: #4a1c10;
+        --bg: #f8f6f1;
+        --panel: #ffffff;
+        --soft: #fcfaf5;
+        --shadow: 0 14px 35px rgba(74, 28, 16, .08);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      .shell {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .section-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+      }
+      .page-header {
+        padding: 18px 20px;
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .brand {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        min-width: 0;
+      }
+      .brand img {
+        width: 54px;
+        height: 54px;
+        object-fit: contain;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+      h1, h2, p { margin: 0; }
+      h1 { color: var(--brown); font-size: 28px; line-height: 1.15; }
+      h2 { color: var(--brown); font-size: 20px; line-height: 1.2; }
+      .subtitle { color: var(--muted); margin-top: 6px; line-height: 1.45; }
+      .header-actions, .panel-actions, .pagination { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+      button, input, select {
+        min-height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 0 12px;
+        font: inherit;
+        background: #fff;
+      }
+      button {
+        cursor: pointer;
+        font-weight: 700;
+        transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+      }
+      button:hover { transform: translateY(-1px); border-color: var(--gold); }
+      .primary {
+        background: linear-gradient(90deg, var(--gold-bright), var(--gold));
+        color: #241500;
+        border-color: transparent;
+        box-shadow: 0 10px 25px rgba(217, 165, 20, .22);
+      }
+      .ghost { background: #fff; color: var(--brown); }
+      .filters {
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .filter-grid {
+        display: grid;
+        grid-template-columns: 160px 160px 180px 180px minmax(220px, 1fr) auto;
+        gap: 14px;
+        align-items: end;
+      }
+      label { color: var(--muted); display: grid; gap: 7px; font-size: 13px; font-weight: 650; }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        padding: 6px;
+        margin-bottom: 20px;
+        overflow-x: auto;
+      }
+      .tab {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        white-space: nowrap;
+        min-height: 38px;
+      }
+      .tab.active {
+        background: var(--brown);
+        color: #fff;
+        box-shadow: none;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .metric-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        min-height: 112px;
+        padding: 16px;
+        cursor: pointer;
+        display: grid;
+        align-content: space-between;
+        transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
+      }
+      .metric-card:hover, .metric-card.selected {
+        border-color: var(--gold);
+        box-shadow: 0 12px 28px rgba(217, 165, 20, .18);
+        transform: translateY(-1px);
+      }
+      .metric-card span {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 750;
+        text-transform: uppercase;
+        letter-spacing: 0;
+      }
+      .metric-card strong {
+        display: block;
+        color: var(--brown);
+        font-size: 30px;
+        line-height: 1.1;
+        margin-top: 12px;
+      }
+      .metric-card small { color: var(--muted); margin-top: 8px; }
+      .panel {
+        padding: 18px;
+        margin-bottom: 24px;
+      }
+      .panel-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+      .muted { color: var(--muted); }
+      .summary-line {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 6px;
+      }
+      .table-wrap {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: auto;
+        max-height: 58vh;
+        background: #fff;
+      }
+      table {
+        width: 100%;
+        min-width: 1120px;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 13px;
+      }
+      th, td {
+        border-bottom: 1px solid var(--line);
+        padding: 11px 10px;
+        text-align: left;
+        vertical-align: top;
+        line-height: 1.35;
+      }
+      th {
+        color: #51483d;
+        background: #f3efe8;
+        font-size: 12px;
+        font-weight: 800;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        text-transform: uppercase;
+        letter-spacing: 0;
+      }
+      tbody tr:nth-child(odd) td { background: #fff; }
+      tbody tr:nth-child(even) td { background: var(--soft); }
+      tbody tr.clickable { cursor: pointer; }
+      tbody tr.clickable:hover td { background: #fff6d9; }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: #fff7db;
+        color: #6b4d00;
+        border: 1px solid #f0d77a;
+        font-weight: 750;
+        font-size: 12px;
+      }
+      .link-button {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--brown);
+        border-radius: 8px;
+        min-height: 32px;
+        padding: 0 10px;
+      }
+      .hidden { display: none !important; }
+      .pagination {
+        justify-content: space-between;
+        margin-top: 14px;
+      }
+      .pagination .left, .pagination .right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+      .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(23, 23, 23, .28);
+        display: none;
+        z-index: 20;
+      }
+      .drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(560px, 100vw);
+        height: 100vh;
+        background: #fff;
+        border-left: 1px solid var(--line);
+        box-shadow: -18px 0 50px rgba(23, 23, 23, .18);
+        padding: 20px;
+        overflow: auto;
+        transform: translateX(100%);
+        transition: transform .2s ease;
+        z-index: 21;
+      }
+      .drawer.open { transform: translateX(0); }
+      .drawer-backdrop.open { display: block; }
+      .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+      .detail-item { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: var(--soft); }
+      .detail-item span { display: block; color: var(--muted); font-size: 12px; font-weight: 750; }
+      .detail-item strong { display: block; margin-top: 4px; word-break: break-word; }
+      .status-banner {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 16px;
+        margin-bottom: 18px;
+        border: 1px solid #cce8d7;
+        border-radius: 12px;
+        background: #f0fbf4;
+        color: #165b32;
+      }
+      .status-banner.attention { border-color: #efcf82; background: #fff8e5; color: #704d00; }
+      .status-banner.pending { border-color: var(--line); background: var(--soft); color: var(--muted); }
+      .status-banner strong { display: block; margin-bottom: 4px; }
+      .status-banner.partial { border-color: #b9cce9; background: #f2f7ff; color: #244f82; }
+      .connector-status-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; }
+      .connector-status-item { padding: 10px 12px; border: 1px solid currentColor; border-radius: 9px; background: rgba(255,255,255,.55); }
+      .connector-status-item span, .connector-status-item small { display: block; line-height: 1.35; }
+      .connector-status-item small { margin-top: 5px; opacity: .82; }
+      .meta-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+      .subtabs { display: flex; gap: 8px; flex-wrap: wrap; }
+      .subtab { min-height: 34px; padding: 0 11px; background: #fff; color: var(--brown); }
+      .subtab.active { background: var(--brown); color: #fff; border-color: var(--brown); }
+      @media (max-width: 1200px) {
+        .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .filter-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      }
+      @media (max-width: 760px) { .connector-status-grid { grid-template-columns: 1fr; } }
+      @media (max-width: 820px) {
+        .shell { padding: 12px; }
+        .page-header, .panel-head { display: block; }
+        .header-actions, .panel-actions { margin-top: 14px; }
+        .cards, .filter-grid, .detail-grid { grid-template-columns: 1fr; }
+        h1 { font-size: 24px; }
+        .metric-card strong { font-size: 26px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="section-card page-header">
+        <div class="brand">
+          <img src="/assets/attica_gold_logo.png" alt="Attica Gold" />
+          <div>
+            <h1>Attica Digital War Room</h1>
+            <p class="subtitle">SEO, marketing, campaign analytics and lead conversion reporting from the independent reporting database.</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="sync" class="primary">Sync Now</button>
+          <button id="logout" class="ghost">Sign Out</button>
+        </div>
+      </header>
+
+      <section class="section-card filters">
+        <div class="filter-grid">
+          <label>Start Date<input id="startDate" type="date" /></label>
+          <label>End Date<input id="endDate" type="date" /></label>
+          <label>Source<select id="source"><option value="">All Sources</option></select></label>
+          <label>Metric<select id="metric">
+            <option value="leads">Leads</option>
+            <option value="contacted">Contacted</option>
+            <option value="connected">Connected</option>
+            <option value="followups">Follow-Ups</option>
+            <option value="qualified">Qualified</option>
+            <option value="lost">Lost</option>
+            <option value="bills">Bills</option>
+            <option value="billing_amount">Billing Amount</option>
+            <option value="spend">Campaign Spend</option>
+            <option value="cost_per_bill">Cost per Bill</option>
+          </select></label>
+          <label>Search Records<input id="search" type="search" placeholder="Name, number, campaign, source, agent" /></label>
+          <button id="refresh" class="ghost">Refresh</button>
+        </div>
+      </section>
+
+      <nav class="section-card tabs" aria-label="Dashboard sections">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="lead-records">Lead Records</button>
+        <button class="tab" data-tab="source-funnel">Source Funnel</button>
+        <button class="tab" data-tab="campaign-performance">Campaign Performance</button>
+        <button class="tab" data-tab="meta-report">Meta Report</button>
+        <button class="tab" data-tab="google-lp-report">Google LP Report</button>
+        <button class="tab" data-tab="organic-report">Organic Report</button>
+        <button class="tab" data-tab="billing-conversion">Billing Conversion</button>
+      </nav>
+
+      <section id="overview" class="tab-view">
+        <section id="cards" class="cards"></section>
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Leads Generated</h2>
+              <p class="summary-line">Source-wise generated leads, billed leads and conversion for the selected date range.</p>
+            </div>
+          </div>
+          <section id="sourceCards" class="cards"></section>
+        </section>
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Lead Records Preview</h2>
+              <p class="summary-line" id="overviewSummary">Loading records...</p>
+            </div>
+            <div class="panel-actions">
+              <button class="ghost" data-open-tab="lead-records">Open Full Table</button>
+              <a id="overviewExport" class="link-button" href="#">Export Current Data</a>
+            </div>
+          </div>
+          <div class="table-wrap"><table id="overviewTable"></table></div>
+        </section>
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Source Funnel</h2>
+              <p class="summary-line">Click a source to view only those lead records.</p>
+            </div>
+            <button class="ghost" data-open-tab="source-funnel">Open Source Funnel</button>
+          </div>
+          <div class="table-wrap"><table id="sourcePreview"></table></div>
+        </section>
+      </section>
+
+      <section id="lead-records" class="tab-view hidden">
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div>
+              <h2 id="drillTitle">Lead Records</h2>
+              <p class="summary-line" id="meta"></p>
+            </div>
+            <div class="panel-actions">
+              <a id="export" class="link-button" href="#">Export Current Data</a>
+            </div>
+          </div>
+          <div class="table-wrap"><table id="table"></table></div>
+          <div class="pagination">
+            <div class="left">
+              <button id="prevPage" class="ghost">Previous</button>
+              <button id="nextPage" class="ghost">Next</button>
+              <span class="muted" id="pageInfo">Page 1</span>
+            </div>
+            <div class="right">
+              <label>Page Size
+                <select id="pageSize">
+                  <option value="25">25</option>
+                  <option value="50" selected>50</option>
+                  <option value="100">100</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="source-funnel" class="tab-view hidden">
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Source Funnel</h2>
+              <p class="summary-line">Source-wise lead and bill summary for the selected period.</p>
+            </div>
+          </div>
+          <div class="table-wrap"><table id="sources"></table></div>
+        </section>
+      </section>
+
+      <section id="campaign-performance" class="tab-view hidden">
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Campaign Performance</h2>
+              <p class="summary-line">Campaign and source grouping from synced lead data.</p>
+            </div>
+            <a id="campaignExport" class="link-button" href="#">Export Campaign Data</a>
+          </div>
+          <div class="table-wrap"><table id="campaigns"></table></div>
+        </section>
+      </section>
+
+      <section id="meta-report" class="tab-view hidden">
+        <div id="metaConnectorStatus" class="status-banner pending">
+          <div><strong>Meta Sync: Checking</strong><span>Reading the last successful Lead Ads and Insights synchronization.</span></div>
+        </div>
+        <section id="metaCards" class="cards"></section>
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div>
+              <h2 id="metaTableTitle">Meta Campaign Performance</h2>
+              <p class="summary-line" id="metaTableSummary">Loading Meta reporting data...</p>
+            </div>
+            <div class="right">
+              <a id="metaExportPage" class="link-button" href="#">Export Current Page</a>
+              <a id="metaExport" class="link-button" href="#">Export All Matching</a>
+            </div>
+          </div>
+          <div class="meta-toolbar">
+            <div class="subtabs" id="metaViews">
+              <button class="subtab active" data-meta-view="campaign">Campaigns</button>
+              <button class="subtab" data-meta-view="adset">Ad Sets</button>
+              <button class="subtab" data-meta-view="ad">Ads</button>
+              <button class="subtab" data-meta-view="leads">Lead Details</button>
+              <button class="subtab" data-meta-view="spend">Spend Details</button>
+            </div>
+            <div class="subtabs hidden" id="metaConversionTabs">
+              <button class="subtab active" data-meta-metric="billed">Billed Leads Used</button>
+              <button class="subtab" data-meta-metric="unique">Unique Leads Used</button>
+            </div>
+          </div>
+          <div class="table-wrap"><table id="metaTable"></table></div>
+          <div class="pagination">
+            <div class="left">
+              <button id="metaFirstPage" class="ghost">First</button>
+              <button id="metaPrevPage" class="ghost">Previous</button>
+              <span class="muted" id="metaPageInfo">Page 1</span>
+              <button id="metaNextPage" class="ghost">Next</button>
+              <button id="metaLastPage" class="ghost">Last</button>
+            </div>
+            <div class="right">
+              <label>Rows per page
+                <select id="metaPageSize">
+                  <option value="25">25</option>
+                  <option value="50" selected>50</option>
+                  <option value="100">100</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="google-lp-report" class="tab-view hidden">
+        <div id="googleLpConnectorStatus" class="status-banner pending">
+          <div><strong>Google Ads Sync: Checking</strong><span>Reading Google Ads and landing-page lead data.</span></div>
+        </div>
+        <section id="googleLpCards" class="cards"></section>
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div><h2 id="googleLpTableTitle">Google LP Campaign Performance</h2><p class="summary-line" id="googleLpTableSummary">Loading Google LP reporting data...</p></div>
+            <div class="right"><a id="googleLpExportPage" class="link-button" href="#">Export Current Page</a><a id="googleLpExport" class="link-button" href="#">Export All Matching</a></div>
+          </div>
+          <div class="meta-toolbar"><div class="subtabs">
+            <button class="subtab active" data-channel="googleLp" data-channel-view="campaign">Campaigns</button>
+            <button class="subtab" data-channel="googleLp" data-channel-view="adset">Ad Groups</button>
+            <button class="subtab" data-channel="googleLp" data-channel-view="ad">Ads</button>
+            <button class="subtab" data-channel="googleLp" data-channel-view="leads">Lead Details</button>
+            <button class="subtab" data-channel="googleLp" data-channel-view="spend">Spend Details</button>
+          </div></div>
+          <div class="table-wrap"><table id="googleLpTable"></table></div>
+          <div class="pagination">
+            <div class="left"><button id="googleLpFirstPage" class="ghost">First</button><button id="googleLpPrevPage" class="ghost">Previous</button><span class="muted" id="googleLpPageInfo">Page 1</span><button id="googleLpNextPage" class="ghost">Next</button><button id="googleLpLastPage" class="ghost">Last</button></div>
+            <div class="right"><label>Rows per page<select id="googleLpPageSize"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option></select></label></div>
+          </div>
+        </section>
+      </section>
+
+      <section id="organic-report" class="tab-view hidden">
+        <div id="organicConnectorStatus" class="status-banner pending">
+          <div><strong>Organic Sync: Checking</strong><span>Reading organic leads, Search Console and website analytics.</span></div>
+        </div>
+        <section id="organicCards" class="cards"></section>
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div><h2 id="organicTableTitle">Organic Landing Pages</h2><p class="summary-line" id="organicTableSummary">Loading organic reporting data...</p></div>
+            <div class="right"><a id="organicExportPage" class="link-button" href="#">Export Current Page</a><a id="organicExport" class="link-button" href="#">Export All Matching</a></div>
+          </div>
+          <div class="meta-toolbar"><div class="subtabs">
+            <button class="subtab active" data-channel="organic" data-channel-view="landing">Landing Pages</button>
+            <button class="subtab" data-channel="organic" data-channel-view="query">Search Queries</button>
+            <button class="subtab" data-channel="organic" data-channel-view="leads">Lead Details</button>
+          </div></div>
+          <div class="table-wrap"><table id="organicTable"></table></div>
+          <div class="pagination">
+            <div class="left"><button id="organicFirstPage" class="ghost">First</button><button id="organicPrevPage" class="ghost">Previous</button><span class="muted" id="organicPageInfo">Page 1</span><button id="organicNextPage" class="ghost">Next</button><button id="organicLastPage" class="ghost">Last</button></div>
+            <div class="right"><label>Rows per page<select id="organicPageSize"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option></select></label></div>
+          </div>
+        </section>
+      </section>
+
+      <section id="billing-conversion" class="tab-view hidden">
+        <section class="section-card panel">
+          <div class="panel-head">
+            <div>
+              <h2>Lead-Generated Billing Conversions</h2>
+              <p class="summary-line">Only bills linked to generated leads by customer ID or normalized mobile number.</p>
+            </div>
+            <a id="billExport" class="link-button" href="#">Export Bills</a>
+          </div>
+          <div class="table-wrap"><table id="billTable"></table></div>
+        </section>
+      </section>
+    </main>
+
+    <div id="drawerBackdrop" class="drawer-backdrop"></div>
+    <aside id="drawer" class="drawer" aria-label="Record details">
+      <div class="panel-head">
+        <div>
+          <h2 id="drawerTitle">Record Details</h2>
+          <p class="summary-line">Complete row details from the selected table.</p>
+        </div>
+        <button id="closeDrawer" class="ghost">Close</button>
+      </div>
+      <div id="drawerBody" class="detail-grid"></div>
+    </aside>
+
+    <script>
+      const params = new URLSearchParams(location.search);
+      function normalizeMetric(value) {
+        const metric = String(value || '').trim();
+        return metric === 'campaign_spend' ? 'spend' : (metric || 'leads');
+      }
+      function isBillMetric(metric) {
+        return metric === 'bills' || metric === 'billing_amount';
+      }
+      function isSpendMetric(metric) {
+        return metric === 'spend' || metric === 'cost_per_bill';
+      }
+      const state = {
+        summary: {},
+        metric: normalizeMetric(params.get('metric')),
+        source: params.get('source') || '',
+        activeTab: params.get('tab') || 'overview',
+        page: Number(params.get('page') || 1),
+        limit: Number(params.get('limit') || 50),
+        total: 0,
+        rows: [],
+        bills: [],
+        search: params.get('search') || '',
+        metaSummary: {},
+        metaView: params.get('meta_view') || 'campaign',
+        metaMetric: params.get('meta_metric') || 'leads',
+        metaPage: Math.max(1, Number(params.get('meta_page') || 1)),
+        metaLimit: [25, 50, 100].includes(Number(params.get('meta_limit'))) ? Number(params.get('meta_limit')) : 50,
+        metaTotal: 0,
+        metaTotalPages: 1,
+        metaCampaignId: params.get('meta_campaign_id') || '',
+        metaAdsetId: params.get('meta_adset_id') || '',
+        channelReports: {
+          googleLp: {
+            api: 'google-lp', label: 'Google LP', view: params.get('google_lp_view') || 'campaign', metric: params.get('google_lp_metric') || 'leads',
+            page: Math.max(1, Number(params.get('google_lp_page') || 1)), limit: [25, 50, 100].includes(Number(params.get('google_lp_limit'))) ? Number(params.get('google_lp_limit')) : 50,
+            total: 0, totalPages: 1, summary: {}, campaignId: params.get('google_lp_campaign_id') || '', adsetId: params.get('google_lp_adset_id') || '', landingPage: '',
+          },
+          organic: {
+            api: 'organic', label: 'Organic', view: params.get('organic_view') || 'landing', metric: params.get('organic_metric') || 'leads',
+            page: Math.max(1, Number(params.get('organic_page') || 1)), limit: [25, 50, 100].includes(Number(params.get('organic_limit'))) ? Number(params.get('organic_limit')) : 50,
+            total: 0, totalPages: 1, summary: {}, campaignId: '', adsetId: '', landingPage: params.get('organic_landing_page') || '',
+          },
+        },
+      };
+      const API_BASE = location.pathname.startsWith('/war-room/') ? '/war-room' : '';
+      const labels = {
+        leads_today: ['Leads', 'leads', 'All generated leads'],
+        unique_leads_today: ['Unique Leads', 'leads', 'Unique customer numbers'],
+        contacted_today: ['Contacted', 'contacted', 'Call attempts made'],
+        connected_today: ['Connected', 'connected', 'Calls with talk time'],
+        followups_today: ['Follow-Ups', 'followups', 'Active pending follow-ups'],
+        qualified_leads_today: ['Qualified', 'qualified', 'QL mapped leads'],
+        lost_leads_today: ['Lost', 'lost', 'Lost mapped leads'],
+        bills_today: ['Lead Bills', 'bills', 'Bills from selected leads'],
+        lead_to_bill_rate: ['Lead-to-Bill Rate', 'bills', 'Billed selected leads divided by unique leads'],
+        billing_amount: ['Lead Billing Amount', 'billing_amount', 'Bill amount from selected leads'],
+        gold_weight: ['Lead Gold Weight', 'bills', 'Bill weight from selected leads'],
+        campaign_spend: ['Campaign Spend', 'spend', 'External spend sync'],
+        cost_per_bill: ['Cost per Bill', 'cost_per_bill', 'Spend divided by bills'],
+      };
+      const compactColumns = [
+        ['lead_created_at', 'Lead Created'],
+        ['lead_id', 'Lead ID'],
+        ['customer_name', 'Customer'],
+        ['customer_number', 'Number'],
+        ['source', 'Source'],
+        ['platform', 'Platform'],
+        ['campaign_name', 'Campaign'],
+        ['latest_agent', 'Agent'],
+        ['call_attempts', 'Attempts'],
+        ['connected_calls', 'Connected'],
+        ['latest_disposition', 'Disposition'],
+        ['current_category', 'Category'],
+        ['current_stage', 'Stage'],
+        ['bill_status', 'Bill Status'],
+      ];
+      const billColumns = [
+        ['record_date', 'Bill Date'],
+        ['bill_id', 'Bill ID'],
+        ['customer_name', 'Customer'],
+        ['customer_number', 'Number'],
+        ['source', 'Source'],
+        ['campaign_name', 'Campaign'],
+        ['bill_amount', 'Bill Amount'],
+        ['gold_weight', 'Weight'],
+        ['bill_status', 'Status'],
+        ['credited_agent', 'Credited Agent'],
+      ];
+      const spendColumns = [
+        ['date', 'Date'],
+        ['platform', 'Platform'],
+        ['ad_account', 'Ad Account'],
+        ['campaign_id', 'Campaign ID'],
+        ['campaign_name', 'Campaign'],
+        ['ad_set_or_ad_group', 'Ad Set / Ad Group'],
+        ['ad_or_creative', 'Ad / Creative'],
+        ['impressions', 'Impressions'],
+        ['clicks', 'Clicks'],
+        ['spend', 'Spend'],
+        ['leads', 'Leads'],
+        ['unique_leads', 'Unique Leads'],
+        ['qualified_leads', 'QL'],
+        ['billed_leads', 'Billed Leads'],
+        ['bill_records', 'Bills'],
+        ['billing_amount', 'Billing Amount'],
+        ['cpl', 'CPL'],
+        ['cost_per_qualified_lead', 'Cost / QL'],
+        ['cost_per_bill', 'Cost / Bill'],
+        ['roas', 'ROAS'],
+        ['last_synced_at', 'Last Synced'],
+        ['sync_status', 'Sync Status'],
+      ];
+      const metaLabels = {
+        campaign_spend: ['Campaign Spend', 'spend', 'Actual Meta Insights spend'],
+        meta_leads: ['Meta Leads', 'leads', 'Individual Lead Ads submissions'],
+        unique_meta_leads: ['Unique Meta Leads', 'unique', 'Distinct normalized customer numbers'],
+        cpl: ['CPL', 'unique', 'Spend divided by unique Meta leads'],
+        contacted_leads: ['Contacted Leads', 'contacted', 'Unique leads with a call attempt'],
+        contact_rate: ['Contact Rate', 'contacted', 'Contacted divided by unique leads'],
+        connected_leads: ['Connected Leads', 'connected', 'Unique leads with talk time'],
+        connected_rate: ['Connected Rate', 'connected', 'Connected divided by unique leads'],
+        qualified_leads: ['Qualified Leads', 'qualified', 'Call-center QL category'],
+        qualified_rate: ['QL %', 'qualified', 'Qualified divided by unique leads'],
+        followups: ['Follow-Ups', 'followups', 'Unique leads with follow-up activity'],
+        lost_leads: ['Lost Leads', 'lost', 'Call-center lost category'],
+        billed_meta_leads: ['Billed Meta Leads', 'billed', 'Unique Meta leads linked to bills'],
+        lead_to_bill_rate: ['Lead-to-Bill Rate', 'billed', 'Billed leads divided by unique leads'],
+        meta_billing_amount: ['Meta Billing Amount', 'billed', 'Billing linked only to Meta leads'],
+        meta_gold_weight: ['Meta Gold Weight', 'billed', 'Gold weight linked only to Meta leads'],
+        cost_per_bill: ['Cost per Bill', 'billed', 'Meta spend divided by bill records'],
+        cac: ['CAC', 'billed', 'Meta spend divided by new billed customers'],
+      };
+      const channelCardLabels = {
+        googleLp: {
+          campaign_spend: ['Campaign Spend', 'spend', 'Actual Google Ads spend'], leads: ['Google LP Leads', 'leads', 'Google landing-page lead records'], unique_leads: ['Unique Google LP Leads', 'unique', 'Distinct normalized numbers'], cpl: ['CPL', 'unique', 'Spend divided by unique leads'],
+          impressions: ['Impressions', 'campaign', 'Google Ads impressions'], clicks: ['Clicks', 'campaign', 'Google Ads clicks'], ctr: ['CTR', 'campaign', 'Clicks divided by impressions'], platform_conversions: ['Google Conversions', 'campaign', 'Google Ads conversion actions'],
+          contacted_leads: ['Contacted Leads', 'contacted', 'Unique leads with a call attempt'], contact_rate: ['Contact Rate', 'contacted', 'Contacted divided by unique leads'], connected_leads: ['Connected Leads', 'connected', 'Unique leads with talk time'], connected_rate: ['Connected Rate', 'connected', 'Connected divided by unique leads'],
+          qualified_leads: ['Qualified Leads', 'qualified', 'Call-center QL category'], qualified_rate: ['QL %', 'qualified', 'Qualified divided by unique leads'], followups: ['Follow-Ups', 'followups', 'Unique leads with follow-up activity'], lost_leads: ['Lost Leads', 'lost', 'Call-center lost category'],
+          billed_leads: ['Billed Google LP Leads', 'billed', 'Unique leads linked to bills'], lead_to_bill_rate: ['Lead-to-Bill Rate', 'billed', 'Billed divided by unique leads'], billing_amount: ['Google LP Billing Amount', 'billed', 'Billing linked to Google LP leads'], gold_weight: ['Google LP Gold Weight', 'billed', 'Gold weight linked to Google LP leads'], cost_per_bill: ['Cost per Bill', 'billed', 'Spend divided by bill records'], cac: ['CAC', 'billed', 'Spend divided by new billed customers'],
+        },
+        organic: {
+          leads: ['Organic Leads', 'leads', 'Organic and SEO lead records'], unique_leads: ['Unique Organic Leads', 'unique', 'Distinct normalized numbers'], clicks: ['Search Clicks', 'landing', 'Search Console clicks'], impressions: ['Search Impressions', 'landing', 'Search Console impressions'], ctr: ['Search CTR', 'landing', 'Clicks divided by impressions'], average_position: ['Average Position', 'query', 'Weighted Search Console position'], sessions: ['Organic Sessions', 'landing', 'Website analytics organic sessions'], form_leads: ['Analytics Key Events', 'landing', 'GA4 organic key events'],
+          contacted_leads: ['Contacted Leads', 'contacted', 'Unique leads with a call attempt'], contact_rate: ['Contact Rate', 'contacted', 'Contacted divided by unique leads'], connected_leads: ['Connected Leads', 'connected', 'Unique leads with talk time'], connected_rate: ['Connected Rate', 'connected', 'Connected divided by unique leads'], qualified_leads: ['Qualified Leads', 'qualified', 'Call-center QL category'], qualified_rate: ['QL %', 'qualified', 'Qualified divided by unique leads'], followups: ['Follow-Ups', 'followups', 'Unique leads with follow-up activity'], lost_leads: ['Lost Leads', 'lost', 'Call-center lost category'], billed_leads: ['Billed Organic Leads', 'billed', 'Unique organic leads linked to bills'], lead_to_bill_rate: ['Lead-to-Bill Rate', 'billed', 'Billed divided by unique leads'], billing_amount: ['Organic Billing Amount', 'billed', 'Billing linked to organic leads'], gold_weight: ['Organic Gold Weight', 'billed', 'Gold weight linked to organic leads'],
+        },
+      };
+      const metaPerformanceColumns = {
+        campaign: [
+          ['campaign_name', 'Campaign'], ['spend', 'Spend'], ['impressions', 'Impressions'], ['clicks', 'Clicks'],
+          ['leads', 'Leads'], ['contacted', 'Contacted'], ['connected', 'Connected'], ['qualified_leads', 'QL'],
+          ['bill_records', 'Bills'], ['cpl', 'CPL'], ['bill_rate', 'Bill %'], ['cost_per_bill', 'Cost / Bill'],
+        ],
+        adset: [
+          ['campaign_name', 'Campaign'], ['adset_name', 'Ad Set'], ['spend', 'Spend'], ['impressions', 'Impressions'],
+          ['clicks', 'Clicks'], ['leads', 'Leads'], ['unique_leads', 'Unique Leads'], ['connected', 'Connected'],
+          ['qualified_leads', 'QL'], ['bill_records', 'Bills'], ['cpl', 'CPL'], ['cost_per_bill', 'Cost / Bill'],
+        ],
+        ad: [
+          ['campaign_name', 'Campaign'], ['adset_name', 'Ad Set'], ['ad_name', 'Ad'], ['spend', 'Spend'],
+          ['impressions', 'Impressions'], ['reach', 'Reach'], ['clicks', 'Clicks'], ['ctr', 'CTR'], ['cpc', 'CPC'],
+          ['leads', 'Leads'], ['connected', 'Connected'], ['qualified_leads', 'QL'], ['bill_records', 'Bills'],
+          ['billing_amount', 'Billing Amount'],
+        ],
+      };
+      const metaLeadColumns = [
+        ['lead_created_at', 'Lead Date'], ['meta_lead_id', 'Meta Lead ID'], ['customer_name', 'Customer'],
+        ['customer_number', 'Number'], ['form_name', 'Form'], ['campaign_name', 'Campaign'], ['adset_name', 'Ad Set'],
+        ['ad_name', 'Ad'], ['platform', 'Facebook / Instagram'], ['latest_agent', 'Agent'], ['call_attempts', 'Attempts'],
+        ['connected_calls', 'Connected'], ['total_talk_time', 'Talk Time'], ['disposition', 'Disposition'],
+        ['category', 'Category'], ['stage', 'Stage'], ['follow_up', 'Follow-Up'], ['bill_status', 'Bill Status'], ['bill_date', 'Bill Date'],
+        ['bill_amount', 'Bill Amount'], ['gold_weight', 'Gold Weight'],
+      ];
+      const metaSpendColumns = [
+        ['date', 'Date'], ['campaign_name', 'Campaign'], ['adset_name', 'Ad Set'], ['ad_name', 'Ad'],
+        ['spend', 'Spend'], ['impressions', 'Impressions'], ['reach', 'Reach'], ['clicks', 'Clicks'],
+        ['ctr', 'CTR'], ['cpc', 'CPC'], ['platform_leads', 'Platform Leads'], ['currency', 'Currency'],
+      ];
+      const channelLeadColumns = [
+        ['lead_created_at', 'Lead Date'], ['lead_id', 'Lead ID'], ['customer_name', 'Customer'], ['customer_number', 'Number'], ['source', 'Source'], ['platform', 'Platform'], ['form_id', 'Form'],
+        ['campaign_name', 'Campaign'], ['adset_or_adgroup_name', 'Ad Group'], ['ad_name', 'Ad'], ['keyword', 'Keyword'], ['search_term', 'Search Term'], ['landing_page', 'Landing Page'], ['latest_agent', 'Agent'],
+        ['call_attempts', 'Attempts'], ['connected_calls', 'Connected'], ['total_talk_time', 'Talk Time'], ['disposition', 'Disposition'], ['category', 'Category'], ['stage', 'Stage'], ['follow_up', 'Follow-Up'], ['bill_status', 'Bill Status'], ['bill_date', 'Bill Date'], ['bill_amount', 'Bill Amount'], ['gold_weight', 'Gold Weight'],
+      ];
+      const googleSpendColumns = [
+        ['date', 'Date'], ['campaign_id', 'Campaign ID'], ['campaign_name', 'Campaign'], ['spend', 'Spend'], ['impressions', 'Impressions'], ['clicks', 'Clicks'], ['platform_conversions', 'Google Conversions'], ['platform_conversion_value', 'Conversion Value'],
+      ];
+      const googlePerformanceColumns = {
+        campaign: [['campaign_name', 'Campaign'], ['spend', 'Spend'], ['impressions', 'Impressions'], ['clicks', 'Clicks'], ['ctr', 'CTR'], ['leads', 'Leads'], ['unique_leads', 'Unique Leads'], ['contacted', 'Contacted'], ['connected', 'Connected'], ['qualified_leads', 'QL'], ['bill_records', 'Bills'], ['cpl', 'CPL'], ['bill_rate', 'Bill %'], ['cost_per_bill', 'Cost / Bill']],
+        adset: [['campaign_name', 'Campaign'], ['adset_name', 'Ad Group'], ['spend', 'Spend'], ['impressions', 'Impressions'], ['clicks', 'Clicks'], ['leads', 'Leads'], ['unique_leads', 'Unique Leads'], ['connected', 'Connected'], ['qualified_leads', 'QL'], ['bill_records', 'Bills'], ['cpl', 'CPL'], ['cost_per_bill', 'Cost / Bill']],
+        ad: [['campaign_name', 'Campaign'], ['adset_name', 'Ad Group'], ['ad_name', 'Ad'], ['spend', 'Spend'], ['impressions', 'Impressions'], ['clicks', 'Clicks'], ['ctr', 'CTR'], ['cpc', 'CPC'], ['leads', 'Leads'], ['connected', 'Connected'], ['qualified_leads', 'QL'], ['bill_records', 'Bills'], ['billing_amount', 'Billing Amount']],
+      };
+      const organicPerformanceColumns = {
+        landing: [['landing_page', 'Landing Page'], ['clicks', 'Search Clicks'], ['impressions', 'Impressions'], ['ctr', 'CTR'], ['average_position', 'Avg Position'], ['leads', 'Leads'], ['unique_leads', 'Unique Leads'], ['contacted', 'Contacted'], ['connected', 'Connected'], ['qualified_leads', 'QL'], ['billed_leads', 'Billed']],
+        query: [['query_text', 'Search Query'], ['clicks', 'Clicks'], ['impressions', 'Impressions'], ['ctr', 'CTR'], ['average_position', 'Avg Position']],
+      };
+      function today() { return new Date().toISOString().slice(0, 10); }
+      function esc(v) {
+        return String(v == null || v === '' ? 'N/A' : v)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+      function fmt(v, key = '') {
+        if (v == null || v === '') return 'N/A';
+        if (key.includes('amount') || key.includes('spend') || key.includes('cost') || ['cpl', 'cac', 'cpc', 'cpm'].includes(key)) return `₹${Number(v || 0).toLocaleString('en-IN')}`;
+        if (key.includes('rate') || key.includes('conversion') || key === 'ctr' || key === 'qualified_rate' || key === 'bill_rate') return `${Number(v || 0).toLocaleString('en-IN')}%`;
+        if (key.includes('weight')) return `${Number(v || 0).toLocaleString('en-IN')} g`;
+        if (typeof v === 'number') return v.toLocaleString('en-IN');
+        return v;
+      }
+      function currentQuery(extra = {}, options = {}) {
+        const query = {
+          start_date: document.getElementById('startDate').value,
+          end_date: document.getElementById('endDate').value,
+          ...extra,
+        };
+        const qs = new URLSearchParams(query);
+        if (state.source) qs.set('source', state.source);
+        if (state.search && options.includeSearch !== false) qs.set('search', state.search);
+        return qs.toString();
+      }
+      function setUrl() {
+        const qs = new URLSearchParams({
+          tab: state.activeTab,
+          metric: state.metric,
+          page: String(state.page),
+          limit: String(state.limit),
+        });
+        if (state.source) qs.set('source', state.source);
+        if (state.search) qs.set('search', state.search);
+        if (state.activeTab === 'meta-report') {
+          qs.set('meta_view', state.metaView);
+          qs.set('meta_metric', state.metaMetric);
+          qs.set('meta_page', String(state.metaPage));
+          qs.set('meta_limit', String(state.metaLimit));
+          if (state.metaCampaignId) qs.set('meta_campaign_id', state.metaCampaignId);
+          if (state.metaAdsetId) qs.set('meta_adset_id', state.metaAdsetId);
+        } else if (state.activeTab === 'google-lp-report' || state.activeTab === 'organic-report') {
+          const name = state.activeTab === 'google-lp-report' ? 'googleLp' : 'organic';
+          const report = state.channelReports[name];
+          const key = name === 'googleLp' ? 'google_lp' : 'organic';
+          qs.set(`${key}_view`, report.view);
+          qs.set(`${key}_metric`, report.metric);
+          qs.set(`${key}_page`, String(report.page));
+          qs.set(`${key}_limit`, String(report.limit));
+          if (report.campaignId) qs.set(`${key}_campaign_id`, report.campaignId);
+          if (report.adsetId) qs.set(`${key}_adset_id`, report.adsetId);
+          if (report.landingPage) qs.set(`${key}_landing_page`, report.landingPage);
+        }
+        history.replaceState(null, '', `?${qs.toString()}`);
+      }
+      async function json(url, options = {}) {
+        const r = await fetch(`${API_BASE}${url}`, options);
+        if (r.status === 401) {
+          location.href = '/login';
+          return {};
+        }
+        if (!r.ok) throw new Error(url);
+        return r.json();
+      }
+      function showTab(tab) {
+        state.activeTab = tab;
+        document.querySelectorAll('.tab-view').forEach(el => el.classList.toggle('hidden', el.id !== tab));
+        document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+        if (tab === 'billing-conversion') {
+          if (!isBillMetric(state.metric)) state.metric = 'bills';
+          document.getElementById('metric').value = state.metric;
+          loadBills();
+        } else if (tab === 'campaign-performance' && isSpendMetric(state.metric)) {
+          document.getElementById('metric').value = state.metric;
+          loadCampaigns();
+        } else if (tab === 'meta-report') {
+          loadMetaReport();
+        } else if (tab === 'google-lp-report') {
+          loadChannelReport('googleLp');
+        } else if (tab === 'organic-report') {
+          loadChannelReport('organic');
+        }
+        setUrl();
+      }
+      function renderCards() {
+        const el = document.getElementById('cards');
+        el.innerHTML = Object.entries(labels).map(([key, [label, metric, hint]]) => `
+          <div class="metric-card ${state.metric === metric ? 'selected' : ''}" data-metric="${metric}" title="Click to view details">
+            <span>${esc(label)}</span>
+            <strong>${esc(fmt(state.summary[key], key))}</strong>
+            <small>${esc(hint)}</small>
+          </div>
+        `).join('');
+        el.querySelectorAll('.metric-card').forEach(card => card.addEventListener('click', () => {
+          state.metric = card.dataset.metric;
+          state.page = 1;
+          document.getElementById('metric').value = state.metric;
+          if (isSpendMetric(state.metric)) {
+            showTab('campaign-performance');
+            renderCards();
+            loadCampaigns();
+          } else if (isBillMetric(state.metric)) {
+            showTab('billing-conversion');
+            loadBills();
+          } else {
+            showTab('lead-records');
+            renderCards();
+            loadDrilldown();
+          }
+        }));
+      }
+      function tableHtml(rows, columns, options = {}) {
+        if (!rows.length) {
+          return '<tbody><tr><td>No matching records found for the selected filters.</td></tr></tbody>';
+        }
+        const actionHeader = options.details ? '<th>Details</th>' : '';
+        return `<thead><tr>${columns.map(([, label]) => `<th>${esc(label)}</th>`).join('')}${actionHeader}</tr></thead>
+          <tbody>${rows.map((row, index) => `<tr class="${options.clickable ? 'clickable' : ''}" data-row="${index}">
+            ${columns.map(([key]) => `<td>${['bill_status', 'current_stage', 'stage', 'category', 'current_category'].includes(key) ? `<span class="pill">${esc(fmt(row[key], key))}</span>` : esc(fmt(row[key], key))}</td>`).join('')}
+            ${options.details ? '<td><button class="link-button" data-detail="' + index + '">View</button></td>' : ''}
+          </tr>`).join('')}</tbody>`;
+      }
+      function bindDetails(tableId, rows) {
+        document.querySelectorAll(`#${tableId} [data-detail], #${tableId} tr.clickable`).forEach(el => {
+          el.addEventListener('click', (event) => {
+            const rowIndex = Number(event.currentTarget.dataset.detail || event.currentTarget.dataset.row);
+            openDrawer(rows[rowIndex]);
+          });
+        });
+      }
+      function renderDataTable(tableId, rows, columns) {
+        const table = document.getElementById(tableId);
+        table.innerHTML = tableHtml(rows, columns, { details: true });
+        bindDetails(tableId, rows);
+      }
+      function renderSimpleTable(id, rows) {
+        const table = document.getElementById(id);
+        if (!rows.length) {
+          table.innerHTML = '<tbody><tr><td>No matching records found.</td></tr></tbody>';
+          return;
+        }
+        const headers = Object.keys(rows[0]);
+        table.innerHTML = `<thead><tr>${headers.map(h => `<th>${esc(h.replaceAll('_', ' '))}</th>`).join('')}</tr></thead>
+          <tbody>${rows.map((row, rowIndex) => `<tr class="clickable" data-row="${rowIndex}">
+            ${headers.map(h => `<td>${h === 'source' ? `<span class="pill">${esc(fmt(row[h], h))}</span>` : esc(fmt(row[h], h))}</td>`).join('')}
+          </tr>`).join('')}</tbody>`;
+        if (id === 'sources' || id === 'sourcePreview') {
+          table.querySelectorAll('tr.clickable').forEach(row => row.addEventListener('click', () => {
+            const picked = rows[Number(row.dataset.row)];
+            state.source = picked.canonical_source || picked.source || '';
+            state.metric = 'leads';
+            state.page = 1;
+            document.getElementById('source').value = state.source;
+            document.getElementById('metric').value = state.metric;
+            showTab('lead-records');
+            refresh();
+          }));
+        }
+      }
+      function renderSourceCards(rows) {
+        const el = document.getElementById('sourceCards');
+        if (!el) return;
+        el.innerHTML = rows.map((row) => `
+          <div class="metric-card ${state.source === row.canonical_source ? 'selected' : ''}" data-source="${esc(row.canonical_source || '')}" title="Click to view ${esc(row.source)} records">
+            <span>${esc(row.source)}</span>
+            <strong>${esc(fmt(row.leads, 'leads'))} Leads</strong>
+            <small>${esc(fmt(row.billed_leads || row.bills || 0, 'bills'))} Billed Leads | ${esc(fmt(row.conversion_rate || 0, 'conversion_rate'))}</small>
+          </div>
+        `).join('');
+        el.querySelectorAll('.metric-card').forEach(card => card.addEventListener('click', () => {
+          state.source = card.dataset.source || '';
+          state.metric = 'leads';
+          state.page = 1;
+          document.getElementById('source').value = state.source;
+          document.getElementById('metric').value = state.metric;
+          showTab('lead-records');
+          loadDrilldown();
+          setUrl();
+        }));
+      }
+      function openDrawer(row) {
+        document.getElementById('drawerTitle').textContent = row?.customer_name || row?.lead_id || row?.bill_id || 'Record Details';
+        document.getElementById('drawerBody').innerHTML = Object.entries(row || {}).map(([key, value]) => `
+          <div class="detail-item"><span>${esc(key.replaceAll('_', ' '))}</span><strong>${esc(fmt(value, key))}</strong></div>
+        `).join('');
+        document.getElementById('drawer').classList.add('open');
+        document.getElementById('drawerBackdrop').classList.add('open');
+      }
+      function closeDrawer() {
+        document.getElementById('drawer').classList.remove('open');
+        document.getElementById('drawerBackdrop').classList.remove('open');
+      }
+      async function loadSummary() {
+        state.summary = await json(`/api/dashboard/summary?${currentQuery({}, { includeSearch: false })}`);
+        renderCards();
+      }
+      async function loadSources() {
+        const data = await json(`/api/dashboard/marketing?${currentQuery({}, { includeSearch: false })}`);
+        renderSourceCards(data.rows);
+        renderSimpleTable('sources', data.rows);
+        renderSimpleTable('sourcePreview', data.rows.slice(0, 8));
+        const sourceSelect = document.getElementById('source');
+        const sources = data.rows.filter(r => r.canonical_source);
+        sourceSelect.innerHTML = ['<option value="">All Sources</option>']
+          .concat(sources.map(row => `<option value="${esc(row.canonical_source)}" ${state.source === row.canonical_source ? 'selected' : ''}>${esc(row.source)}</option>`))
+          .join('');
+      }
+      async function loadCampaigns() {
+        if (isSpendMetric(state.metric)) {
+          const data = await json(`/api/dashboard/marketing-spend?${currentQuery({ page: state.page, limit: state.limit })}`);
+          const table = document.getElementById('campaigns');
+          const totalPages = Math.max(1, Math.ceil(Number(data.total || 0) / state.limit));
+          table.closest('.panel').querySelector('h2').textContent = state.metric === 'spend' ? 'Campaign Spend Details' : 'Campaign Cost Details';
+          table.closest('.panel').querySelector('.summary-line').textContent =
+            `Showing ${Number(data.rows?.length || 0)} of ${Number(data.total || 0)} spend rows | Total spend: ${fmt(data.total_spend || 0, 'spend')} | Page ${state.page} of ${totalPages}`;
+          document.getElementById('campaignExport').href = `${API_BASE}/api/dashboard/marketing-spend/export?${currentQuery({ metric: state.metric })}`;
+          renderDataTable('campaigns', data.rows || [], spendColumns);
+          return;
+        }
+        const data = await json(`/api/dashboard/digital-sources?${currentQuery({}, { includeSearch: false })}`);
+        const table = document.getElementById('campaigns');
+        table.closest('.panel').querySelector('h2').textContent = 'Campaign Performance';
+        table.closest('.panel').querySelector('.summary-line').textContent = 'Campaign and source grouping from synced lead data.';
+        document.getElementById('campaignExport').href = `${API_BASE}/api/dashboard/export?${currentQuery({ metric: 'leads' })}`;
+        renderSimpleTable('campaigns', data.rows);
+      }
+      async function loadDrilldown() {
+        if (isSpendMetric(state.metric)) {
+          showTab('campaign-performance');
+          return;
+        }
+        const data = await json(`/api/dashboard/drilldown?${currentQuery({ metric: state.metric, page: state.page, limit: state.limit })}`);
+        state.total = Number(data.total || 0);
+        state.rows = data.rows || [];
+        const totalPages = Math.max(1, Math.ceil(state.total / state.limit));
+        document.getElementById('drillTitle').textContent = `${state.metric.replaceAll('_', ' ')} Records`;
+        document.getElementById('meta').textContent = `Showing ${state.rows.length} of ${state.total} records | ${data.start_date} to ${data.end_date}${state.source ? ` | ${state.source}` : ''}`;
+        document.getElementById('overviewSummary').textContent = `Showing ${Math.min(state.rows.length, 10)} preview records | Total: ${state.total}`;
+        document.getElementById('pageInfo').textContent = `Page ${state.page} of ${totalPages}`;
+        document.getElementById('prevPage').disabled = state.page <= 1;
+        document.getElementById('nextPage').disabled = state.page >= totalPages;
+        document.getElementById('export').href = `${API_BASE}/api/dashboard/export?${currentQuery({ metric: state.metric })}`;
+        document.getElementById('overviewExport').href = document.getElementById('export').href;
+        renderDataTable('table', state.rows, compactColumns);
+        renderDataTable('overviewTable', state.rows.slice(0, 10), compactColumns);
+      }
+      async function loadBills() {
+        const data = await json(`/api/dashboard/drilldown?${currentQuery({ metric: 'bills', page: 1, limit: 50 })}`);
+        state.bills = data.rows || [];
+        document.getElementById('billExport').href = `${API_BASE}/api/dashboard/export?${currentQuery({ metric: 'bills' })}`;
+        renderDataTable('billTable', state.bills, billColumns);
+      }
+      function metaQuery(extra = {}) {
+        const query = new URLSearchParams({
+          start_date: document.getElementById('startDate').value,
+          end_date: document.getElementById('endDate').value,
+          page: String(state.metaPage),
+          limit: String(state.metaLimit),
+          ...extra,
+        });
+        if (state.search) query.set('search', state.search);
+        if (state.metaCampaignId) query.set('campaign_id', state.metaCampaignId);
+        if (state.metaAdsetId) query.set('adset_id', state.metaAdsetId);
+        return query.toString();
+      }
+      function renderMetaConnectorStatus(connector) {
+        const el = document.getElementById('metaConnectorStatus');
+        const status = connector?.overall || 'pending';
+        el.className = `status-banner ${status}`;
+        const tokenError = connector?.token?.status === 'attention' ? connector.token.last_error : '';
+        const items = [
+          ['Meta Lead Sync', connector?.leads, tokenError],
+          ['Meta Insights Sync', connector?.insights, tokenError],
+          ['Meta Webhook', connector?.webhook, ''],
+        ];
+        const statusLabel = (value) => value === 'healthy' ? 'Healthy' : value === 'attention' ? 'Attention Required' : 'Pending';
+        el.innerHTML = `<div class="connector-status-grid">${items.map(([name, row, inheritedError]) => {
+          const rowStatus = inheritedError ? 'attention' : (row?.status || 'pending');
+          const detail = row?.last_error || inheritedError || (row?.last_success_at ? `Last successful sync: ${row.last_success_at}` : 'Waiting for first successful activity.');
+          return `<div class="connector-status-item"><strong>${esc(name)}: ${esc(statusLabel(rowStatus))}</strong><span>${esc(detail)}</span>${row?.last_success_at ? `<small>Historical data retained through ${esc(row.last_success_at)}</small>` : ''}</div>`;
+        }).join('')}</div>`;
+      }
+      function renderMetaCards() {
+        const el = document.getElementById('metaCards');
+        el.innerHTML = Object.entries(metaLabels).map(([key, [label, metric, hint]]) => `
+          <div class="metric-card ${(state.metaMetric === metric || (metric === 'spend' && state.metaView === 'spend')) ? 'selected' : ''}" data-meta-card="${metric}">
+            <span>${esc(label)}</span><strong>${esc(fmt(state.metaSummary[key], key))}</strong><small>${esc(hint)}</small>
+          </div>`).join('');
+        el.querySelectorAll('[data-meta-card]').forEach(card => card.addEventListener('click', () => {
+          const metric = card.dataset.metaCard;
+          state.metaPage = 1;
+          state.metaCampaignId = '';
+          state.metaAdsetId = '';
+          state.metaMetric = metric;
+          state.metaView = metric === 'spend' ? 'spend' : 'leads';
+          loadMetaTable();
+          renderMetaCards();
+          setUrl();
+        }));
+      }
+      function syncMetaViewButtons() {
+        document.querySelectorAll('[data-meta-view]').forEach(button => button.classList.toggle('active', button.dataset.metaView === state.metaView));
+        const showConversion = state.metaView === 'leads' && ['billed', 'unique'].includes(state.metaMetric);
+        document.getElementById('metaConversionTabs').classList.toggle('hidden', !showConversion);
+        document.querySelectorAll('[data-meta-metric]').forEach(button => button.classList.toggle('active', button.dataset.metaMetric === state.metaMetric));
+      }
+      function setMetaView(view, options = {}) {
+        state.metaView = view;
+        state.metaPage = 1;
+        if (view === 'leads' && !options.keepMetric) state.metaMetric = 'leads';
+        if (!options.keepFilters) {
+          state.metaCampaignId = '';
+          state.metaAdsetId = '';
+        }
+        syncMetaViewButtons();
+        loadMetaTable();
+        setUrl();
+      }
+      async function loadMetaSummary() {
+        const data = await json(`/api/dashboard/meta/summary?${metaQuery({ page: 1, limit: 1 })}`);
+        state.metaSummary = data || {};
+        renderMetaConnectorStatus(data.connector);
+        renderMetaCards();
+      }
+      let metaTableAbortController = null;
+      async function loadMetaTable() {
+        metaTableAbortController?.abort();
+        metaTableAbortController = new AbortController();
+        const signal = metaTableAbortController.signal;
+        syncMetaViewButtons();
+        let endpoint;
+        if (state.metaView === 'spend') endpoint = `/api/dashboard/meta/spend?${metaQuery()}`;
+        else if (state.metaView === 'leads') endpoint = `/api/dashboard/meta/leads?${metaQuery({ metric: state.metaMetric })}`;
+        else endpoint = `/api/dashboard/meta/performance?${metaQuery({ level: state.metaView })}`;
+        try {
+          const data = await json(endpoint, { signal });
+          if (signal.aborted) return;
+          const rows = data.rows || [];
+          state.metaTotal = Number(data.total || 0);
+          state.metaTotalPages = Math.max(1, Number(data.total_pages || Math.ceil(state.metaTotal / state.metaLimit) || 1));
+          const start = state.metaTotal ? ((state.metaPage - 1) * state.metaLimit) + 1 : 0;
+          const end = Math.min(state.metaTotal, start + rows.length - 1);
+          document.getElementById('metaPageInfo').textContent = `Showing ${start}–${Math.max(start, end)} of ${state.metaTotal} | Page ${state.metaPage} of ${state.metaTotalPages}`;
+          document.getElementById('metaFirstPage').disabled = state.metaPage <= 1;
+          document.getElementById('metaPrevPage').disabled = state.metaPage <= 1;
+          document.getElementById('metaNextPage').disabled = state.metaPage >= state.metaTotalPages;
+          document.getElementById('metaLastPage').disabled = state.metaPage >= state.metaTotalPages;
+          const titles = { campaign: 'Meta Campaign Performance', adset: 'Meta Ad Set Performance', ad: 'Meta Ad Performance', leads: 'Meta Lead Details', spend: 'Meta Spend Details' };
+          document.getElementById('metaTableTitle').textContent = titles[state.metaView] || 'Meta Report';
+          document.getElementById('metaTableSummary').textContent = state.metaView === 'spend'
+            ? `Actual Meta spend rows total ${fmt(data.total_spend || 0, 'spend')} for the selected period.`
+            : `${state.metaTotal} matching record${state.metaTotal === 1 ? '' : 's'} for the selected Meta cohort.`;
+          document.getElementById('metaExportPage').href = `${API_BASE}/api/dashboard/meta/export?${metaQuery({ view: state.metaView, metric: state.metaMetric, scope: 'current' })}`;
+          document.getElementById('metaExport').href = `${API_BASE}/api/dashboard/meta/export?${metaQuery({ view: state.metaView, metric: state.metaMetric, scope: 'all' })}`;
+          if (state.metaView === 'leads') {
+            renderDataTable('metaTable', rows, metaLeadColumns);
+          } else if (state.metaView === 'spend') {
+            renderDataTable('metaTable', rows, metaSpendColumns);
+          } else {
+            const table = document.getElementById('metaTable');
+            table.innerHTML = tableHtml(rows, metaPerformanceColumns[state.metaView], { clickable: true });
+            table.querySelectorAll('tr.clickable').forEach(rowEl => rowEl.addEventListener('click', () => {
+              const row = rows[Number(rowEl.dataset.row)];
+              if (state.metaView === 'campaign') {
+                state.metaCampaignId = row.campaign_id === 'N/A' ? '' : row.campaign_id;
+                state.metaAdsetId = '';
+                setMetaView('adset', { keepFilters: true, keepMetric: true });
+              } else if (state.metaView === 'adset') {
+                state.metaCampaignId = row.campaign_id === 'N/A' ? state.metaCampaignId : row.campaign_id;
+                state.metaAdsetId = row.adset_id === 'N/A' ? '' : row.adset_id;
+                setMetaView('ad', { keepFilters: true, keepMetric: true });
+              } else {
+                openDrawer(row);
+              }
+            }));
+          }
+        } catch (error) {
+          if (error.name !== 'AbortError') throw error;
+        }
+      }
+      async function loadMetaReport() {
+        await Promise.all([loadMetaSummary(), loadMetaTable()]);
+      }
+      function channelQuery(name, extra = {}) {
+        const report = state.channelReports[name];
+        const query = new URLSearchParams({
+          start_date: document.getElementById('startDate').value,
+          end_date: document.getElementById('endDate').value,
+          page: String(report.page),
+          limit: String(report.limit),
+          ...extra,
+        });
+        if (state.search) query.set('search', state.search);
+        if (report.campaignId) query.set('campaign_id', report.campaignId);
+        if (report.adsetId) query.set('adset_id', report.adsetId);
+        if (report.landingPage) query.set('landing_page', report.landingPage);
+        return query.toString();
+      }
+      function renderChannelStatus(name, connector) {
+        const prefix = name === 'googleLp' ? 'googleLp' : 'organic';
+        const el = document.getElementById(`${prefix}ConnectorStatus`);
+        const status = connector?.overall || 'pending';
+        const title = name === 'googleLp' ? 'Google Ads Sync' : 'Organic Sync';
+        const label = status === 'healthy' ? 'Healthy' : status === 'attention' ? 'Attention Required' : 'Pending';
+        el.className = `status-banner ${status}`;
+        el.innerHTML = `<div><strong>${esc(title)}: ${esc(label)}</strong><span>${esc(connector?.message || 'Waiting for connector status.')}</span></div>${connector?.data_as_of ? `<small>Data as of ${esc(connector.data_as_of)}</small>` : ''}`;
+      }
+      function renderChannelCards(name) {
+        const report = state.channelReports[name];
+        const el = document.getElementById(`${name}Cards`);
+        el.innerHTML = Object.entries(channelCardLabels[name]).map(([key, [label, metric, hint]]) => `
+          <div class="metric-card ${report.metric === metric ? 'selected' : ''}" data-channel-card="${name}" data-channel-metric="${metric}">
+            <span>${esc(label)}</span><strong>${esc(fmt(report.summary[key], key))}</strong><small>${esc(hint)}</small>
+          </div>`).join('');
+        el.querySelectorAll('[data-channel-card]').forEach(card => card.addEventListener('click', () => {
+          report.metric = card.dataset.channelMetric;
+          report.page = 1;
+          report.campaignId = '';
+          report.adsetId = '';
+          report.landingPage = '';
+          if (name === 'googleLp' && report.metric === 'spend') report.view = 'spend';
+          else if (['campaign', 'landing', 'query'].includes(report.metric)) report.view = report.metric;
+          else report.view = 'leads';
+          syncChannelViewButtons(name);
+          renderChannelCards(name);
+          loadChannelTable(name);
+          setUrl();
+        }));
+      }
+      function syncChannelViewButtons(name) {
+        const report = state.channelReports[name];
+        document.querySelectorAll(`[data-channel="${name}"][data-channel-view]`).forEach(button => button.classList.toggle('active', button.dataset.channelView === report.view));
+      }
+      function setChannelView(name, view, options = {}) {
+        const report = state.channelReports[name];
+        report.view = view;
+        report.page = 1;
+        if (view === 'leads' && !options.keepMetric) report.metric = 'leads';
+        if (!options.keepFilters) {
+          report.campaignId = '';
+          report.adsetId = '';
+          report.landingPage = '';
+        }
+        syncChannelViewButtons(name);
+        renderChannelCards(name);
+        loadChannelTable(name);
+        setUrl();
+      }
+      async function loadChannelSummary(name) {
+        const report = state.channelReports[name];
+        const data = await json(`/api/dashboard/channel/${report.api}/summary?${channelQuery(name, { page: 1, limit: 1 })}`);
+        report.summary = data || {};
+        renderChannelStatus(name, data.connector);
+        renderChannelCards(name);
+      }
+      const channelAbortControllers = {};
+      async function loadChannelTable(name) {
+        const report = state.channelReports[name];
+        channelAbortControllers[name]?.abort();
+        channelAbortControllers[name] = new AbortController();
+        const signal = channelAbortControllers[name].signal;
+        syncChannelViewButtons(name);
+        let endpoint;
+        if (name === 'googleLp' && report.view === 'spend') endpoint = `/api/dashboard/channel/google-lp/spend?${channelQuery(name)}`;
+        else if (report.view === 'leads') endpoint = `/api/dashboard/channel/${report.api}/leads?${channelQuery(name, { metric: report.metric })}`;
+        else endpoint = `/api/dashboard/channel/${report.api}/performance?${channelQuery(name, { view: report.view })}`;
+        try {
+          const data = await json(endpoint, { signal });
+          if (signal.aborted) return;
+          const rows = data.rows || [];
+          report.total = Number(data.total || 0);
+          report.totalPages = Math.max(1, Number(data.total_pages || Math.ceil(report.total / report.limit) || 1));
+          const start = report.total ? ((report.page - 1) * report.limit) + 1 : 0;
+          const end = Math.min(report.total, start + rows.length - 1);
+          document.getElementById(`${name}PageInfo`).textContent = `Showing ${start}–${Math.max(start, end)} of ${report.total} | Page ${report.page} of ${report.totalPages}`;
+          document.getElementById(`${name}FirstPage`).disabled = report.page <= 1;
+          document.getElementById(`${name}PrevPage`).disabled = report.page <= 1;
+          document.getElementById(`${name}NextPage`).disabled = report.page >= report.totalPages;
+          document.getElementById(`${name}LastPage`).disabled = report.page >= report.totalPages;
+          const titles = name === 'googleLp'
+            ? { campaign: 'Google LP Campaign Performance', adset: 'Google LP Ad Group Performance', ad: 'Google LP Ad Performance', leads: 'Google LP Lead Details', spend: 'Google Ads Spend Details' }
+            : { landing: 'Organic Landing Pages', query: 'Organic Search Queries', leads: 'Organic Lead Details' };
+          document.getElementById(`${name}TableTitle`).textContent = titles[report.view] || `${report.label} Report`;
+          document.getElementById(`${name}TableSummary`).textContent = report.view === 'spend'
+            ? `Actual Google Ads spend rows total ${fmt(data.total_spend || 0, 'spend')} for the selected period.`
+            : `${report.total} matching record${report.total === 1 ? '' : 's'} for the selected ${report.label} cohort.`;
+          document.getElementById(`${name}ExportPage`).href = `${API_BASE}/api/dashboard/channel/${report.api}/export?${channelQuery(name, { view: report.view, metric: report.metric, scope: 'current' })}`;
+          document.getElementById(`${name}Export`).href = `${API_BASE}/api/dashboard/channel/${report.api}/export?${channelQuery(name, { view: report.view, metric: report.metric, scope: 'all' })}`;
+          if (report.view === 'leads') {
+            renderDataTable(`${name}Table`, rows, channelLeadColumns);
+          } else if (name === 'googleLp' && report.view === 'spend') {
+            renderDataTable(`${name}Table`, rows, googleSpendColumns);
+          } else {
+            const columns = name === 'googleLp' ? googlePerformanceColumns[report.view] : organicPerformanceColumns[report.view];
+            const table = document.getElementById(`${name}Table`);
+            table.innerHTML = tableHtml(rows, columns, { clickable: true });
+            table.querySelectorAll('tr.clickable').forEach(rowEl => rowEl.addEventListener('click', () => {
+              const row = rows[Number(rowEl.dataset.row)];
+              if (name === 'googleLp' && report.view === 'campaign') {
+                report.campaignId = row.campaign_id === 'N/A' ? '' : row.campaign_id;
+                report.adsetId = '';
+                setChannelView(name, 'adset', { keepFilters: true, keepMetric: true });
+              } else if (name === 'googleLp' && report.view === 'adset') {
+                report.campaignId = row.campaign_id === 'N/A' ? report.campaignId : row.campaign_id;
+                report.adsetId = row.adset_id === 'N/A' ? '' : row.adset_id;
+                setChannelView(name, 'ad', { keepFilters: true, keepMetric: true });
+              } else if (name === 'organic' && report.view === 'landing') {
+                report.landingPage = row.landing_page === 'N/A' ? '' : row.landing_page;
+                setChannelView(name, 'leads', { keepFilters: true, keepMetric: true });
+              } else {
+                openDrawer(row);
+              }
+            }));
+          }
+        } catch (error) {
+          if (error.name !== 'AbortError') throw error;
+        }
+      }
+      async function loadChannelReport(name) {
+        await Promise.all([loadChannelSummary(name), loadChannelTable(name)]);
+      }
+      let refreshTimer = null;
+      async function refresh() {
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(async () => {
+          setUrl();
+          await loadSummary();
+          await loadSources();
+          await loadCampaigns();
+          if (!isSpendMetric(state.metric)) await loadDrilldown();
+          if (state.activeTab === 'billing-conversion') await loadBills();
+          if (state.activeTab === 'meta-report') await loadMetaReport();
+          if (state.activeTab === 'google-lp-report') await loadChannelReport('googleLp');
+          if (state.activeTab === 'organic-report') await loadChannelReport('organic');
+        }, 120);
+      }
+      document.getElementById('startDate').value = today();
+      document.getElementById('endDate').value = today();
+      document.getElementById('metric').value = state.metric;
+      document.getElementById('pageSize').value = String(state.limit);
+      document.getElementById('metaPageSize').value = String(state.metaLimit);
+      document.getElementById('googleLpPageSize').value = String(state.channelReports.googleLp.limit);
+      document.getElementById('organicPageSize').value = String(state.channelReports.organic.limit);
+      document.getElementById('search').value = state.search;
+      document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => showTab(tab.dataset.tab)));
+      document.querySelectorAll('[data-open-tab]').forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.openTab)));
+      document.getElementById('source').addEventListener('change', (e) => { state.source = e.target.value; state.page = 1; refresh(); });
+      document.getElementById('metric').addEventListener('change', (e) => {
+        state.metric = normalizeMetric(e.target.value);
+        state.page = 1;
+        renderCards();
+        if (isSpendMetric(state.metric)) {
+          showTab('campaign-performance');
+          loadCampaigns();
+        } else if (isBillMetric(state.metric)) {
+          showTab('billing-conversion');
+          loadBills();
+        } else {
+          showTab('lead-records');
+          loadDrilldown();
+        }
+      });
+      document.getElementById('search').addEventListener('input', (e) => { state.search = e.target.value.trim(); state.page = 1; refresh(); });
+      document.getElementById('refresh').addEventListener('click', refresh);
+      document.getElementById('startDate').addEventListener('change', () => { state.page = 1; state.metaPage = 1; state.channelReports.googleLp.page = 1; state.channelReports.organic.page = 1; refresh(); });
+      document.getElementById('endDate').addEventListener('change', () => { state.page = 1; state.metaPage = 1; state.channelReports.googleLp.page = 1; state.channelReports.organic.page = 1; refresh(); });
+      document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page -= 1; loadDrilldown(); setUrl(); } });
+      document.getElementById('nextPage').addEventListener('click', () => { state.page += 1; loadDrilldown(); setUrl(); });
+      document.getElementById('pageSize').addEventListener('change', (e) => { state.limit = Number(e.target.value); state.page = 1; loadDrilldown(); setUrl(); });
+      document.querySelectorAll('[data-meta-view]').forEach(button => button.addEventListener('click', () => setMetaView(button.dataset.metaView)));
+      document.querySelectorAll('[data-meta-metric]').forEach(button => button.addEventListener('click', () => {
+        state.metaMetric = button.dataset.metaMetric;
+        state.metaPage = 1;
+        syncMetaViewButtons();
+        loadMetaTable();
+        renderMetaCards();
+        setUrl();
+      }));
+      document.getElementById('metaFirstPage').addEventListener('click', () => { state.metaPage = 1; loadMetaTable(); setUrl(); });
+      document.getElementById('metaPrevPage').addEventListener('click', () => { if (state.metaPage > 1) { state.metaPage -= 1; loadMetaTable(); setUrl(); } });
+      document.getElementById('metaNextPage').addEventListener('click', () => { if (state.metaPage < state.metaTotalPages) { state.metaPage += 1; loadMetaTable(); setUrl(); } });
+      document.getElementById('metaLastPage').addEventListener('click', () => { state.metaPage = state.metaTotalPages; loadMetaTable(); setUrl(); });
+      document.getElementById('metaPageSize').addEventListener('change', (e) => { state.metaLimit = Number(e.target.value); state.metaPage = 1; loadMetaTable(); setUrl(); });
+      document.querySelectorAll('[data-channel][data-channel-view]').forEach(button => button.addEventListener('click', () => setChannelView(button.dataset.channel, button.dataset.channelView)));
+      for (const name of ['googleLp', 'organic']) {
+        const report = state.channelReports[name];
+        document.getElementById(`${name}FirstPage`).addEventListener('click', () => { report.page = 1; loadChannelTable(name); setUrl(); });
+        document.getElementById(`${name}PrevPage`).addEventListener('click', () => { if (report.page > 1) { report.page -= 1; loadChannelTable(name); setUrl(); } });
+        document.getElementById(`${name}NextPage`).addEventListener('click', () => { if (report.page < report.totalPages) { report.page += 1; loadChannelTable(name); setUrl(); } });
+        document.getElementById(`${name}LastPage`).addEventListener('click', () => { report.page = report.totalPages; loadChannelTable(name); setUrl(); });
+        document.getElementById(`${name}PageSize`).addEventListener('change', (e) => { report.limit = Number(e.target.value); report.page = 1; loadChannelTable(name); setUrl(); });
+      }
+      document.getElementById('sync').addEventListener('click', async () => {
+        await fetch(`${API_BASE}/api/sync/run?${currentQuery({}, { includeSearch: false })}`, { method: 'POST' });
+        await refresh();
+      });
+      document.getElementById('logout').addEventListener('click', async () => { await fetch(`${API_BASE}/api/auth/logout`, { method: 'POST' }); location.href = '/login'; });
+      document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+      document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
+      showTab(state.activeTab);
+      refresh().catch(err => alert(err.message));
+    </script>
+  </body>
+</html>

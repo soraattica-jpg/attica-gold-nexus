@@ -1,9 +1,32 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Bell, CalendarClock, CheckCircle2, PhoneCall, RotateCcw } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { useRealBranches } from "@/hooks/useRealBranches";
+import { useAgentDirectory } from "@/hooks/useAgentDirectory";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCallCenter } from "@/contexts/CallCenterContext";
+import { isOpenFollowUpStatus } from "@/lib/followUpReminders";
+import { hidePhoneDisplay } from "@/lib/phone";
+
+const getFollowUpSourceStatus = (item: { id?: string; sourceStatus?: string; notes?: string; outcome?: string }) => {
+  if (item.sourceStatus?.trim()) return item.sourceStatus.trim();
+
+  const followUpId = String(item.id || "").toUpperCase();
+  const notes = String(item.notes || "").toLowerCase();
+  const outcome = String(item.outcome || "").toLowerCase();
+
+  if (followUpId.startsWith("AUTO-") || notes.includes("auto-scheduled from missed call")) {
+    return "Missed Call / Auto Follow-Up";
+  }
+  if (followUpId.startsWith("RNR-") || notes.includes("auto-created from rnr outbound call") || outcome === "rnr") {
+    return "RNR / Auto Follow-Up";
+  }
+  if (followUpId.startsWith("STATUS-")) {
+    return "Status Follow-Up";
+  }
+  return "";
+};
 
 const getUrgency = (followUpAt: string) => {
   const target = new Date(followUpAt);
@@ -15,10 +38,31 @@ const getUrgency = (followUpAt: string) => {
   return { label: "Upcoming", className: "success-badge" };
 };
 
+const toDateTimeInputValue = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - offset * 60 * 1000);
+  return localDate.toISOString().slice(0, 16);
+};
+
+const getVisibleCustomerName = (customerName: string, phone: string, shouldMaskPhone: boolean) => {
+  const trimmedName = customerName.trim();
+  if (!trimmedName) {
+    return shouldMaskPhone ? hidePhoneDisplay(phone) : phone;
+  }
+  return shouldMaskPhone && trimmedName.replace(/\D/g, "").length >= 7
+    ? hidePhoneDisplay(trimmedName)
+    : trimmedName;
+};
+
 export default function FollowUpsPage() {
   const { user } = useAuth();
-  const { followUps, branches, addFollowUp, markFollowUpStatus } = useCallCenter();
-  const [loading, setLoading] = useState(true);
+  const shouldMaskPhone = user?.role === "agent";
+  const { resolveAgentName } = useAgentDirectory();
+  const { branches: realBranchList } = useRealBranches();
+  const { followUps, branches, addFollowUp, markFollowUpStatus, prefillDialedNumber } = useCallCenter();
   const [form, setForm] = useState({
     customerName: "",
     phone: "",
@@ -27,15 +71,57 @@ export default function FollowUpsPage() {
     notes: "",
   });
 
-  useEffect(() => {
-    const timeout = window.setTimeout(() => setLoading(false), 650);
-    return () => window.clearTimeout(timeout);
-  }, []);
-
   const visibleFollowUps = useMemo(() => {
     if (user?.role === "agent") return followUps.filter((item) => item.agentId === user.id);
     return followUps;
   }, [followUps, user]);
+
+  const handleMarkCalled = (id: string, currentOutcome?: string) => {
+    const response = window.prompt("What happened with the customer after the follow-up?", currentOutcome ?? "");
+    if (response === null) return;
+
+    const outcome = response.trim();
+    if (!outcome) {
+      toast.error("Enter the follow-up outcome before marking it called.");
+      return;
+    }
+
+    markFollowUpStatus(id, { status: "Called", outcome });
+  };
+
+  const handleReschedule = (id: string, currentFollowUpAt: string, currentOutcome?: string) => {
+    const outcomeResponse = window.prompt("Why is this follow-up being rescheduled?", currentOutcome ?? "");
+    if (outcomeResponse === null) return;
+
+    const followUpAtResponse = window.prompt(
+      "Enter the next follow-up date and time in YYYY-MM-DDTHH:MM format",
+      toDateTimeInputValue(currentFollowUpAt),
+    );
+    if (followUpAtResponse === null) return;
+
+    const followUpAt = followUpAtResponse.trim();
+    if (!followUpAt) {
+      toast.error("Enter the next follow-up date and time.");
+      return;
+    }
+
+    const parsedDate = new Date(followUpAt);
+    if (Number.isNaN(parsedDate.getTime())) {
+      toast.error("Invalid follow-up date and time.");
+      return;
+    }
+
+    markFollowUpStatus(id, {
+      status: "Rescheduled",
+      outcome: outcomeResponse.trim(),
+      followUpAt: parsedDate.toISOString(),
+    });
+  };
+
+  const handleCallNow = (phone: string) => {
+    prefillDialedNumber(phone);
+    toast.info("Number loaded in the dialer. Save the outcome after the call.");
+  };
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
@@ -46,7 +132,7 @@ export default function FollowUpsPage() {
         </div>
         <div className="warning-badge">
           <Bell className="h-4 w-4" />
-          {visibleFollowUps.filter((item) => item.status === "Pending").length} open items
+          {visibleFollowUps.filter((item) => isOpenFollowUpStatus(item.status)).length} open items
         </div>
       </div>
 
@@ -74,7 +160,7 @@ export default function FollowUpsPage() {
               onChange={(event) => setForm((prev) => ({ ...prev, branch: event.target.value }))}
               className="control-field"
             >
-              {branches.map((branch) => (
+              {(realBranchList.length > 0 ? realBranchList : branches).map((branch) => (
                 <option key={branch.id} value={branch.name}>
                   {branch.name}
                 </option>
@@ -109,56 +195,65 @@ export default function FollowUpsPage() {
             <h2 className="text-lg font-semibold">Follow-Up Queue</h2>
           </div>
 
-          {loading ? (
-            <div className="space-y-4 p-5">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="space-y-2">
-                  <Skeleton className="h-5 w-40" />
-                  <Skeleton className="h-16 w-full" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="divide-y divide-border">
-              {visibleFollowUps.map((item) => {
-                const urgency = getUrgency(item.followUpAt);
-                return (
-                  <div key={item.id} className="grid gap-4 px-5 py-4 lg:grid-cols-[minmax(0,1fr)_220px]">
-                    <div className="space-y-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-base font-semibold">{item.customerName}</h3>
-                        <span className={urgency.className}>{urgency.label}</span>
-                        <span className={item.status === "Called" ? "success-badge" : item.status === "Rescheduled" ? "warning-badge" : "done-badge"}>
-                          {item.status}
+          <div className="divide-y divide-border">
+            {visibleFollowUps.map((item) => {
+              const urgency = getUrgency(item.followUpAt);
+              const sourceStatus = getFollowUpSourceStatus(item);
+              return (
+                <div key={item.id} className="grid gap-4 px-5 py-4 lg:grid-cols-[minmax(0,1fr)_220px]">
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-base font-semibold">{getVisibleCustomerName(item.customerName, item.phone, shouldMaskPhone)}</h3>
+                      <span className={urgency.className}>{urgency.label}</span>
+                      {sourceStatus ? (
+                        <span className="warning-badge">
+                          {sourceStatus}
                         </span>
-                      </div>
-                      <div className="grid gap-2 text-sm text-muted-foreground md:grid-cols-2">
-                        <span>{item.phone}</span>
-                        <span>{item.branch}</span>
-                        <span>{new Date(item.followUpAt).toLocaleString("en-IN")}</span>
-                        <span>{item.agentName}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{item.notes}</p>
+                      ) : null}
+                      <span className={item.status === "Called" ? "success-badge" : item.status === "Rescheduled" ? "warning-badge" : "done-badge"}>
+                        {item.status}
+                      </span>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 lg:justify-end">
-                      <button className="action-outline" onClick={() => markFollowUpStatus(item.id, "Called")}>
-                        <CheckCircle2 className="h-4 w-4" />
-                        Called
-                      </button>
-                      <button className="action-outline" onClick={() => markFollowUpStatus(item.id, "Rescheduled")}>
-                        <RotateCcw className="h-4 w-4" />
-                        Reschedule
-                      </button>
-                      <button className="action-gold" onClick={() => markFollowUpStatus(item.id, "Called")}>
-                        <PhoneCall className="h-4 w-4" />
-                        Call Now
-                      </button>
+                    <div className="grid gap-2 text-sm text-muted-foreground md:grid-cols-2">
+                      <span>{shouldMaskPhone ? hidePhoneDisplay(item.phone) : item.phone}</span>
+                      <span>{item.branch}</span>
+                      <span>{new Date(item.followUpAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST</span>
+                      <span>{resolveAgentName(item.agentId, item.agentName)}</span>
                     </div>
+                    {item.notes ? (
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground">Reminder:</span> {item.notes}
+                      </p>
+                    ) : null}
+                    {item.outcome ? (
+                      <p className="rounded-xl border border-accent/20 bg-accent/5 px-3 py-2 text-sm text-foreground">
+                        <span className="font-medium">What happened:</span> {item.outcome}
+                      </p>
+                    ) : null}
+                    {item.updatedAt ? (
+                      <p className="text-xs text-muted-foreground">
+                        Last updated: {new Date(item.updatedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST
+                      </p>
+                    ) : null}
                   </div>
-                );
-              })}
-            </div>
-          )}
+                  <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+                    <button className="action-outline" onClick={() => handleMarkCalled(item.id, item.outcome)}>
+                      <CheckCircle2 className="h-4 w-4" />
+                      Called
+                    </button>
+                    <button className="action-outline" onClick={() => handleReschedule(item.id, item.followUpAt, item.outcome)}>
+                      <RotateCcw className="h-4 w-4" />
+                      Reschedule
+                    </button>
+                    <button className="action-gold" onClick={() => handleCallNow(item.phone)}>
+                      <PhoneCall className="h-4 w-4" />
+                      Call Now
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </motion.div>

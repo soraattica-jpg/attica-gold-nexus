@@ -1,5 +1,11 @@
 # Attica API: incremental modularization
 
+This document records the isolated preview at the September 2026 capture.
+In the complete-project repository this workspace is `backend/modular`.
+The historical baseline is now tracked after credential extraction; its
+sanitized hashes and original capture hashes are in `docs/BASELINE.json`.
+Private preview credentials and generated runtime files remain external.
+
 Branches, Admin Messages, Customer History, core call Reports, Billing/customer-data lookup, Kaleyra SMS, Follow-Ups, Agent Intake, Agent Status reads, and Rates/Pledge Places are extracted and tested in `/root/attica-api-next`. Production remains `/root/attica-api`, port 3001, with its process and source unchanged. No production frontend points to the preview.
 
 ## Run and verify
@@ -76,6 +82,6 @@ The installed service's original description still says read-only; Branches is r
 
 Legacy Admin Messages uses polling/refresh tokens, not an existing feature WebSocket. The preview adds no live socket delivery. Legacy message routes also lack route-level authorization; production auth integration is an explicit pre-promotion gate. Concurrent broadcasts retain the original newest-record selection and nontransactional replacement; private-message expiry/audit does not exist in the baseline. See the detailed module report before promotion.
 
-This completes route ownership, not the full business-logic decomposition. The generic compatibility registry is removed. The generated candidate removes about 1,434 lines from the original server and startup remains unconditionally disabled. Feature-owned preserved handlers still contain legacy side effects and the candidate must never be launched. The private baseline and runtime are excluded from Git because the legacy source contains embedded credentials; `docs/BASELINE.json` records the hashes.
+This completes route ownership, not the full business-logic decomposition. The generic compatibility registry is removed. The generated candidate removes about 1,434 lines from the original server and startup remains unconditionally disabled. Feature-owned preserved handlers still contain legacy side effects and the candidate must never be launched. The September 30 complete-project snapshot includes the sanitized historical baseline; generated runtime files remain excluded from Git. `docs/BASELINE.json` records both original and sanitized hashes.
 
 Further work is controller/service extraction of the 75 feature-owned preserved handlers, with call handling, Asterisk, AMI and queues last. Kaleyra/SolutionsInfini remains the SMS provider; Smler URLs, Asterisk, SIP, queues and dialer behavior remain unchanged.

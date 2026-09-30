@@ -1,0 +1,179 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+START_DID=8068711201
+END_DID=8068711319
+DEFAULT_CURRENT_DID=8068711209
+ASTDB_FAMILY=TATA
+ASTDB_KEY=outbound_did
+SIP_CONF=/etc/asterisk/sip.conf
+LOCK_FILE=/run/attica-rotate-tata-did.lock
+DEFER_FILE=/run/attica-rotate-tata-did.reload-deferred
+
+log() {
+  logger -t attica-rotate-tata-did "$*"
+  printf '%s\n' "$*"
+}
+
+normalize_did() {
+  local value="${1:-}"
+  value="${value//[^0-9]/}"
+  if [[ "$value" =~ ^80687112[0-9][0-9]$ || "$value" =~ ^80687113[0-1][0-9]$ ]]; then
+    if (( value >= START_DID && value <= END_DID )); then
+      printf '%s' "$value"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+current_from_astdb() {
+  local output value
+  output="$(asterisk -rx "database get ${ASTDB_FAMILY} ${ASTDB_KEY}" 2>/dev/null || true)"
+  value="$(printf '%s\n' "$output" | sed -n 's/^Value: *//p' | tr -dc '0-9')"
+  normalize_did "$value" || return 1
+}
+
+current_from_sip_conf() {
+  local fromuser did
+  fromuser="$(awk '
+    /^\[tatasip\][[:space:]]*$/ { in_tata=1; next }
+    /^\[/ { in_tata=0 }
+    in_tata && /^[[:space:]]*fromuser[[:space:]]*=/ {
+      sub(/^[[:space:]]*fromuser[[:space:]]*=[[:space:]]*/, "", $0)
+      gsub(/[^0-9]/, "", $0)
+      print
+      exit
+    }
+  ' "$SIP_CONF")"
+  if [[ "$fromuser" =~ ^687112[0-9][0-9]$ || "$fromuser" =~ ^687113[0-1][0-9]$ ]]; then
+    did="80${fromuser}"
+    normalize_did "$did" || return 1
+  else
+    return 1
+  fi
+}
+
+next_did_after() {
+  local current="$1"
+  if (( current >= END_DID )); then
+    printf '%s' "$START_DID"
+  else
+    printf '%s' "$((current + 1))"
+  fi
+}
+
+active_channels_count() {
+  local active_channels
+  active_channels="$(asterisk -rx "core show channels count" 2>/dev/null | awk '/active channels/ {print $1; exit}')"
+  active_channels="${active_channels:-0}"
+  if [[ "$active_channels" =~ ^[0-9]+$ ]]; then
+    printf '%s' "$active_channels"
+  else
+    printf '0'
+  fi
+}
+
+update_tatasip_identity() {
+  local cli="$1"
+  local tmp_file="$2"
+  awk -v cli="$cli" '
+    /^\[tatasip\][[:space:]]*$/ { in_tata=1; print; next }
+    /^\[/ { in_tata=0 }
+    in_tata && /^[[:space:]]*fromuser[[:space:]]*=/ {
+      sub(/=.*/, "=" cli)
+      print
+      next
+    }
+    in_tata && /^[[:space:]]*contactuser[[:space:]]*=/ {
+      sub(/=.*/, "=" cli)
+      print
+      next
+    }
+    { print }
+  ' "$SIP_CONF" > "$tmp_file"
+}
+
+set_active_did() {
+  local did="$1"
+  local cli="${did:2}"
+  local tmp_file
+  local active_channels
+
+  asterisk -rx "database put ${ASTDB_FAMILY} ${ASTDB_KEY} ${did}" >/dev/null
+  asterisk -rx "database put ${ASTDB_FAMILY} outbound_cli ${cli}" >/dev/null
+
+  tmp_file="$(mktemp)"
+  update_tatasip_identity "$cli" "$tmp_file"
+  install -m 0644 "$tmp_file" "$SIP_CONF"
+  rm -f "$tmp_file"
+
+  asterisk -rx "sip reload" >/dev/null
+  rm -f "$DEFER_FILE"
+  active_channels="$(active_channels_count)"
+  log "Active Tata outbound DID set to ${did}; CLI/fromuser/contactuser ${cli}; sip reload applied; active_channels=${active_channels}"
+}
+
+safe_set_active_did() {
+  local did="$1"
+  local mode="${2:-rotate}"
+  local active_channels
+
+  active_channels="$(active_channels_count)"
+  if (( active_channels > 0 )); then
+    printf '%s\n' "$did" > "$DEFER_FILE"
+    log "Deferred Tata outbound DID ${did}; active_channels=${active_channels}; sip reload not applied"
+    return 0
+  fi
+
+  set_active_did "$did"
+}
+
+apply_deferred_did() {
+  local did active_channels
+  [[ -f "$DEFER_FILE" ]] || return 0
+  did="$(tr -dc '0-9' < "$DEFER_FILE")"
+  did="$(normalize_did "$did")"
+  active_channels="$(active_channels_count)"
+  if (( active_channels > 0 )); then
+    log "Deferred Tata outbound DID ${did} still pending; active_channels=${active_channels}; sip reload not applied"
+    return 0
+  fi
+  set_active_did "$did"
+}
+
+main() {
+  local mode="${1:-rotate}"
+  local current next
+
+  exec 9>"$LOCK_FILE"
+  flock -n 9 || exit 0
+
+  case "$mode" in
+    init)
+      safe_set_active_did "$DEFAULT_CURRENT_DID" "$mode"
+      ;;
+    apply-deferred)
+      apply_deferred_did
+      ;;
+    rotate)
+      if [[ -f "$DEFER_FILE" ]]; then
+        apply_deferred_did
+        return 0
+      fi
+      current="$(current_from_astdb || current_from_sip_conf || printf '%s' "$DEFAULT_CURRENT_DID")"
+      next="$(next_did_after "$current")"
+      safe_set_active_did "$next" "$mode"
+      ;;
+    set)
+      next="$(normalize_did "${2:-}")"
+      safe_set_active_did "$next" "$mode"
+      ;;
+    *)
+      printf 'Usage: %s [init|rotate|apply-deferred|set DID]\n' "$0" >&2
+      exit 2
+      ;;
+  esac
+}
+
+main "$@"

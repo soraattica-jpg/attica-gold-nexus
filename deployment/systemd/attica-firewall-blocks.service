@@ -1,0 +1,12 @@
+[Unit]
+Description=Attica persistent firewall blocks for SIP scanners
+After=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/iptables-restore /etc/attica/iptables.rules
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

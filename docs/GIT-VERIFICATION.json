@@ -1,0 +1,38 @@
+{
+  "verifiedAt": "2026-09-30T23:14:39Z",
+  "branch": "chore/full-call-center-project-20260930",
+  "frontend": {
+    "build": "passed",
+    "testFiles": 39,
+    "testsPassed": 243,
+    "testsFailed": 0
+  },
+  "modularBackend": {
+    "runtimePreparation": "passed; generated candidate remains disabled",
+    "contractTestsPassed": 170,
+    "contractTestsFailed": 0,
+    "largeFileReview": "passed without threshold warnings",
+    "databaseSuites": "not run; private isolated database fixtures required"
+  },
+  "sourceSnapshot": {
+    "originalSourceFilesUnchanged": 330,
+    "activeTelephonyConfigurationsRoundTripped": 18,
+    "capturedCredentialValuesChecked": 45,
+    "credentialFindings": 0,
+    "javascriptSyntaxChecksPassed": 166,
+    "phpSyntaxChecksPassed": 11,
+    "bashSyntaxChecksPassed": 5,
+    "schema": "schema-only MariaDB export; no row data imported or exported"
+  },
+  "deployment": {
+    "liveServicesRestarted": false,
+    "originalProjectSourceChanged": false,
+    "databaseOrTelephonyOperationsTriggered": false
+  },
+  "publication": {
+    "repository": "soraattica-jpg/attica-gold-nexus",
+    "readAccess": "confirmed",
+    "pushAccess": "blocked; no HTTPS credentials or GitHub SSH authentication available",
+    "remoteBranchPublished": false
+  }
+}

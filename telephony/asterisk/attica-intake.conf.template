@@ -1,0 +1,23 @@
+; Per-agent channel only. This handler never hangs up a call.
+[attica-intake-track]
+exten => s,1,GotoIf($["${CHANNEL(channeltype)}"!="PJSIP"]?done)
+ same => n,GotoIf($["${ATTICA_INTAKE_TRACKED}"="1"]?done)
+ same => n,Set(ATTICA_INTAKE_TRACKED=1)
+ same => n,Set(ATTICA_INTAKE_SIP_ID=${CHANNEL(pjsip,call-id)})
+ same => n,Set(ATTICA_INTAKE_EXTENSION=${CHANNEL(endpoint)})
+ ; Carry business attribution and physical circuit identity to the WebRTC agent.
+ ; CALL_SOURCE is deliberately absent on outgoing calls, so their existing
+ ; Auto Dial / Follow-Up / Manual Dial classification remains unchanged.
+ same => n,ExecIf($["${CALL_SOURCE}"!=""]?Set(PJSIP_HEADER(add,X-Attica-Call-Source)=${CALL_SOURCE}))
+ same => n,ExecIf($["${CARRIER_TRUNK}"!=""]?Set(PJSIP_HEADER(add,X-Attica-Carrier-Trunk)=${CARRIER_TRUNK}))
+ same => n,ExecIf($["${TRUNK_CODE}"!=""]?Set(PJSIP_HEADER(add,X-Attica-Trunk-Code)=${TRUNK_CODE}))
+ same => n,ExecIf($["${TATA_PILOT}"!=""]?Set(PJSIP_HEADER(add,X-Attica-Pilot)=${TATA_PILOT}))
+ same => n,ExecIf($["${INBOUND_DID}"!=""]?Set(PJSIP_HEADER(add,X-Attica-DID)=${INBOUND_DID}))
+ same => n,Set(CHANNEL(hangup_handler_push)=attica-intake-ended,s,1)
+ same => n(done),Return()
+
+[attica-intake-ended]
+exten => s,1,ExecIf($["${ATTICA_INTAKE_SIP_ID}"=""]?Set(ATTICA_INTAKE_SIP_ID=${CHANNEL(pjsip,call-id)}))
+ same => n,Set(ATTICA_DID_OR_CLI=${IF($["${INBOUND_DID}"!=""]?${INBOUND_DID}:${NEW_TATA_ACTIVE_DID})})
+ same => n,AGI(attica-intake-ended.php,${UNIQUEID},${ATTICA_INTAKE_SIP_ID},${ATTICA_INTAKE_EXTENSION},${EPOCH},${CALL_DIRECTION},${CALL_SOURCE},${CARRIER_TRUNK},${TRUNK_CODE},${TATA_PILOT},${ATTICA_DID_OR_CLI})
+ same => n,Return()

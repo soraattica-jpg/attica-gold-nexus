@@ -1,0 +1,2987 @@
+{
+  "capturedAt": "2026-09-30T23:00:55.114Z",
+  "branch": "chore/full-call-center-project-20260930",
+  "excluded": [
+    "customer and call data",
+    "call recordings",
+    "credentials and private keys",
+    "node_modules and build output",
+    "temporary fixes and duplicate backups",
+    "isolated preview secrets and generated runtime"
+  ],
+  "files": [
+    {
+      "source": "/root/attica-gold-nexus/.gitignore",
+      "destination": ".gitignore",
+      "sourceSha256": "c4c7874da6c184ce8e0af78b395c8f88a90a6ca52810ae374a722f10a98a988c",
+      "gitSha256": "427fe6bb5e3b3661f9914dbc3039ae24ca4e59e641cf4dc4edea2d295853cdc3",
+      "bytes": 727,
+      "sourceModifiedAt": "2026-09-11T06:43:13.267Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/README.md",
+      "destination": "README.md",
+      "sourceSha256": "0e87419c424e20a1e473694e6ccf6e72bbb8e6641f922634bfbe5aa1435fdc3c",
+      "gitSha256": "839ec01b6df8b0cdcd8cd9264a6e96abb677dd81b1ebf24a12a450f15665c158",
+      "bytes": 2110,
+      "sourceModifiedAt": "2026-04-18T10:47:19.389Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/bun.lock",
+      "destination": "bun.lock",
+      "sourceSha256": "82721404526b7f63f8afc669f3fe5a457e455539cabbc1a4b2d9c7147428a349",
+      "gitSha256": "82721404526b7f63f8afc669f3fe5a457e455539cabbc1a4b2d9c7147428a349",
+      "bytes": 138149,
+      "sourceModifiedAt": "2026-03-20T05:51:17.031Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/components.json",
+      "destination": "components.json",
+      "sourceSha256": "9820835141c54e5b5dfbb68b3c3790db73c9ebfb967884ae3fccd058d698a1a6",
+      "gitSha256": "9820835141c54e5b5dfbb68b3c3790db73c9ebfb967884ae3fccd058d698a1a6",
+      "bytes": 414,
+      "sourceModifiedAt": "2026-03-20T05:51:17.031Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/analytics-vm/meta-data",
+      "destination": "deployment/analytics-vm/meta-data",
+      "sourceSha256": "d859883332b55100dc85de90035bf40029f4243eb5b4267b6c32ceca423c71e5",
+      "gitSha256": "d859883332b55100dc85de90035bf40029f4243eb5b4267b6c32ceca423c71e5",
+      "bytes": 67,
+      "sourceModifiedAt": "2026-08-19T09:09:52.226Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/analytics-vm/user-data",
+      "destination": "deployment/analytics-vm/user-data",
+      "sourceSha256": "b04d0129337ed6ee22da07eefca98b91a2d39ebf4c20066ab956d65cf919afc5",
+      "gitSha256": "b04d0129337ed6ee22da07eefca98b91a2d39ebf4c20066ab956d65cf919afc5",
+      "bytes": 596,
+      "sourceModifiedAt": "2026-08-19T09:09:52.226Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/attica-intake-ended.php",
+      "destination": "deployment/attica-intake-ended.php",
+      "sourceSha256": "0ab16e5dc4dbbedb8587230b32cb36c617f7097d93e819f77a6c9d1bc583e2d4",
+      "gitSha256": "0ab16e5dc4dbbedb8587230b32cb36c617f7097d93e819f77a6c9d1bc583e2d4",
+      "bytes": 1823,
+      "sourceModifiedAt": "2026-09-22T11:58:38.289Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/attica-intake.conf",
+      "destination": "deployment/attica-intake.conf",
+      "sourceSha256": "c109c740531043548f2a669495e7253c994992783a5fc2d1e95cd8a6c6d93437",
+      "gitSha256": "c109c740531043548f2a669495e7253c994992783a5fc2d1e95cd8a6c6d93437",
+      "bytes": 1424,
+      "sourceModifiedAt": "2026-09-22T11:58:38.289Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/centos7/README.md",
+      "destination": "deployment/centos7/README.md",
+      "sourceSha256": "59da349fc13e5aea15e5925cdb8788be0fd6638fc9b704042d8ca8d412f1d608",
+      "gitSha256": "59da349fc13e5aea15e5925cdb8788be0fd6638fc9b704042d8ca8d412f1d608",
+      "bytes": 2946,
+      "sourceModifiedAt": "2026-06-11T15:05:52.296Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/centos7/attica-api.env.example",
+      "destination": "deployment/centos7/attica-api.env.example",
+      "sourceSha256": "b814ee92ec120b5222e9ee5a64d0caae84a6dde3473483bf930c8a71b2959c2c",
+      "gitSha256": "b814ee92ec120b5222e9ee5a64d0caae84a6dde3473483bf930c8a71b2959c2c",
+      "bytes": 549,
+      "sourceModifiedAt": "2026-06-11T15:04:14.018Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/centos7/attica-api.service",
+      "destination": "deployment/centos7/attica-api.service",
+      "sourceSha256": "c09b14fe90612ed387addfec3fdb11c7b5133ffbfdc41cda0e9276d041f4a885",
+      "gitSha256": "c09b14fe90612ed387addfec3fdb11c7b5133ffbfdc41cda0e9276d041f4a885",
+      "bytes": 328,
+      "sourceModifiedAt": "2026-06-11T15:04:14.022Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/centos7/attica-gold.conf",
+      "destination": "deployment/centos7/attica-gold.conf",
+      "sourceSha256": "f8ad4dc87d2eeb9e1207f3cadec8aa95777f09f6c069bd2005fa7fddf74b4c7a",
+      "gitSha256": "f8ad4dc87d2eeb9e1207f3cadec8aa95777f09f6c069bd2005fa7fddf74b4c7a",
+      "bytes": 701,
+      "sourceModifiedAt": "2026-06-11T15:04:14.022Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/centos7/install-centos7.sh",
+      "destination": "deployment/centos7/install-centos7.sh",
+      "sourceSha256": "0ea9b7f2ceb3bc7f00fe7562bae534082f71de28862ac60b8542a047cbf86f7f",
+      "gitSha256": "f41750ab026b890ce348c6ac70e01bdb66690ba9a06f1710f35ff88312c13f9e",
+      "bytes": 3958,
+      "sourceModifiedAt": "2026-06-11T15:05:52.296Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/customer-data-cache.patch",
+      "destination": "deployment/customer-data-cache.patch",
+      "sourceSha256": "e5f9d4945ee9e9443afcee4c79ca1bd2db0cdbc056f9926e14517184f971ca6f",
+      "gitSha256": "e5f9d4945ee9e9443afcee4c79ca1bd2db0cdbc056f9926e14517184f971ca6f",
+      "bytes": 10875,
+      "sourceModifiedAt": "2026-09-09T11:40:43.609Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/followup-reload-server.patch",
+      "destination": "deployment/followup-reload-server.patch",
+      "sourceSha256": "32e8eee7db9166335598daba67c08b6907d754f0dfdbaa3f61334a9e28650c7a",
+      "gitSha256": "32e8eee7db9166335598daba67c08b6907d754f0dfdbaa3f61334a9e28650c7a",
+      "bytes": 3046,
+      "sourceModifiedAt": "2026-09-10T06:38:12.095Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/intake-dialplan.patch",
+      "destination": "deployment/intake-dialplan.patch",
+      "sourceSha256": "71712cd7a93002d3e96b9e1c3f0cc489580cd98ad14ad70a9a30f26da7056866",
+      "gitSha256": "71712cd7a93002d3e96b9e1c3f0cc489580cd98ad14ad70a9a30f26da7056866",
+      "bytes": 4572,
+      "sourceModifiedAt": "2026-09-09T10:23:54.066Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/intake-quick-note-server.patch",
+      "destination": "deployment/intake-quick-note-server.patch",
+      "sourceSha256": "3a2ba2edac1ca15908431d4ed34851654bb6854dcbc79f27ad7f04b7b01e9dc0",
+      "gitSha256": "3a2ba2edac1ca15908431d4ed34851654bb6854dcbc79f27ad7f04b7b01e9dc0",
+      "bytes": 11146,
+      "sourceModifiedAt": "2026-09-13T07:53:05.889Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/intake-recovery-server.patch",
+      "destination": "deployment/intake-recovery-server.patch",
+      "sourceSha256": "024cfa035d2cb84c1da2ad3430c2708c90318eb4fdefabe4ac6a26442e9d6c0d",
+      "gitSha256": "024cfa035d2cb84c1da2ad3430c2708c90318eb4fdefabe4ac6a26442e9d6c0d",
+      "bytes": 1293,
+      "sourceModifiedAt": "2026-09-10T05:08:36.754Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/intake-server.patch",
+      "destination": "deployment/intake-server.patch",
+      "sourceSha256": "d36d8e2cd50b88af3a7ffdc53b5885ba3ebc57415b6b32b88e910199e1b1f22f",
+      "gitSha256": "d36d8e2cd50b88af3a7ffdc53b5885ba3ebc57415b6b32b88e910199e1b1f22f",
+      "bytes": 16188,
+      "sourceModifiedAt": "2026-09-09T10:23:54.054Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/intake-workflow.mjs",
+      "destination": "deployment/intake-workflow.mjs",
+      "sourceSha256": "42db71d58d6214eec4d314e727b91d05a641443bf287a1a40310de1dd285430b",
+      "gitSha256": "42db71d58d6214eec4d314e727b91d05a641443bf287a1a40310de1dd285430b",
+      "bytes": 20540,
+      "sourceModifiedAt": "2026-09-22T11:59:14.962Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/md-reporting.mjs",
+      "destination": "deployment/md-reporting.mjs",
+      "sourceSha256": "b0dd2005fe16c7b8ef31b01795334fe72a23586399c774911c65adf5df1fbd18",
+      "gitSha256": "b0dd2005fe16c7b8ef31b01795334fe72a23586399c774911c65adf5df1fbd18",
+      "bytes": 16812,
+      "sourceModifiedAt": "2026-09-10T07:19:40.170Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/reporting-api/package-lock.json",
+      "destination": "deployment/reporting-api/package-lock.json",
+      "sourceSha256": "350b24b5b3f55c8be077c0d27981cc80f86efd0f60add466101927a37cd47b9e",
+      "gitSha256": "350b24b5b3f55c8be077c0d27981cc80f86efd0f60add466101927a37cd47b9e",
+      "bytes": 37434,
+      "sourceModifiedAt": "2026-08-20T06:12:40.017Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/reporting-api/package.json",
+      "destination": "deployment/reporting-api/package.json",
+      "sourceSha256": "0b77a09cb378adda4a0f82c1ce982400f1e71533943558bfe18f316fd83313f3",
+      "gitSha256": "0b77a09cb378adda4a0f82c1ce982400f1e71533943558bfe18f316fd83313f3",
+      "bytes": 298,
+      "sourceModifiedAt": "2026-08-20T06:12:21.997Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/reporting-api/server.js",
+      "destination": "deployment/reporting-api/server.js",
+      "sourceSha256": "f357d0d010133bcef191e420672254766fa07b5d069828c62d84a09814c2e7dc",
+      "gitSha256": "f357d0d010133bcef191e420672254766fa07b5d069828c62d84a09814c2e7dc",
+      "bytes": 20099,
+      "sourceModifiedAt": "2026-09-13T08:44:41.375Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/war-room/README.md",
+      "destination": "deployment/war-room/README.md",
+      "sourceSha256": "332d77e0726699bebb6469076feb59bbd5df796bb30b02b927daa86f38789549",
+      "gitSha256": "332d77e0726699bebb6469076feb59bbd5df796bb30b02b927daa86f38789549",
+      "bytes": 4450,
+      "sourceModifiedAt": "2026-09-11T11:48:50.658Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/war-room/package-lock.json",
+      "destination": "deployment/war-room/package-lock.json",
+      "sourceSha256": "0a824118865f5ed3043d302dba31dab7972ada24a766c0c1a1eb1b449cb3ef5a",
+      "gitSha256": "0a824118865f5ed3043d302dba31dab7972ada24a766c0c1a1eb1b449cb3ef5a",
+      "bytes": 37424,
+      "sourceModifiedAt": "2026-08-20T06:17:48.463Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/war-room/package.json",
+      "destination": "deployment/war-room/package.json",
+      "sourceSha256": "e4322e0fe1954be8ba631791d5623d3a809e2f4d7d7ca43b4548283d155264ab",
+      "gitSha256": "e4322e0fe1954be8ba631791d5623d3a809e2f4d7d7ca43b4548283d155264ab",
+      "bytes": 293,
+      "sourceModifiedAt": "2026-08-20T06:17:39.471Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/war-room/public/assets/attica-logo.jpeg",
+      "destination": "deployment/war-room/public/assets/attica-logo.jpeg",
+      "sourceSha256": "c167c530abb02ce60b61d29ac86813f19555ec0623220559ebcd4e7a55f282ec",
+      "gitSha256": "c167c530abb02ce60b61d29ac86813f19555ec0623220559ebcd4e7a55f282ec",
+      "bytes": 10396,
+      "sourceModifiedAt": "2026-08-20T07:02:43.393Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/war-room/public/assets/attica_gold_logo.png",
+      "destination": "deployment/war-room/public/assets/attica_gold_logo.png",
+      "sourceSha256": "925a618f1777b731d178d1913b359f9e1fa095c64850994b24b2712601efb3d5",
+      "gitSha256": "925a618f1777b731d178d1913b359f9e1fa095c64850994b24b2712601efb3d5",
+      "bytes": 11655,
+      "sourceModifiedAt": "2026-08-20T07:06:48.127Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/war-room/public/assets/favicon.png",
+      "destination": "deployment/war-room/public/assets/favicon.png",
+      "sourceSha256": "925a618f1777b731d178d1913b359f9e1fa095c64850994b24b2712601efb3d5",
+      "gitSha256": "925a618f1777b731d178d1913b359f9e1fa095c64850994b24b2712601efb3d5",
+      "bytes": 11655,
+      "sourceModifiedAt": "2026-08-20T07:06:48.127Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/war-room/public/index.html",
+      "destination": "deployment/war-room/public/index.html",
+      "sourceSha256": "0ddf1d8f4d713817b5e7af12b83b748a57f9d0eb635c4080d5a28ceae0ef6c15",
+      "gitSha256": "0ddf1d8f4d713817b5e7af12b83b748a57f9d0eb635c4080d5a28ceae0ef6c15",
+      "bytes": 77054,
+      "sourceModifiedAt": "2026-09-13T08:44:41.399Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/deployment/war-room/server.js",
+      "destination": "deployment/war-room/server.js",
+      "sourceSha256": "dd1cdff2ae7f290b9dc69996f1442b8010a42dc3220dc8719825253dae5931de",
+      "gitSha256": "dd1cdff2ae7f290b9dc69996f1442b8010a42dc3220dc8719825253dae5931de",
+      "bytes": 214527,
+      "sourceModifiedAt": "2026-09-13T08:51:33.367Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/docs/customer-data-cache-recovery.md",
+      "destination": "docs/customer-data-cache-recovery.md",
+      "sourceSha256": "7312e1161d84b8d7af37c09e4f57f10852e38cd947ce732e099fa76ec50e4cfb",
+      "gitSha256": "7312e1161d84b8d7af37c09e4f57f10852e38cd947ce732e099fa76ec50e4cfb",
+      "bytes": 3888,
+      "sourceModifiedAt": "2026-09-09T11:41:55.743Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/docs/followup-reload-2026-09-10.md",
+      "destination": "docs/followup-reload-2026-09-10.md",
+      "sourceSha256": "a98dd406e913e6bc5bcde907e2d39f92a62fb68b8fbfe360f39d3eea0124f2f3",
+      "gitSha256": "a98dd406e913e6bc5bcde907e2d39f92a62fb68b8fbfe360f39d3eea0124f2f3",
+      "bytes": 3542,
+      "sourceModifiedAt": "2026-09-10T06:38:12.127Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/docs/google-ads-api-tool-documentation.md",
+      "destination": "docs/google-ads-api-tool-documentation.md",
+      "sourceSha256": "a09dac3304c218c2a3c0eacdfdbb6a611cf6cfc8a7d02dae257a25d631786c91",
+      "gitSha256": "a09dac3304c218c2a3c0eacdfdbb6a611cf6cfc8a7d02dae257a25d631786c91",
+      "bytes": 10514,
+      "sourceModifiedAt": "2026-08-21T05:42:07.705Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/docs/intake-recovery-2026-09-10.md",
+      "destination": "docs/intake-recovery-2026-09-10.md",
+      "sourceSha256": "f4ff60ad6e6adf8f24374d81f84e5392e8a3909b11dcc95f32302b6681a5d7a6",
+      "gitSha256": "f4ff60ad6e6adf8f24374d81f84e5392e8a3909b11dcc95f32302b6681a5d7a6",
+      "bytes": 3062,
+      "sourceModifiedAt": "2026-09-10T05:11:24.926Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/docs/internal-services-fix-2026-09-09.md",
+      "destination": "docs/internal-services-fix-2026-09-09.md",
+      "sourceSha256": "7fff40f6a3cb535fe33f9c225219b7d4fbff8aab0a91ba335458cb7cf4f07ac1",
+      "gitSha256": "7fff40f6a3cb535fe33f9c225219b7d4fbff8aab0a91ba335458cb7cf4f07ac1",
+      "bytes": 6018,
+      "sourceModifiedAt": "2026-09-09T06:45:26.923Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/docs/post-call-intake-deadline.md",
+      "destination": "docs/post-call-intake-deadline.md",
+      "sourceSha256": "fc78e727b3e9c23c8760393598a748d68ebe78628871712485c16e9d431b4020",
+      "gitSha256": "fc78e727b3e9c23c8760393598a748d68ebe78628871712485c16e9d431b4020",
+      "bytes": 7956,
+      "sourceModifiedAt": "2026-09-09T12:17:39.105Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/eslint.config.js",
+      "destination": "eslint.config.js",
+      "sourceSha256": "c55264234fef783629810643d995cd522c3adaeb60e7157906310607292015a3",
+      "gitSha256": "c55264234fef783629810643d995cd522c3adaeb60e7157906310607292015a3",
+      "bytes": 765,
+      "sourceModifiedAt": "2026-03-20T05:51:17.031Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/index.html",
+      "destination": "index.html",
+      "sourceSha256": "60e463dea2590a002f4b8a36d270ee65670c86c96c583fabda1261de2bcdc8da",
+      "gitSha256": "60e463dea2590a002f4b8a36d270ee65670c86c96c583fabda1261de2bcdc8da",
+      "bytes": 1268,
+      "sourceModifiedAt": "2026-07-16T06:08:18.635Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/package-lock.json",
+      "destination": "package-lock.json",
+      "sourceSha256": "433168a2d7e63e446b0f0521c27bc27a794fb995e72b70b249f833024057cf80",
+      "gitSha256": "433168a2d7e63e446b0f0521c27bc27a794fb995e72b70b249f833024057cf80",
+      "bytes": 289259,
+      "sourceModifiedAt": "2026-09-10T07:28:28.865Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/package.json",
+      "destination": "package.json",
+      "sourceSha256": "0f080b6b1370bec5c115490658b1ba33cab7c1a447b7a95732495e3ab78ebaca",
+      "gitSha256": "dea589368854049e78f0d3e75a7115dc414b9cfe7b5cc999df1422e1d0f96c3f",
+      "bytes": 3337,
+      "sourceModifiedAt": "2026-09-10T07:28:28.645Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/playwright-fixture.ts",
+      "destination": "playwright-fixture.ts",
+      "sourceSha256": "2fdae66e4bf458ae7eeffee95fba3925431dbe310a0f26d34ad4f3bc84117334",
+      "gitSha256": "2fdae66e4bf458ae7eeffee95fba3925431dbe310a0f26d34ad4f3bc84117334",
+      "bytes": 168,
+      "sourceModifiedAt": "2026-03-20T05:51:17.031Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/playwright.config.ts",
+      "destination": "playwright.config.ts",
+      "sourceSha256": "e4d757da64d8633a2b9a2b5d563a7436af801895a4a84b3846d5db9d59e5da7c",
+      "gitSha256": "e4d757da64d8633a2b9a2b5d563a7436af801895a4a84b3846d5db9d59e5da7c",
+      "bytes": 277,
+      "sourceModifiedAt": "2026-03-20T05:51:17.031Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/postcss.config.js",
+      "destination": "postcss.config.js",
+      "sourceSha256": "e32657baf631d7c5f4dc67b4b2ee0ec8e7d5b3c41860e09cddce7c0377cd80bc",
+      "gitSha256": "e32657baf631d7c5f4dc67b4b2ee0ec8e7d5b3c41860e09cddce7c0377cd80bc",
+      "bytes": 81,
+      "sourceModifiedAt": "2026-03-20T05:51:17.031Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/.htaccess",
+      "destination": "public/.htaccess",
+      "sourceSha256": "e87a59b2e660c12df4f60290a27c4f81ac40e92cbec01423a9cc9312f8541ea2",
+      "gitSha256": "e87a59b2e660c12df4f60290a27c4f81ac40e92cbec01423a9cc9312f8541ea2",
+      "bytes": 879,
+      "sourceModifiedAt": "2026-09-16T06:52:19.534Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/agent-intake-test.html",
+      "destination": "public/agent-intake-test.html",
+      "sourceSha256": "96aa624777687cf4e2f7977827a1d42ac287144e56438f7374dc32c4cab126d2",
+      "gitSha256": "96aa624777687cf4e2f7977827a1d42ac287144e56438f7374dc32c4cab126d2",
+      "bytes": 20802,
+      "sourceModifiedAt": "2026-09-16T07:03:50.762Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/attica-logo.jpeg",
+      "destination": "public/attica-logo.jpeg",
+      "sourceSha256": "c167c530abb02ce60b61d29ac86813f19555ec0623220559ebcd4e7a55f282ec",
+      "gitSha256": "c167c530abb02ce60b61d29ac86813f19555ec0623220559ebcd4e7a55f282ec",
+      "bytes": 10396,
+      "sourceModifiedAt": "2026-04-13T10:12:22.964Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/favicon.ico",
+      "destination": "public/favicon.ico",
+      "sourceSha256": "dd821076a9b03adc2173c93956226aea3d92482d7578fc4339c5d3a2e9c24586",
+      "gitSha256": "dd821076a9b03adc2173c93956226aea3d92482d7578fc4339c5d3a2e9c24586",
+      "bytes": 20373,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/freesound_community-ringing-phone-71835.mp3",
+      "destination": "public/freesound_community-ringing-phone-71835.mp3",
+      "sourceSha256": "1e10ec26c6bec3049b8b3d962e9ea76f6d145035979add7c907ab2b433bc955b",
+      "gitSha256": "1e10ec26c6bec3049b8b3d962e9ea76f6d145035979add7c907ab2b433bc955b",
+      "bytes": 407520,
+      "sourceModifiedAt": "2026-04-15T14:53:28.437Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/gautawa-old-phone-ring-272648.mp3",
+      "destination": "public/gautawa-old-phone-ring-272648.mp3",
+      "sourceSha256": "6a309a646c3f16c418d47f6ef3de8d3b29bb7cae8ce59a665519e1e1882a1b7c",
+      "gitSha256": "6a309a646c3f16c418d47f6ef3de8d3b29bb7cae8ce59a665519e1e1882a1b7c",
+      "bytes": 289227,
+      "sourceModifiedAt": "2026-04-22T14:09:06.305Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/integrations/aisensy/webhook.php",
+      "destination": "public/integrations/aisensy/webhook.php",
+      "sourceSha256": "b5bf58ce32a07831d3dbb37662b851c82569c8fa32a1229a7125e8217913eb50",
+      "gitSha256": "b5bf58ce32a07831d3dbb37662b851c82569c8fa32a1229a7125e8217913eb50",
+      "bytes": 84,
+      "sourceModifiedAt": "2026-07-17T07:13:22.956Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/integrations/wati/config.local.example.php",
+      "destination": "public/integrations/wati/config.local.example.php",
+      "sourceSha256": "ff2b9b7021cb5a54e826fd9715a9d0905975700ad1e7d3b9a266e810553e3f0c",
+      "gitSha256": "ff2b9b7021cb5a54e826fd9715a9d0905975700ad1e7d3b9a266e810553e3f0c",
+      "bytes": 513,
+      "sourceModifiedAt": "2026-05-09T10:51:01.196Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/integrations/wati/config.php",
+      "destination": "public/integrations/wati/config.php",
+      "sourceSha256": "2fcbcc1f2184929ea984367e40cab3bdce94df7a03ebbb12f105333618c77042",
+      "gitSha256": "ccba4b55775d6ff5d06ab35bf97e3dbc701de70ba1988dc79e154c97d1b30c68",
+      "bytes": 3447,
+      "sourceModifiedAt": "2026-07-17T12:21:06.846Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/integrations/wati/dialer_event_receiver.php",
+      "destination": "public/integrations/wati/dialer_event_receiver.php",
+      "sourceSha256": "1060a62593defc162778d8024b323aed69fd57ed36dbe89e79e68dc2e30eac9d",
+      "gitSha256": "1060a62593defc162778d8024b323aed69fd57ed36dbe89e79e68dc2e30eac9d",
+      "bytes": 4668,
+      "sourceModifiedAt": "2026-09-09T06:25:53.707Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/integrations/wati/helpers.php",
+      "destination": "public/integrations/wati/helpers.php",
+      "sourceSha256": "9075e73ec77d6885999ae34afac46d425b75444b583a6b576afa6952bb7bbdce",
+      "gitSha256": "9075e73ec77d6885999ae34afac46d425b75444b583a6b576afa6952bb7bbdce",
+      "bytes": 11921,
+      "sourceModifiedAt": "2026-08-19T08:09:10.395Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/integrations/wati/schema.php",
+      "destination": "public/integrations/wati/schema.php",
+      "sourceSha256": "bd5233025a9840a8e058e59afe0978bec5ff8c5010b6729f927630798a391409",
+      "gitSha256": "bd5233025a9840a8e058e59afe0978bec5ff8c5010b6729f927630798a391409",
+      "bytes": 254,
+      "sourceModifiedAt": "2026-05-09T10:28:47.063Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/integrations/wati/send_wati_message.php",
+      "destination": "public/integrations/wati/send_wati_message.php",
+      "sourceSha256": "26edf1fa338b69ce6983f4cc118611b58fc6b72eccc2c605150b406f427b76e8",
+      "gitSha256": "26edf1fa338b69ce6983f4cc118611b58fc6b72eccc2c605150b406f427b76e8",
+      "bytes": 8385,
+      "sourceModifiedAt": "2026-09-09T06:25:53.707Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/integrations/wati/wati_webhook.php",
+      "destination": "public/integrations/wati/wati_webhook.php",
+      "sourceSha256": "64de6f5ac239eb249bebdb717b36905892cb81b2e3ed814c84b7861ceb6ab629",
+      "gitSha256": "64de6f5ac239eb249bebdb717b36905892cb81b2e3ed814c84b7861ceb6ab629",
+      "bytes": 7929,
+      "sourceModifiedAt": "2026-08-19T08:07:33.548Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/placeholder.svg",
+      "destination": "public/placeholder.svg",
+      "sourceSha256": "c7f8fef98e76c2621a69fb6a06ebad4e552b2641e29cdb762c43e0d1f43be0ff",
+      "gitSha256": "c7f8fef98e76c2621a69fb6a06ebad4e552b2641e29cdb762c43e0d1f43be0ff",
+      "bytes": 28625,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/remote-audio-prime.wav",
+      "destination": "public/remote-audio-prime.wav",
+      "sourceSha256": "4936573df2c0b3ab40b2b34ed68f056b391f8c38969a7ba7da0852c3f3cc07dc",
+      "gitSha256": "4936573df2c0b3ab40b2b34ed68f056b391f8c38969a7ba7da0852c3f3cc07dc",
+      "bytes": 23120,
+      "sourceModifiedAt": "2026-09-18T06:44:12.044Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/public/robots.txt",
+      "destination": "public/robots.txt",
+      "sourceSha256": "a3d27b3ca5ce32341fa9f96f01169b521b1657c05d1860c45d1e53a6258e9e8b",
+      "gitSha256": "a3d27b3ca5ce32341fa9f96f01169b521b1657c05d1860c45d1e53a6258e9e8b",
+      "bytes": 160,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/.gitkeep",
+      "destination": "scripts/.gitkeep",
+      "sourceSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "gitSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "bytes": 1,
+      "sourceModifiedAt": "2026-04-24T05:02:09.793Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/attica-rotate-tata-did.cron",
+      "destination": "scripts/attica-rotate-tata-did.cron",
+      "sourceSha256": "30dd081b84a51d044a63d1d18b4af3cdfe1ddb5e2c65a4e7ba61d27c031e1061",
+      "gitSha256": "30dd081b84a51d044a63d1d18b4af3cdfe1ddb5e2c65a4e7ba61d27c031e1061",
+      "bytes": 308,
+      "sourceModifiedAt": "2026-05-13T12:51:56.584Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/attica-rotate-tata-did.sh",
+      "destination": "scripts/attica-rotate-tata-did.sh",
+      "sourceSha256": "a805bf9660ffa510c68a147d8c15c82058b8e32f0ee366950a4fab7237ca08c5",
+      "gitSha256": "a805bf9660ffa510c68a147d8c15c82058b8e32f0ee366950a4fab7237ca08c5",
+      "bytes": 2414,
+      "sourceModifiedAt": "2026-05-13T12:50:57.347Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/browser-call-verify.mjs",
+      "destination": "scripts/browser-call-verify.mjs",
+      "sourceSha256": "93cc2dbc91180302e15a93b860f6ed2857d3de33b061631429df07185431b42f",
+      "gitSha256": "43b3976bb1d5a593bce400e9f73855fe4118c1205e6cfe982670d8dbf25ef62f",
+      "bytes": 18217,
+      "sourceModifiedAt": "2026-04-24T05:16:17.223Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/import_branch_map_sheet.cjs",
+      "destination": "scripts/import_branch_map_sheet.cjs",
+      "sourceSha256": "ab94987e324821e565373498fb8ee0520336a07913d8b75b04ca9733fa60e412",
+      "gitSha256": "3fbb3f24183de99136a1b550e8c8842309dee552e01910acc582d5ddf6e273d3",
+      "bytes": 6673,
+      "sourceModifiedAt": "2026-05-22T12:29:02.536Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/load-pending-followups.mjs",
+      "destination": "scripts/load-pending-followups.mjs",
+      "sourceSha256": "3e3b492da46c814381fce4c900dddafa43c516f3b000dd64f17f0212e2bb6794",
+      "gitSha256": "3e3b492da46c814381fce4c900dddafa43c516f3b000dd64f17f0212e2bb6794",
+      "bytes": 6091,
+      "sourceModifiedAt": "2026-09-10T06:30:43.569Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-auto-dial-dedupe.cjs",
+      "destination": "scripts/verify-auto-dial-dedupe.cjs",
+      "sourceSha256": "297882e0f46ff8dc4992decd1db0ec4f195bd25e9d1ca377ff8c012def60076c",
+      "gitSha256": "297882e0f46ff8dc4992decd1db0ec4f195bd25e9d1ca377ff8c012def60076c",
+      "bytes": 11680,
+      "sourceModifiedAt": "2026-09-09T06:24:39.286Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-customer-data-cache.mjs",
+      "destination": "scripts/verify-customer-data-cache.mjs",
+      "sourceSha256": "403704a903ec14aa568b6a32b72f29423b92e21d13b33c55a2c6e745e0ea4b83",
+      "gitSha256": "403704a903ec14aa568b6a32b72f29423b92e21d13b33c55a2c6e745e0ea4b83",
+      "bytes": 7202,
+      "sourceModifiedAt": "2026-09-09T11:40:00.920Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-followup-reload.mjs",
+      "destination": "scripts/verify-followup-reload.mjs",
+      "sourceSha256": "ba61654e81214570ca61efcb5f8542e6533d38af4b21a49f497cf26469c68cf1",
+      "gitSha256": "ba61654e81214570ca61efcb5f8542e6533d38af4b21a49f497cf26469c68cf1",
+      "bytes": 4715,
+      "sourceModifiedAt": "2026-09-10T06:27:36.099Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-intake-deadline.mjs",
+      "destination": "scripts/verify-intake-deadline.mjs",
+      "sourceSha256": "3952b3801b17e55394a59da58b366704d1d6fc8dfb4918e34beec7469fd43857",
+      "gitSha256": "3952b3801b17e55394a59da58b366704d1d6fc8dfb4918e34beec7469fd43857",
+      "bytes": 11302,
+      "sourceModifiedAt": "2026-09-13T07:49:45.258Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-md-browser.mjs",
+      "destination": "scripts/verify-md-browser.mjs",
+      "sourceSha256": "fcf8276b643a2287932151358a4c9febe16195fded3b6cf0ec3305ea84d32a74",
+      "gitSha256": "fcf8276b643a2287932151358a4c9febe16195fded3b6cf0ec3305ea84d32a74",
+      "bytes": 6619,
+      "sourceModifiedAt": "2026-09-10T09:50:12.013Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-md-live.mjs",
+      "destination": "scripts/verify-md-live.mjs",
+      "sourceSha256": "1a85e3798cd2533e2095b85d053536a540594f21727a915e2e02c394364e20f0",
+      "gitSha256": "1a85e3798cd2533e2095b85d053536a540594f21727a915e2e02c394364e20f0",
+      "bytes": 3467,
+      "sourceModifiedAt": "2026-09-10T07:46:54.941Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-md-reporting.mjs",
+      "destination": "scripts/verify-md-reporting.mjs",
+      "sourceSha256": "d2933c0aba9c74b333b4669b0eff641b99c31c363e64cba2c88792ea69e7f7dc",
+      "gitSha256": "d2933c0aba9c74b333b4669b0eff641b99c31c363e64cba2c88792ea69e7f7dc",
+      "bytes": 6939,
+      "sourceModifiedAt": "2026-09-10T07:26:04.339Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-pbx-admin-auth.cjs",
+      "destination": "scripts/verify-pbx-admin-auth.cjs",
+      "sourceSha256": "03271b75ae15a59f3f46a18265cb1b2f809e8315648ba97dbfdc1c61902a9fc5",
+      "gitSha256": "03271b75ae15a59f3f46a18265cb1b2f809e8315648ba97dbfdc1c61902a9fc5",
+      "bytes": 1304,
+      "sourceModifiedAt": "2026-09-09T06:41:34.421Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/scripts/verify-whatsapp-result.php",
+      "destination": "scripts/verify-whatsapp-result.php",
+      "sourceSha256": "a3952e04e748bbbc778a911a943f2c703b1fe1a73268106d4c681e441e801b06",
+      "gitSha256": "a3952e04e748bbbc778a911a943f2c703b1fe1a73268106d4c681e441e801b06",
+      "bytes": 1326,
+      "sourceModifiedAt": "2026-09-09T06:25:53.707Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/App.css",
+      "destination": "src/App.css",
+      "sourceSha256": "a0715e0a09edbd0fbde65816a75e0fa0fc8b314c5260c0768c19bf3aac22621a",
+      "gitSha256": "a0715e0a09edbd0fbde65816a75e0fa0fc8b314c5260c0768c19bf3aac22621a",
+      "bytes": 606,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/App.tsx",
+      "destination": "src/App.tsx",
+      "sourceSha256": "96e442b03fbca079bb105adc2c7ea11bbc083e1321edfc6a32f5bb943fce7bef",
+      "gitSha256": "96e442b03fbca079bb105adc2c7ea11bbc083e1321edfc6a32f5bb943fce7bef",
+      "bytes": 11845,
+      "sourceModifiedAt": "2026-09-21T10:20:30.466Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AppErrorBoundary.tsx",
+      "destination": "src/components/AppErrorBoundary.tsx",
+      "sourceSha256": "7877c2bca720ccfd323fc1761c57c9577a46020232f4100417e684cb5ede9d3b",
+      "gitSha256": "7877c2bca720ccfd323fc1761c57c9577a46020232f4100417e684cb5ede9d3b",
+      "bytes": 4355,
+      "sourceModifiedAt": "2026-07-16T06:20:44.946Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AppSidebar.tsx",
+      "destination": "src/components/AppSidebar.tsx",
+      "sourceSha256": "b501b32ce891ec70aad840a02c115ce7183740a77951120b0cee3572e117f95e",
+      "gitSha256": "b501b32ce891ec70aad840a02c115ce7183740a77951120b0cee3572e117f95e",
+      "bytes": 8491,
+      "sourceModifiedAt": "2026-08-19T06:20:38.240Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AudioDeviceSelector.tsx",
+      "destination": "src/components/AudioDeviceSelector.tsx",
+      "sourceSha256": "29776a2e1b7677ed31331ad2f5b6c7582d1e2a52dba06c99054a407dabd6d5bb",
+      "gitSha256": "29776a2e1b7677ed31331ad2f5b6c7582d1e2a52dba06c99054a407dabd6d5bb",
+      "bytes": 15359,
+      "sourceModifiedAt": "2026-04-20T12:04:29.058Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AutoDialAlertModal.test.tsx",
+      "destination": "src/components/AutoDialAlertModal.test.tsx",
+      "sourceSha256": "8e3e092bff761313d61a31cbf65127621a92a49e50fab874b8c409b77eeb14b0",
+      "gitSha256": "8e3e092bff761313d61a31cbf65127621a92a49e50fab874b8c409b77eeb14b0",
+      "bytes": 3515,
+      "sourceModifiedAt": "2026-05-16T07:29:11.684Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AutoDialAlertModal.tsx",
+      "destination": "src/components/AutoDialAlertModal.tsx",
+      "sourceSha256": "23a4354d9111f1bfc3174a6385b9e5fd7a17a7a6f6fd1d24b8b1584352ea331d",
+      "gitSha256": "23a4354d9111f1bfc3174a6385b9e5fd7a17a7a6f6fd1d24b8b1584352ea331d",
+      "bytes": 8206,
+      "sourceModifiedAt": "2026-05-16T07:28:43.855Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AutoDialLiveMonitorPanel.tsx",
+      "destination": "src/components/AutoDialLiveMonitorPanel.tsx",
+      "sourceSha256": "f02e73949a00d4139e7eb86069d3f80295ffba3ae7fbad4710152f625cdc3631",
+      "gitSha256": "f02e73949a00d4139e7eb86069d3f80295ffba3ae7fbad4710152f625cdc3631",
+      "bytes": 14046,
+      "sourceModifiedAt": "2026-09-12T08:18:53.117Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AutoDialTab.tsx",
+      "destination": "src/components/AutoDialTab.tsx",
+      "sourceSha256": "4882bfa6a9b46159b9c80a24669459736f9f9142e508b1bf5214e01b26af2696",
+      "gitSha256": "4882bfa6a9b46159b9c80a24669459736f9f9142e508b1bf5214e01b26af2696",
+      "bytes": 29797,
+      "sourceModifiedAt": "2026-09-12T08:18:53.117Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AutoFollowUpQueuePanel.test.tsx",
+      "destination": "src/components/AutoFollowUpQueuePanel.test.tsx",
+      "sourceSha256": "e93852382bf4a504d7f498d6e137f74644eb17c29794912c9cf675e9fba23188",
+      "gitSha256": "e93852382bf4a504d7f498d6e137f74644eb17c29794912c9cf675e9fba23188",
+      "bytes": 7983,
+      "sourceModifiedAt": "2026-06-25T05:30:50.853Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/AutoFollowUpQueuePanel.tsx",
+      "destination": "src/components/AutoFollowUpQueuePanel.tsx",
+      "sourceSha256": "c923ec8c3fb3ec2eca90747c19b4c1eacc35dfbeed9816c4828326c2eea42fc2",
+      "gitSha256": "c923ec8c3fb3ec2eca90747c19b4c1eacc35dfbeed9816c4828326c2eea42fc2",
+      "bytes": 24937,
+      "sourceModifiedAt": "2026-09-12T08:18:53.121Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/BlogsLeadsTab.tsx",
+      "destination": "src/components/BlogsLeadsTab.tsx",
+      "sourceSha256": "a74fc47f08648568de414ece004100037d056cfbb150f68b72186fe39c4fedf3",
+      "gitSha256": "a74fc47f08648568de414ece004100037d056cfbb150f68b72186fe39c4fedf3",
+      "bytes": 15238,
+      "sourceModifiedAt": "2026-09-12T08:18:53.113Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/BranchSelector.tsx",
+      "destination": "src/components/BranchSelector.tsx",
+      "sourceSha256": "268e34cf4e754db484f9d3b82893418b9fd16851b0e51e4f9aab1eaadb5d147f",
+      "gitSha256": "268e34cf4e754db484f9d3b82893418b9fd16851b0e51e4f9aab1eaadb5d147f",
+      "bytes": 5286,
+      "sourceModifiedAt": "2026-04-26T10:46:21.267Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/CustomerIntakeForm.test.tsx",
+      "destination": "src/components/CustomerIntakeForm.test.tsx",
+      "sourceSha256": "aa9cae53c9a08f5d8a6710e694aeaf74d9d92df9474d3d5a9983fbe92101ba46",
+      "gitSha256": "aa9cae53c9a08f5d8a6710e694aeaf74d9d92df9474d3d5a9983fbe92101ba46",
+      "bytes": 52967,
+      "sourceModifiedAt": "2026-09-17T09:40:42.395Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/CustomerIntakeForm.tsx",
+      "destination": "src/components/CustomerIntakeForm.tsx",
+      "sourceSha256": "14a973be212ed4dbd1b6efae79db7794baa02cd12f58ca5c430b61d0d45fcd41",
+      "gitSha256": "14a973be212ed4dbd1b6efae79db7794baa02cd12f58ca5c430b61d0d45fcd41",
+      "bytes": 177158,
+      "sourceModifiedAt": "2026-09-22T11:53:27.819Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/DashboardLayout.tsx",
+      "destination": "src/components/DashboardLayout.tsx",
+      "sourceSha256": "848599f2a297295a12b1e558a762ce4d7a6b7ad38051d72902e56b8066a10e82",
+      "gitSha256": "848599f2a297295a12b1e558a762ce4d7a6b7ad38051d72902e56b8066a10e82",
+      "bytes": 7940,
+      "sourceModifiedAt": "2026-09-10T05:04:46.925Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/DialerPanel.test.tsx",
+      "destination": "src/components/DialerPanel.test.tsx",
+      "sourceSha256": "915739923bfa6c6538d3c8e1e163cd58f4fb8e22118200751f5800b9148aba94",
+      "gitSha256": "915739923bfa6c6538d3c8e1e163cd58f4fb8e22118200751f5800b9148aba94",
+      "bytes": 8275,
+      "sourceModifiedAt": "2026-09-15T06:16:18.951Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/DialerPanel.tsx",
+      "destination": "src/components/DialerPanel.tsx",
+      "sourceSha256": "cea9213b3dc78c59554494cc7ebd3194557ab66d1ebaadbe90cadba3b5e44763",
+      "gitSha256": "cea9213b3dc78c59554494cc7ebd3194557ab66d1ebaadbe90cadba3b5e44763",
+      "bytes": 33208,
+      "sourceModifiedAt": "2026-09-15T08:01:00.741Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/GoogleLeadsTab.tsx",
+      "destination": "src/components/GoogleLeadsTab.tsx",
+      "sourceSha256": "5845f5d4a33942b700c89345a724c1791b83a5809c83e6df92522af996ef95bd",
+      "gitSha256": "5845f5d4a33942b700c89345a724c1791b83a5809c83e6df92522af996ef95bd",
+      "bytes": 12660,
+      "sourceModifiedAt": "2026-09-12T08:18:53.113Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/IncomingCallModal.test.tsx",
+      "destination": "src/components/IncomingCallModal.test.tsx",
+      "sourceSha256": "39694074cf47d5bd2a851085fa75390f1b27bb95752b5afbb8161dde7b7e70f9",
+      "gitSha256": "39694074cf47d5bd2a851085fa75390f1b27bb95752b5afbb8161dde7b7e70f9",
+      "bytes": 4060,
+      "sourceModifiedAt": "2026-09-13T07:50:26.718Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/IncomingCallModal.tsx",
+      "destination": "src/components/IncomingCallModal.tsx",
+      "sourceSha256": "0bcd1df6b5602e800a232259dd198f1eb83ec51273c8a852d578f2a32d2a101d",
+      "gitSha256": "0bcd1df6b5602e800a232259dd198f1eb83ec51273c8a852d578f2a32d2a101d",
+      "bytes": 21419,
+      "sourceModifiedAt": "2026-09-22T11:45:09.391Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/JustDialLeadsTab.tsx",
+      "destination": "src/components/JustDialLeadsTab.tsx",
+      "sourceSha256": "3534d7a110c63ea7b89f663daf5d0ca814a971dd5bb2e485302199670802d5ee",
+      "gitSha256": "3534d7a110c63ea7b89f663daf5d0ca814a971dd5bb2e485302199670802d5ee",
+      "bytes": 14634,
+      "sourceModifiedAt": "2026-09-12T08:18:53.109Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/LiveMonitorModal.tsx",
+      "destination": "src/components/LiveMonitorModal.tsx",
+      "sourceSha256": "387c12fbf8f4f02a318d5b2eb2e5135120679eb30894a048e56552c996a43134",
+      "gitSha256": "387c12fbf8f4f02a318d5b2eb2e5135120679eb30894a048e56552c996a43134",
+      "bytes": 6992,
+      "sourceModifiedAt": "2026-04-17T13:38:10.769Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/MdCallReport.test.tsx",
+      "destination": "src/components/MdCallReport.test.tsx",
+      "sourceSha256": "543eba9c258ff601826f0891234cdd078f050442241499bfa134e6b78ebf7da1",
+      "gitSha256": "543eba9c258ff601826f0891234cdd078f050442241499bfa134e6b78ebf7da1",
+      "bytes": 6874,
+      "sourceModifiedAt": "2026-09-10T07:27:33.463Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/MdCallReport.tsx",
+      "destination": "src/components/MdCallReport.tsx",
+      "sourceSha256": "9d94770b92f9ac61d8e040b196b8cd7eb997fc643095e80fca4433db0b450e2d",
+      "gitSha256": "9d94770b92f9ac61d8e040b196b8cd7eb997fc643095e80fca4433db0b450e2d",
+      "bytes": 21392,
+      "sourceModifiedAt": "2026-09-10T07:23:33.268Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/MetaLeadsTab.tsx",
+      "destination": "src/components/MetaLeadsTab.tsx",
+      "sourceSha256": "fd3b4690bca00e96d7ff332dfddb88ab6606cd4df1a95139e3eac0b2929a8777",
+      "gitSha256": "fd3b4690bca00e96d7ff332dfddb88ab6606cd4df1a95139e3eac0b2929a8777",
+      "bytes": 15412,
+      "sourceModifiedAt": "2026-09-12T08:18:53.113Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/NavLink.tsx",
+      "destination": "src/components/NavLink.tsx",
+      "sourceSha256": "c09f73102288d8a89e5e7b728715ba0697783c43b687e20dedce3536aa7049df",
+      "gitSha256": "c09f73102288d8a89e5e7b728715ba0697783c43b687e20dedce3536aa7049df",
+      "bytes": 751,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/PendingIntakeRecovery.test.tsx",
+      "destination": "src/components/PendingIntakeRecovery.test.tsx",
+      "sourceSha256": "9355909726f5582d55fd14361b267bd65fa05cedc06af0191ee5b2bff057e495",
+      "gitSha256": "9355909726f5582d55fd14361b267bd65fa05cedc06af0191ee5b2bff057e495",
+      "bytes": 4831,
+      "sourceModifiedAt": "2026-09-10T05:08:36.714Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/PendingIntakeRecovery.tsx",
+      "destination": "src/components/PendingIntakeRecovery.tsx",
+      "sourceSha256": "71585ff320750dbb0b61436400440130739aa25d3ffb494edd6ddc33b761fe7b",
+      "gitSha256": "71585ff320750dbb0b61436400440130739aa25d3ffb494edd6ddc33b761fe7b",
+      "bytes": 3970,
+      "sourceModifiedAt": "2026-09-13T07:44:23.778Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/SectionErrorBoundary.tsx",
+      "destination": "src/components/SectionErrorBoundary.tsx",
+      "sourceSha256": "bd9ca3494ee204276e0df0f5f50e539e81c09c2844ee6ba0438a3c3a493ddd78",
+      "gitSha256": "bd9ca3494ee204276e0df0f5f50e539e81c09c2844ee6ba0438a3c3a493ddd78",
+      "bytes": 4319,
+      "sourceModifiedAt": "2026-06-22T08:15:18.058Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/StatusFollowUpTab.tsx",
+      "destination": "src/components/StatusFollowUpTab.tsx",
+      "sourceSha256": "fae63dc94bc457227fc183b63e15210930dadcc126d36b76c0738062c40e1db0",
+      "gitSha256": "fae63dc94bc457227fc183b63e15210930dadcc126d36b76c0738062c40e1db0",
+      "bytes": 12943,
+      "sourceModifiedAt": "2026-09-12T08:18:53.113Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/TablePagination.tsx",
+      "destination": "src/components/TablePagination.tsx",
+      "sourceSha256": "7afe6e6e9f0464b448a3f939ecf422afd6119166f50ba1d6b9dd7099482bfd6b",
+      "gitSha256": "7afe6e6e9f0464b448a3f939ecf422afd6119166f50ba1d6b9dd7099482bfd6b",
+      "bytes": 2978,
+      "sourceModifiedAt": "2026-05-12T04:44:48.941Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/WebsiteLeadsTab.tsx",
+      "destination": "src/components/WebsiteLeadsTab.tsx",
+      "sourceSha256": "696d8e38f8162ad7f284952c627495b8c9bf88eeefc20aab671d210b86aea24b",
+      "gitSha256": "696d8e38f8162ad7f284952c627495b8c9bf88eeefc20aab671d210b86aea24b",
+      "bytes": 18480,
+      "sourceModifiedAt": "2026-09-12T08:18:53.109Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/accordion.tsx",
+      "destination": "src/components/ui/accordion.tsx",
+      "sourceSha256": "9587b5ca80cf0aa68bc2a4e6baacebbe07eab14e1c66c6b6420033aeca9219d1",
+      "gitSha256": "9587b5ca80cf0aa68bc2a4e6baacebbe07eab14e1c66c6b6420033aeca9219d1",
+      "bytes": 1976,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/alert-dialog.tsx",
+      "destination": "src/components/ui/alert-dialog.tsx",
+      "sourceSha256": "c8b01137c7552e63c9ccf2c38ef92e5417bd6616b6980d56d3015db027465283",
+      "gitSha256": "c8b01137c7552e63c9ccf2c38ef92e5417bd6616b6980d56d3015db027465283",
+      "bytes": 4313,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/alert.tsx",
+      "destination": "src/components/ui/alert.tsx",
+      "sourceSha256": "6352c232d36b2aeb20cce9692fecd98a472c8bb0b8c3f8a45446c433382e2da7",
+      "gitSha256": "6352c232d36b2aeb20cce9692fecd98a472c8bb0b8c3f8a45446c433382e2da7",
+      "bytes": 1546,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/aspect-ratio.tsx",
+      "destination": "src/components/ui/aspect-ratio.tsx",
+      "sourceSha256": "d72c73d629e37995a0a71647d851d68d6fdcd7ec120797f36ab83a8ee89f2cab",
+      "gitSha256": "d72c73d629e37995a0a71647d851d68d6fdcd7ec120797f36ab83a8ee89f2cab",
+      "bytes": 143,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/avatar.tsx",
+      "destination": "src/components/ui/avatar.tsx",
+      "sourceSha256": "4a8bc00e5514912c54d414e207266fa100906aec2754d590adcc8ccc46d4c5c9",
+      "gitSha256": "4a8bc00e5514912c54d414e207266fa100906aec2754d590adcc8ccc46d4c5c9",
+      "bytes": 1365,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/badge.tsx",
+      "destination": "src/components/ui/badge.tsx",
+      "sourceSha256": "90cfff4921a406f0e612da091b3f8e3ba30e6cf44592c65a852a41a8e063d24f",
+      "gitSha256": "90cfff4921a406f0e612da091b3f8e3ba30e6cf44592c65a852a41a8e063d24f",
+      "bytes": 1147,
+      "sourceModifiedAt": "2026-04-09T13:39:47.353Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/breadcrumb.tsx",
+      "destination": "src/components/ui/breadcrumb.tsx",
+      "sourceSha256": "e5589a54c1ed42101bb24cd67bbc72469fbfbe6b694c46e006424375ad77183e",
+      "gitSha256": "e5589a54c1ed42101bb24cd67bbc72469fbfbe6b694c46e006424375ad77183e",
+      "bytes": 2687,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/button.tsx",
+      "destination": "src/components/ui/button.tsx",
+      "sourceSha256": "ae65d5ed4fb57411f38475bf14cfb98abb688d293e76b0977827fbb680f46cb3",
+      "gitSha256": "ae65d5ed4fb57411f38475bf14cfb98abb688d293e76b0977827fbb680f46cb3",
+      "bytes": 1898,
+      "sourceModifiedAt": "2026-04-09T13:39:52.109Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/calendar.tsx",
+      "destination": "src/components/ui/calendar.tsx",
+      "sourceSha256": "845a0b0fdec33d8d49ab8ed05dd29a12c10b5bbcf60f24d0b9fc0a731ab18621",
+      "gitSha256": "845a0b0fdec33d8d49ab8ed05dd29a12c10b5bbcf60f24d0b9fc0a731ab18621",
+      "bytes": 2563,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/card.tsx",
+      "destination": "src/components/ui/card.tsx",
+      "sourceSha256": "bdfb74248321c52e89c2129d9d8088a56a3e33dd7850a7c9b0563a7b5ac937a0",
+      "gitSha256": "bdfb74248321c52e89c2129d9d8088a56a3e33dd7850a7c9b0563a7b5ac937a0",
+      "bytes": 1785,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/carousel.tsx",
+      "destination": "src/components/ui/carousel.tsx",
+      "sourceSha256": "561cab7fcb619deed3532d027cbf18ef8e3ebae9def4206b0d36bd22b8474c3a",
+      "gitSha256": "561cab7fcb619deed3532d027cbf18ef8e3ebae9def4206b0d36bd22b8474c3a",
+      "bytes": 6249,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/chart.tsx",
+      "destination": "src/components/ui/chart.tsx",
+      "sourceSha256": "a759d32aa240fa6e929f204b04252e45d6ae458558eebd37dccf4ae9e05ab5e2",
+      "gitSha256": "a759d32aa240fa6e929f204b04252e45d6ae458558eebd37dccf4ae9e05ab5e2",
+      "bytes": 9987,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/checkbox.tsx",
+      "destination": "src/components/ui/checkbox.tsx",
+      "sourceSha256": "178f8177bedb1704b4dd3e748f4826848981c8af43178c04e1a276a7f017cf1f",
+      "gitSha256": "178f8177bedb1704b4dd3e748f4826848981c8af43178c04e1a276a7f017cf1f",
+      "bytes": 1053,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/collapsible.tsx",
+      "destination": "src/components/ui/collapsible.tsx",
+      "sourceSha256": "fbe07841b794e0d7d08e87ddaaafadf1dc0c63ecc8389cd2c5b4a0a3f5500df1",
+      "gitSha256": "fbe07841b794e0d7d08e87ddaaafadf1dc0c63ecc8389cd2c5b4a0a3f5500df1",
+      "bytes": 320,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/command.tsx",
+      "destination": "src/components/ui/command.tsx",
+      "sourceSha256": "01ee9c1b88b54f2d032d85da05c1e191a0a497fd4c00da9f1bedd332608eb587",
+      "gitSha256": "01ee9c1b88b54f2d032d85da05c1e191a0a497fd4c00da9f1bedd332608eb587",
+      "bytes": 4761,
+      "sourceModifiedAt": "2026-04-09T13:31:49.931Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/context-menu.tsx",
+      "destination": "src/components/ui/context-menu.tsx",
+      "sourceSha256": "2d294c5e421c41b817f1644f2d54bfdde628cffae2682e69ca504ae754739ad6",
+      "gitSha256": "2d294c5e421c41b817f1644f2d54bfdde628cffae2682e69ca504ae754739ad6",
+      "bytes": 7191,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/dialog.tsx",
+      "destination": "src/components/ui/dialog.tsx",
+      "sourceSha256": "8e755711b3fd5e8d7339baea7627da546293fe2df1a88775729c2857e0de4b57",
+      "gitSha256": "8e755711b3fd5e8d7339baea7627da546293fe2df1a88775729c2857e0de4b57",
+      "bytes": 3761,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/drawer.tsx",
+      "destination": "src/components/ui/drawer.tsx",
+      "sourceSha256": "3739cdfc80503412db604efb3ac0149db5f7cd5fec18508839d18dec195720e1",
+      "gitSha256": "3739cdfc80503412db604efb3ac0149db5f7cd5fec18508839d18dec195720e1",
+      "bytes": 2941,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/dropdown-menu.tsx",
+      "destination": "src/components/ui/dropdown-menu.tsx",
+      "sourceSha256": "b1ede0a4144b64853dc7ba62d184c09df479482eada86f936ce5b3d0b67a9a19",
+      "gitSha256": "b1ede0a4144b64853dc7ba62d184c09df479482eada86f936ce5b3d0b67a9a19",
+      "bytes": 7260,
+      "sourceModifiedAt": "2026-03-20T05:51:17.035Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/form.tsx",
+      "destination": "src/components/ui/form.tsx",
+      "sourceSha256": "94399bb0b39999ab6c5a486316bd45e3683da7a73ae444aea3703002514bbc6b",
+      "gitSha256": "94399bb0b39999ab6c5a486316bd45e3683da7a73ae444aea3703002514bbc6b",
+      "bytes": 4072,
+      "sourceModifiedAt": "2026-04-09T13:40:00.426Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/hover-card.tsx",
+      "destination": "src/components/ui/hover-card.tsx",
+      "sourceSha256": "8d606e166ef5f9bc4fc3efb1f6ce2f4bb376177a2c6fef16f67f87ad2d13d005",
+      "gitSha256": "8d606e166ef5f9bc4fc3efb1f6ce2f4bb376177a2c6fef16f67f87ad2d13d005",
+      "bytes": 1193,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/input-otp.tsx",
+      "destination": "src/components/ui/input-otp.tsx",
+      "sourceSha256": "a301658db5430d30108004cf05cb9469457a882f93dc057097f777ade4ca5423",
+      "gitSha256": "a301658db5430d30108004cf05cb9469457a882f93dc057097f777ade4ca5423",
+      "bytes": 2166,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/input.tsx",
+      "destination": "src/components/ui/input.tsx",
+      "sourceSha256": "aacef8933fe99ab553e12a82c874a23c97e2b5602eb6f00018454fa0a8d4f7f2",
+      "gitSha256": "aacef8933fe99ab553e12a82c874a23c97e2b5602eb6f00018454fa0a8d4f7f2",
+      "bytes": 799,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/label.tsx",
+      "destination": "src/components/ui/label.tsx",
+      "sourceSha256": "d5dc9497cbb28a5401b864bd44a15f010c302584fbe8e07e015dbe443f103753",
+      "gitSha256": "d5dc9497cbb28a5401b864bd44a15f010c302584fbe8e07e015dbe443f103753",
+      "bytes": 696,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/menubar.tsx",
+      "destination": "src/components/ui/menubar.tsx",
+      "sourceSha256": "9a44756ba91e4c486b30574910b72f58c136c7a9281ccf0c13bf366962c7cdaf",
+      "gitSha256": "9a44756ba91e4c486b30574910b72f58c136c7a9281ccf0c13bf366962c7cdaf",
+      "bytes": 7863,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/navigation-menu.tsx",
+      "destination": "src/components/ui/navigation-menu.tsx",
+      "sourceSha256": "d5faa1d97a94389d740c6aa75addd605c554cefc136cad918f97ee89600c1885",
+      "gitSha256": "d5faa1d97a94389d740c6aa75addd605c554cefc136cad918f97ee89600c1885",
+      "bytes": 5088,
+      "sourceModifiedAt": "2026-04-09T13:40:05.314Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/pagination.tsx",
+      "destination": "src/components/ui/pagination.tsx",
+      "sourceSha256": "ac9da1e191c3485524c1e8d8cdbe0b9fa4ea2729c9554f796e2516485c839260",
+      "gitSha256": "ac9da1e191c3485524c1e8d8cdbe0b9fa4ea2729c9554f796e2516485c839260",
+      "bytes": 2683,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/popover.tsx",
+      "destination": "src/components/ui/popover.tsx",
+      "sourceSha256": "ee5f78ece57c9e8eb5f9b4186e2bb9ebe46b69b52f03f1edd9a601883bc64772",
+      "gitSha256": "ee5f78ece57c9e8eb5f9b4186e2bb9ebe46b69b52f03f1edd9a601883bc64772",
+      "bytes": 1239,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/progress.tsx",
+      "destination": "src/components/ui/progress.tsx",
+      "sourceSha256": "bdc4847f05de3aea1276966e0df9b4a293297f0ca7d7b430a1cb16cf5626728f",
+      "gitSha256": "bdc4847f05de3aea1276966e0df9b4a293297f0ca7d7b430a1cb16cf5626728f",
+      "bytes": 765,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/radio-group.tsx",
+      "destination": "src/components/ui/radio-group.tsx",
+      "sourceSha256": "995ec983735b204597f11ae5dd22ba0175dfc633da2ddecf222847bbca387adb",
+      "gitSha256": "995ec983735b204597f11ae5dd22ba0175dfc633da2ddecf222847bbca387adb",
+      "bytes": 1447,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/resizable.tsx",
+      "destination": "src/components/ui/resizable.tsx",
+      "sourceSha256": "a31af34c14c7c86612d1c2e51c90da59e0edae37dab5210bc1dd2c91dc2f3edd",
+      "gitSha256": "a31af34c14c7c86612d1c2e51c90da59e0edae37dab5210bc1dd2c91dc2f3edd",
+      "bytes": 1696,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/scroll-area.tsx",
+      "destination": "src/components/ui/scroll-area.tsx",
+      "sourceSha256": "998181a10164aa6e508210064ba61b2f772a92958d7bb2141867007f0ebd9783",
+      "gitSha256": "998181a10164aa6e508210064ba61b2f772a92958d7bb2141867007f0ebd9783",
+      "bytes": 1608,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/select.tsx",
+      "destination": "src/components/ui/select.tsx",
+      "sourceSha256": "a2b62120a033b36c8d6c4a1693aa9231645fa69251740e15eacec24c1eea4d82",
+      "gitSha256": "a2b62120a033b36c8d6c4a1693aa9231645fa69251740e15eacec24c1eea4d82",
+      "bytes": 5575,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/separator.tsx",
+      "destination": "src/components/ui/separator.tsx",
+      "sourceSha256": "6c271e740c3d7b54947bb727383e5355788f0176b7b683c3bb970cad9883dded",
+      "gitSha256": "6c271e740c3d7b54947bb727383e5355788f0176b7b683c3bb970cad9883dded",
+      "bytes": 698,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/sheet.tsx",
+      "destination": "src/components/ui/sheet.tsx",
+      "sourceSha256": "e7d726b34d0f3214f597a844c7f2c4fc869933f7433eddb74e7fd2eb92500be3",
+      "gitSha256": "e7d726b34d0f3214f597a844c7f2c4fc869933f7433eddb74e7fd2eb92500be3",
+      "bytes": 4197,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/sidebar.tsx",
+      "destination": "src/components/ui/sidebar.tsx",
+      "sourceSha256": "9c2b3570253f5ac06957c3b39b387a541b20f35da208f781ca47ad4e9dce838f",
+      "gitSha256": "9c2b3570253f5ac06957c3b39b387a541b20f35da208f781ca47ad4e9dce838f",
+      "bytes": 22895,
+      "sourceModifiedAt": "2026-04-09T13:40:36.987Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/skeleton.tsx",
+      "destination": "src/components/ui/skeleton.tsx",
+      "sourceSha256": "a229c310b9cbcb01ddd5e580865a6f14a19061aff7f6a97ef82a40b6a83583a4",
+      "gitSha256": "a229c310b9cbcb01ddd5e580865a6f14a19061aff7f6a97ef82a40b6a83583a4",
+      "bytes": 234,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/slider.tsx",
+      "destination": "src/components/ui/slider.tsx",
+      "sourceSha256": "b81a683197551322cd8f13653bc955ad4c3bca6fe62376d33acb2bcd04361d02",
+      "gitSha256": "b81a683197551322cd8f13653bc955ad4c3bca6fe62376d33acb2bcd04361d02",
+      "bytes": 1065,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/sonner.tsx",
+      "destination": "src/components/ui/sonner.tsx",
+      "sourceSha256": "bc015da59b98505be3667b645bc757218d03ef2e12543427c53c75f1ec9f3681",
+      "gitSha256": "bc015da59b98505be3667b645bc757218d03ef2e12543427c53c75f1ec9f3681",
+      "bytes": 935,
+      "sourceModifiedAt": "2026-04-09T13:40:44.311Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/switch.tsx",
+      "destination": "src/components/ui/switch.tsx",
+      "sourceSha256": "99cda942c2d215d8f25dd33ae06ed1278bcf912b262ed0e907b04f35881ac507",
+      "gitSha256": "99cda942c2d215d8f25dd33ae06ed1278bcf912b262ed0e907b04f35881ac507",
+      "bytes": 1147,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/table.tsx",
+      "destination": "src/components/ui/table.tsx",
+      "sourceSha256": "fab18d9eeb84781f534330ff4b2c2cbe3a93f9bdf5c449debff2f682a83a4876",
+      "gitSha256": "fab18d9eeb84781f534330ff4b2c2cbe3a93f9bdf5c449debff2f682a83a4876",
+      "bytes": 2694,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/tabs.tsx",
+      "destination": "src/components/ui/tabs.tsx",
+      "sourceSha256": "b313d08a8c85e586a282b615cf30ce0b6ec1eca3ea92149b731f14b4082f4d71",
+      "gitSha256": "b313d08a8c85e586a282b615cf30ce0b6ec1eca3ea92149b731f14b4082f4d71",
+      "bytes": 1897,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/textarea.tsx",
+      "destination": "src/components/ui/textarea.tsx",
+      "sourceSha256": "1b43012d40d2fc4363ddee86c0988f6668cd2dc8d5a022352fd950d5ad340d0d",
+      "gitSha256": "1b43012d40d2fc4363ddee86c0988f6668cd2dc8d5a022352fd950d5ad340d0d",
+      "bytes": 738,
+      "sourceModifiedAt": "2026-04-09T13:31:55.519Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/toast.tsx",
+      "destination": "src/components/ui/toast.tsx",
+      "sourceSha256": "8f4db67ae4633904c3cccee6629a1061472bb23f5368e5b7e72a306cc494f9d3",
+      "gitSha256": "8f4db67ae4633904c3cccee6629a1061472bb23f5368e5b7e72a306cc494f9d3",
+      "bytes": 4798,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/toaster.tsx",
+      "destination": "src/components/ui/toaster.tsx",
+      "sourceSha256": "600d661340ddc3ee7b5f9088684e1b3072cf60c9275b2f84bf4860dc29fe0fba",
+      "gitSha256": "600d661340ddc3ee7b5f9088684e1b3072cf60c9275b2f84bf4860dc29fe0fba",
+      "bytes": 730,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/toggle-group.tsx",
+      "destination": "src/components/ui/toggle-group.tsx",
+      "sourceSha256": "a3ea231230c8fff22ff6e0b457e71addf961fe1f80deaba0c80d17e649d34bf3",
+      "gitSha256": "a3ea231230c8fff22ff6e0b457e71addf961fe1f80deaba0c80d17e649d34bf3",
+      "bytes": 1714,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/toggle.tsx",
+      "destination": "src/components/ui/toggle.tsx",
+      "sourceSha256": "9710455c50383c05d6d5be32f711c7480497ab21e5be3f6024c8068f1541a86e",
+      "gitSha256": "9710455c50383c05d6d5be32f711c7480497ab21e5be3f6024c8068f1541a86e",
+      "bytes": 1474,
+      "sourceModifiedAt": "2026-04-09T13:41:02.799Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/tooltip.tsx",
+      "destination": "src/components/ui/tooltip.tsx",
+      "sourceSha256": "bd9361649477cf9496f4b48415a2eafb9ae1ebca81af58a29b61b1516adc88c1",
+      "gitSha256": "bd9361649477cf9496f4b48415a2eafb9ae1ebca81af58a29b61b1516adc88c1",
+      "bytes": 1155,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/components/ui/use-toast.ts",
+      "destination": "src/components/ui/use-toast.ts",
+      "sourceSha256": "d48c4c490e5101aa42ceed9b8ca49642d66152ba11daf7ee6c29bee0f5172c37",
+      "gitSha256": "d48c4c490e5101aa42ceed9b8ca49642d66152ba11daf7ee6c29bee0f5172c37",
+      "bytes": 82,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/contexts/AuthContext.tsx",
+      "destination": "src/contexts/AuthContext.tsx",
+      "sourceSha256": "a6efa290d8e2694b48fac72b3d6000d2399cc0137e68e9669c2a4e95be8f62db",
+      "gitSha256": "a6efa290d8e2694b48fac72b3d6000d2399cc0137e68e9669c2a4e95be8f62db",
+      "bytes": 20486,
+      "sourceModifiedAt": "2026-09-01T10:04:59.984Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/contexts/CallCenterContext.tsx",
+      "destination": "src/contexts/CallCenterContext.tsx",
+      "sourceSha256": "4408796b58b716f8f06bb8edfac43c100fc454c7eae36677e34eefe916188ec3",
+      "gitSha256": "4408796b58b716f8f06bb8edfac43c100fc454c7eae36677e34eefe916188ec3",
+      "bytes": 265315,
+      "sourceModifiedAt": "2026-09-22T11:45:09.387Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/data/mockData.ts",
+      "destination": "src/data/mockData.ts",
+      "sourceSha256": "f27ebe7b09b5bf8f39b542b4c54bde9cce7092d9fa0951a83b07f2b5b4ff54ce",
+      "gitSha256": "f27ebe7b09b5bf8f39b542b4c54bde9cce7092d9fa0951a83b07f2b5b4ff54ce",
+      "bytes": 6520,
+      "sourceModifiedAt": "2026-09-22T11:44:34.470Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/use-mobile.tsx",
+      "destination": "src/hooks/use-mobile.tsx",
+      "sourceSha256": "21eff740f9e5c965c7f0782925a7e8f67ddfcdf0f58b6613550f99c3e1c454e9",
+      "gitSha256": "21eff740f9e5c965c7f0782925a7e8f67ddfcdf0f58b6613550f99c3e1c454e9",
+      "bytes": 576,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/use-toast.ts",
+      "destination": "src/hooks/use-toast.ts",
+      "sourceSha256": "0602ac84d95719f2a27075ce60333db73128e09c0b07365dce7f9c77441c9d7c",
+      "gitSha256": "0602ac84d95719f2a27075ce60333db73128e09c0b07365dce7f9c77441c9d7c",
+      "bytes": 3935,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/useAgentDirectory.ts",
+      "destination": "src/hooks/useAgentDirectory.ts",
+      "sourceSha256": "23ffcc3d4fe7afd7eed3f9aadabfa1154581a47a2b943b46f455a456f9cafc50",
+      "gitSha256": "23ffcc3d4fe7afd7eed3f9aadabfa1154581a47a2b943b46f455a456f9cafc50",
+      "bytes": 1542,
+      "sourceModifiedAt": "2026-04-18T06:03:04.078Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/useClientPagination.ts",
+      "destination": "src/hooks/useClientPagination.ts",
+      "sourceSha256": "335f6d1b3000567f4c4131187c3af1e7a34f58591a85836b3f0dcf68aae34e54",
+      "gitSha256": "335f6d1b3000567f4c4131187c3af1e7a34f58591a85836b3f0dcf68aae34e54",
+      "bytes": 950,
+      "sourceModifiedAt": "2026-04-15T10:43:49.709Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/useCustomerDataDashboard.test.tsx",
+      "destination": "src/hooks/useCustomerDataDashboard.test.tsx",
+      "sourceSha256": "80e5413f94099b8e76249c82f7588e832e41c6aa6f840761dded16e5379523f7",
+      "gitSha256": "80e5413f94099b8e76249c82f7588e832e41c6aa6f840761dded16e5379523f7",
+      "bytes": 3780,
+      "sourceModifiedAt": "2026-09-09T11:30:19.017Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/useCustomerDataDashboard.ts",
+      "destination": "src/hooks/useCustomerDataDashboard.ts",
+      "sourceSha256": "1677cc3213a61c5fa3e83e6645504002a5f7c43d8e158212c8022d1d69afd709",
+      "gitSha256": "1677cc3213a61c5fa3e83e6645504002a5f7c43d8e158212c8022d1d69afd709",
+      "bytes": 1415,
+      "sourceModifiedAt": "2026-09-09T11:35:47.791Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/usePostCallIntake.test.tsx",
+      "destination": "src/hooks/usePostCallIntake.test.tsx",
+      "sourceSha256": "ce2d3de159ab7d34babbb89bfb6f556176351828408dd1b125e0aa612ad3c9e2",
+      "gitSha256": "ce2d3de159ab7d34babbb89bfb6f556176351828408dd1b125e0aa612ad3c9e2",
+      "bytes": 8261,
+      "sourceModifiedAt": "2026-09-13T09:49:13.896Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/usePostCallIntake.ts",
+      "destination": "src/hooks/usePostCallIntake.ts",
+      "sourceSha256": "40548519fdb41d180375b6f25e36ff4952e63f96a9504e46fee653756dc6743d",
+      "gitSha256": "40548519fdb41d180375b6f25e36ff4952e63f96a9504e46fee653756dc6743d",
+      "bytes": 5497,
+      "sourceModifiedAt": "2026-09-15T11:21:53.603Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/hooks/useRealBranches.ts",
+      "destination": "src/hooks/useRealBranches.ts",
+      "sourceSha256": "666afd8dbf62bde7d14be48fe268624f707649dcca88c3ebb782033116b19e87",
+      "gitSha256": "666afd8dbf62bde7d14be48fe268624f707649dcca88c3ebb782033116b19e87",
+      "bytes": 997,
+      "sourceModifiedAt": "2026-04-13T10:20:35.982Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/index.css",
+      "destination": "src/index.css",
+      "sourceSha256": "27410e523e9d75d0d2659de667a906ce79dbb1926816fe2d44dade62baca5539",
+      "gitSha256": "27410e523e9d75d0d2659de667a906ce79dbb1926816fe2d44dade62baca5539",
+      "bytes": 15105,
+      "sourceModifiedAt": "2026-09-16T07:56:14.009Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentActivity.test.ts",
+      "destination": "src/lib/agentActivity.test.ts",
+      "sourceSha256": "74d9b016536050e96ebd6158a10f4847c5c36781fb66dd404c435a2758a064fd",
+      "gitSha256": "74d9b016536050e96ebd6158a10f4847c5c36781fb66dd404c435a2758a064fd",
+      "bytes": 3134,
+      "sourceModifiedAt": "2026-05-06T05:03:36.156Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentActivity.ts",
+      "destination": "src/lib/agentActivity.ts",
+      "sourceSha256": "ae278100c041c01eb75222f0680ea3c2b4fe28efc4cdae5986ee25c13b417947",
+      "gitSha256": "ae278100c041c01eb75222f0680ea3c2b4fe28efc4cdae5986ee25c13b417947",
+      "bytes": 4826,
+      "sourceModifiedAt": "2026-07-01T12:22:57.392Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentBoardScope.test.ts",
+      "destination": "src/lib/agentBoardScope.test.ts",
+      "sourceSha256": "3adc871afb1ec1889ed92163319656eedaff3cc447baa0a7b325929f0348bfb6",
+      "gitSha256": "3adc871afb1ec1889ed92163319656eedaff3cc447baa0a7b325929f0348bfb6",
+      "bytes": 997,
+      "sourceModifiedAt": "2026-04-25T08:47:07.022Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentBoardScope.ts",
+      "destination": "src/lib/agentBoardScope.ts",
+      "sourceSha256": "72afe507ca9f4ddaab7eabc77fb16d02e8cd1ca051e2dd9de598a4f8c2efa41e",
+      "gitSha256": "72afe507ca9f4ddaab7eabc77fb16d02e8cd1ca051e2dd9de598a4f8c2efa41e",
+      "bytes": 463,
+      "sourceModifiedAt": "2026-04-25T08:47:06.962Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentSession.test.ts",
+      "destination": "src/lib/agentSession.test.ts",
+      "sourceSha256": "4cb1cf3ab6fde5bbc8a3ceaacf5136d0511f3be5e125e6560cada811bbc35b12",
+      "gitSha256": "4cb1cf3ab6fde5bbc8a3ceaacf5136d0511f3be5e125e6560cada811bbc35b12",
+      "bytes": 3334,
+      "sourceModifiedAt": "2026-04-24T06:49:25.729Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentSession.ts",
+      "destination": "src/lib/agentSession.ts",
+      "sourceSha256": "9feeba6660af42bf6c701f8121e2bde6baea3a928f8d6fc61429dc0fa4063765",
+      "gitSha256": "9feeba6660af42bf6c701f8121e2bde6baea3a928f8d6fc61429dc0fa4063765",
+      "bytes": 6192,
+      "sourceModifiedAt": "2026-07-23T06:31:59.749Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentShiftTracker.test.ts",
+      "destination": "src/lib/agentShiftTracker.test.ts",
+      "sourceSha256": "f6a0f8992c782b47ae042b6fddc05a3c23bedb574ee1b0cc05aeceda8c96e34d",
+      "gitSha256": "f6a0f8992c782b47ae042b6fddc05a3c23bedb574ee1b0cc05aeceda8c96e34d",
+      "bytes": 3070,
+      "sourceModifiedAt": "2026-04-20T08:06:24.348Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentShiftTracker.ts",
+      "destination": "src/lib/agentShiftTracker.ts",
+      "sourceSha256": "3398acf2791f2945ed696d47acc472d5a4d4b3aaf7b8efa451206fe258fa2224",
+      "gitSha256": "3398acf2791f2945ed696d47acc472d5a4d4b3aaf7b8efa451206fe258fa2224",
+      "bytes": 9488,
+      "sourceModifiedAt": "2026-04-20T08:05:55.732Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentStatus.test.ts",
+      "destination": "src/lib/agentStatus.test.ts",
+      "sourceSha256": "2d6ecbccbc067e7deaaf2afe41a1b49ff691a21b4aa9ee0bc59f332a36df4dd2",
+      "gitSha256": "2d6ecbccbc067e7deaaf2afe41a1b49ff691a21b4aa9ee0bc59f332a36df4dd2",
+      "bytes": 3962,
+      "sourceModifiedAt": "2026-07-17T09:53:48.583Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentStatus.ts",
+      "destination": "src/lib/agentStatus.ts",
+      "sourceSha256": "8869ffcf270bbc696e746366c4098af0cb3538971619ac6d6d67a6e12ad595c1",
+      "gitSha256": "8869ffcf270bbc696e746366c4098af0cb3538971619ac6d6d67a6e12ad595c1",
+      "bytes": 6008,
+      "sourceModifiedAt": "2026-09-01T05:54:44.093Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/agentStatusBoardAuth.ts",
+      "destination": "src/lib/agentStatusBoardAuth.ts",
+      "sourceSha256": "8f2f1a6b597158dcce6aa571c897e0a4ae00043ff78bb68b32ee14b4dfb87b93",
+      "gitSha256": "8f2f1a6b597158dcce6aa571c897e0a4ae00043ff78bb68b32ee14b4dfb87b93",
+      "bytes": 865,
+      "sourceModifiedAt": "2026-04-17T14:15:49.492Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/api.test.ts",
+      "destination": "src/lib/api.test.ts",
+      "sourceSha256": "86473ac6510a505941963fb44230b8f6f8ced7e7bb1903f7fa4467ad8fb8ad28",
+      "gitSha256": "86473ac6510a505941963fb44230b8f6f8ced7e7bb1903f7fa4467ad8fb8ad28",
+      "bytes": 29004,
+      "sourceModifiedAt": "2026-09-10T05:07:06.112Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/api.ts",
+      "destination": "src/lib/api.ts",
+      "sourceSha256": "632e94bcbe5eb01cd7c948e53a6765b01c4c2ba84f54e9258e95999669a6f416",
+      "gitSha256": "632e94bcbe5eb01cd7c948e53a6765b01c4c2ba84f54e9258e95999669a6f416",
+      "bytes": 136521,
+      "sourceModifiedAt": "2026-09-22T11:49:04.403Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/audioDevices.test.ts",
+      "destination": "src/lib/audioDevices.test.ts",
+      "sourceSha256": "14890dcac2bf4987aed9f19032db8c55b56cf053406d9a1e27d46ac0fad528c0",
+      "gitSha256": "14890dcac2bf4987aed9f19032db8c55b56cf053406d9a1e27d46ac0fad528c0",
+      "bytes": 10568,
+      "sourceModifiedAt": "2026-04-22T05:45:29.938Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/audioDevices.ts",
+      "destination": "src/lib/audioDevices.ts",
+      "sourceSha256": "d769ab785d4cabbbcecc1b3f564224f58f30b0007ffa1568c10e85e316397682",
+      "gitSha256": "d769ab785d4cabbbcecc1b3f564224f58f30b0007ffa1568c10e85e316397682",
+      "bytes": 9368,
+      "sourceModifiedAt": "2026-04-22T05:44:57.461Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/autoDialLiveCalls.test.ts",
+      "destination": "src/lib/autoDialLiveCalls.test.ts",
+      "sourceSha256": "cfedd24abbea691f912cb7627b3f1a7c62a965b2e88469b5bf419b6306d5648a",
+      "gitSha256": "cfedd24abbea691f912cb7627b3f1a7c62a965b2e88469b5bf419b6306d5648a",
+      "bytes": 3038,
+      "sourceModifiedAt": "2026-04-25T11:07:29.817Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/autoDialLiveCalls.ts",
+      "destination": "src/lib/autoDialLiveCalls.ts",
+      "sourceSha256": "763768db7d779db2cab21b6445547fe245de5fbd4f73eab60891449e62b37814",
+      "gitSha256": "763768db7d779db2cab21b6445547fe245de5fbd4f73eab60891449e62b37814",
+      "bytes": 2703,
+      "sourceModifiedAt": "2026-04-25T11:07:10.637Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/branchLocation.ts",
+      "destination": "src/lib/branchLocation.ts",
+      "sourceSha256": "6c011da8ada2b578f71575d31bf21632cb591be5b3e32a92fc9849e559e17f42",
+      "gitSha256": "6c011da8ada2b578f71575d31bf21632cb591be5b3e32a92fc9849e559e17f42",
+      "bytes": 636,
+      "sourceModifiedAt": "2026-08-27T05:19:15.076Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/brand.ts",
+      "destination": "src/lib/brand.ts",
+      "sourceSha256": "e441f438afd952ab67242c98f17de1c9f62c67938a01f6ce15638668f7c1084d",
+      "gitSha256": "e441f438afd952ab67242c98f17de1c9f62c67938a01f6ce15638668f7c1084d",
+      "bytes": 51,
+      "sourceModifiedAt": "2026-04-13T10:12:43.041Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/browserStorage.ts",
+      "destination": "src/lib/browserStorage.ts",
+      "sourceSha256": "ffca56af7a1dc60e7119676725d9bcea9aacc53bb462d415bf78b2726ebc6008",
+      "gitSha256": "ffca56af7a1dc60e7119676725d9bcea9aacc53bb462d415bf78b2726ebc6008",
+      "bytes": 3020,
+      "sourceModifiedAt": "2026-04-16T11:05:15.359Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/businessDate.ts",
+      "destination": "src/lib/businessDate.ts",
+      "sourceSha256": "24e156c4f7b421a62806bc4e75baad02cc3c08d504a3ac14a988689c26db0da3",
+      "gitSha256": "24e156c4f7b421a62806bc4e75baad02cc3c08d504a3ac14a988689c26db0da3",
+      "bytes": 1395,
+      "sourceModifiedAt": "2026-04-15T10:21:02.277Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callAttribution.test.ts",
+      "destination": "src/lib/callAttribution.test.ts",
+      "sourceSha256": "52523d5bb23a0f8351ed7686f5f7c1ed71a22c4e0dfdc6338e8befd4db9d7549",
+      "gitSha256": "52523d5bb23a0f8351ed7686f5f7c1ed71a22c4e0dfdc6338e8befd4db9d7549",
+      "bytes": 1335,
+      "sourceModifiedAt": "2026-09-22T11:44:34.470Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callAttribution.ts",
+      "destination": "src/lib/callAttribution.ts",
+      "sourceSha256": "0cc95daaf041fa6026dfa7e11adb3c4054fe605bf34856149537b5364f848c50",
+      "gitSha256": "0cc95daaf041fa6026dfa7e11adb3c4054fe605bf34856149537b5364f848c50",
+      "bytes": 2254,
+      "sourceModifiedAt": "2026-09-22T11:44:34.470Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callDateTime.test.ts",
+      "destination": "src/lib/callDateTime.test.ts",
+      "sourceSha256": "a02d2d7864cfa92940a7685ee01029aa47e0b8814610c47b2f0a76b33e2f33ec",
+      "gitSha256": "a02d2d7864cfa92940a7685ee01029aa47e0b8814610c47b2f0a76b33e2f33ec",
+      "bytes": 2187,
+      "sourceModifiedAt": "2026-09-12T08:26:46.047Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callDateTime.ts",
+      "destination": "src/lib/callDateTime.ts",
+      "sourceSha256": "2bbf0a8bab4e4a4ba01fdf87ba60b22926af8db159be4ed82d297b555a2010dd",
+      "gitSha256": "2bbf0a8bab4e4a4ba01fdf87ba60b22926af8db159be4ed82d297b555a2010dd",
+      "bytes": 3649,
+      "sourceModifiedAt": "2026-09-12T08:26:46.047Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callDisplay.ts",
+      "destination": "src/lib/callDisplay.ts",
+      "sourceSha256": "446cdbb0d35ef40afcf0738e9897e38683eb9bfb187c41d1f91551522d7a05e6",
+      "gitSha256": "446cdbb0d35ef40afcf0738e9897e38683eb9bfb187c41d1f91551522d7a05e6",
+      "bytes": 2834,
+      "sourceModifiedAt": "2026-05-19T06:29:46.308Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callDuration.ts",
+      "destination": "src/lib/callDuration.ts",
+      "sourceSha256": "1ad43935d3f76dc751300ecdd5c36b5ed02569d3ad36ff3a6c2d37fd1cc5305b",
+      "gitSha256": "1ad43935d3f76dc751300ecdd5c36b5ed02569d3ad36ff3a6c2d37fd1cc5305b",
+      "bytes": 1575,
+      "sourceModifiedAt": "2026-05-22T07:58:25.417Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callMetrics.test.ts",
+      "destination": "src/lib/callMetrics.test.ts",
+      "sourceSha256": "d53b3712f037e0457c9ea13021c462eebac12ce8205f7a02cc4d26d26b228220",
+      "gitSha256": "d53b3712f037e0457c9ea13021c462eebac12ce8205f7a02cc4d26d26b228220",
+      "bytes": 4652,
+      "sourceModifiedAt": "2026-05-27T05:48:35.513Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callMetrics.ts",
+      "destination": "src/lib/callMetrics.ts",
+      "sourceSha256": "c9cdab792149745371fc3a547607856d188a6e939002e32ec5b0be910e27acb7",
+      "gitSha256": "c9cdab792149745371fc3a547607856d188a6e939002e32ec5b0be910e27acb7",
+      "bytes": 15483,
+      "sourceModifiedAt": "2026-07-20T04:52:30.372Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callOutcomes.test.ts",
+      "destination": "src/lib/callOutcomes.test.ts",
+      "sourceSha256": "253cb0ecd94729658c2a154ed68b5f751bb2e1bdfd519fdb9308a7ffeb723e91",
+      "gitSha256": "253cb0ecd94729658c2a154ed68b5f751bb2e1bdfd519fdb9308a7ffeb723e91",
+      "bytes": 1924,
+      "sourceModifiedAt": "2026-05-25T12:42:38.933Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callOutcomes.ts",
+      "destination": "src/lib/callOutcomes.ts",
+      "sourceSha256": "0c78721a9aac5707af4b2acf46ae44980306368cf79eebce59d1d9e80c8fcc92",
+      "gitSha256": "0c78721a9aac5707af4b2acf46ae44980306368cf79eebce59d1d9e80c8fcc92",
+      "bytes": 4782,
+      "sourceModifiedAt": "2026-05-25T12:42:30.209Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callReconnectGuard.test.ts",
+      "destination": "src/lib/callReconnectGuard.test.ts",
+      "sourceSha256": "1ccf94a0005018c6f8959d2bc93e6e48c2b61bb111b58ae82294ea0cd4afb381",
+      "gitSha256": "1ccf94a0005018c6f8959d2bc93e6e48c2b61bb111b58ae82294ea0cd4afb381",
+      "bytes": 1012,
+      "sourceModifiedAt": "2026-04-17T07:37:51.476Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callReconnectGuard.ts",
+      "destination": "src/lib/callReconnectGuard.ts",
+      "sourceSha256": "c2782c661c66cf733c722f877541f27378183e6adc64311e89821d21e8066943",
+      "gitSha256": "c2782c661c66cf733c722f877541f27378183e6adc64311e89821d21e8066943",
+      "bytes": 1116,
+      "sourceModifiedAt": "2026-04-17T07:37:51.420Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callRecordingMatch.test.ts",
+      "destination": "src/lib/callRecordingMatch.test.ts",
+      "sourceSha256": "842125a8c75288c32e55a85283b0d8b1c318f15b2c098c1ad75fea1982204f7f",
+      "gitSha256": "842125a8c75288c32e55a85283b0d8b1c318f15b2c098c1ad75fea1982204f7f",
+      "bytes": 5307,
+      "sourceModifiedAt": "2026-04-18T12:18:12.576Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callRecordingMatch.ts",
+      "destination": "src/lib/callRecordingMatch.ts",
+      "sourceSha256": "65b857dacda3a287cce59078e32805efa2338d7828ebd182942802d90ed48ffa",
+      "gitSha256": "65b857dacda3a287cce59078e32805efa2338d7828ebd182942802d90ed48ffa",
+      "bytes": 6188,
+      "sourceModifiedAt": "2026-04-22T05:24:29.813Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callWorkflowGuards.test.ts",
+      "destination": "src/lib/callWorkflowGuards.test.ts",
+      "sourceSha256": "57280d01b1fe41a58c38f0b6f8a23a916f866e3f193f5cc0a12c33ffe33c1f35",
+      "gitSha256": "57280d01b1fe41a58c38f0b6f8a23a916f866e3f193f5cc0a12c33ffe33c1f35",
+      "bytes": 3415,
+      "sourceModifiedAt": "2026-04-21T08:22:05.343Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/callWorkflowGuards.ts",
+      "destination": "src/lib/callWorkflowGuards.ts",
+      "sourceSha256": "277c2d144120d4dded67ab8ed33757b757406aa2ed61326aa32086315d976a0e",
+      "gitSha256": "277c2d144120d4dded67ab8ed33757b757406aa2ed61326aa32086315d976a0e",
+      "bytes": 2128,
+      "sourceModifiedAt": "2026-04-21T08:21:54.031Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/csv.ts",
+      "destination": "src/lib/csv.ts",
+      "sourceSha256": "8f4b173d8d0c9b48f3715dc8cbce2f0ac514037583d15b45a3584347242cffd1",
+      "gitSha256": "8f4b173d8d0c9b48f3715dc8cbce2f0ac514037583d15b45a3584347242cffd1",
+      "bytes": 883,
+      "sourceModifiedAt": "2026-06-23T12:21:20.612Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/customerIdentity.ts",
+      "destination": "src/lib/customerIdentity.ts",
+      "sourceSha256": "b76a595a926957b692527ae61f50f739404d9364b549c007febb03c791e0b62e",
+      "gitSha256": "b76a595a926957b692527ae61f50f739404d9364b549c007febb03c791e0b62e",
+      "bytes": 416,
+      "sourceModifiedAt": "2026-08-11T09:04:54.660Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/dashboardCalls.test.ts",
+      "destination": "src/lib/dashboardCalls.test.ts",
+      "sourceSha256": "ab16c37546bc0f30ac3e8a463065e3b732cd67815fa60943ca4fea5aad901586",
+      "gitSha256": "ab16c37546bc0f30ac3e8a463065e3b732cd67815fa60943ca4fea5aad901586",
+      "bytes": 4139,
+      "sourceModifiedAt": "2026-04-18T09:44:20.840Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/dashboardCalls.ts",
+      "destination": "src/lib/dashboardCalls.ts",
+      "sourceSha256": "a1e143cf3e5f37d91e550f61709888da9595f45c4977f4b0187d06b1eeda064d",
+      "gitSha256": "a1e143cf3e5f37d91e550f61709888da9595f45c4977f4b0187d06b1eeda064d",
+      "bytes": 1727,
+      "sourceModifiedAt": "2026-04-18T09:44:20.696Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/dispositions.test.ts",
+      "destination": "src/lib/dispositions.test.ts",
+      "sourceSha256": "6ab6c0d1cf99c915884e1b0407ed336ed4a4a570e223b9e380811923bafc29d7",
+      "gitSha256": "6ab6c0d1cf99c915884e1b0407ed336ed4a4a570e223b9e380811923bafc29d7",
+      "bytes": 4962,
+      "sourceModifiedAt": "2026-07-23T06:47:28.152Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/dispositions.ts",
+      "destination": "src/lib/dispositions.ts",
+      "sourceSha256": "80dc5c8e229d79ee13b37543a66652d9cd99b7294e598fe20fb2f082b561be35",
+      "gitSha256": "80dc5c8e229d79ee13b37543a66652d9cd99b7294e598fe20fb2f082b561be35",
+      "bytes": 18471,
+      "sourceModifiedAt": "2026-07-23T06:47:14.927Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/followUpReminders.test.ts",
+      "destination": "src/lib/followUpReminders.test.ts",
+      "sourceSha256": "3c4193e15164ef5ef01eed315ed9ab780654ce98930ee56f4abbfcd0d9901a3d",
+      "gitSha256": "3c4193e15164ef5ef01eed315ed9ab780654ce98930ee56f4abbfcd0d9901a3d",
+      "bytes": 2377,
+      "sourceModifiedAt": "2026-04-20T07:30:30.093Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/followUpReminders.ts",
+      "destination": "src/lib/followUpReminders.ts",
+      "sourceSha256": "49f223383d63778e352355071689659adde35b8f3c06130f9c48bdd3c8fd2fd4",
+      "gitSha256": "49f223383d63778e352355071689659adde35b8f3c06130f9c48bdd3c8fd2fd4",
+      "bytes": 2127,
+      "sourceModifiedAt": "2026-04-20T07:30:18.345Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/googlePlaces.ts",
+      "destination": "src/lib/googlePlaces.ts",
+      "sourceSha256": "1927bddae3540f3b50f4a584a0a149b92c0b019ce00bcb23e402eaebb206153f",
+      "gitSha256": "d5b025c2d03ec05b1a5d22e6249d85b59b0e0be8ab877c7060907e5ced31f77b",
+      "bytes": 7450,
+      "sourceModifiedAt": "2026-07-27T05:27:51.853Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/gramCategory.ts",
+      "destination": "src/lib/gramCategory.ts",
+      "sourceSha256": "1736c7265ed7aa945d34c9d68374e574f33069bb40c806d4489be087267653e9",
+      "gitSha256": "1736c7265ed7aa945d34c9d68374e574f33069bb40c806d4489be087267653e9",
+      "bytes": 549,
+      "sourceModifiedAt": "2026-08-12T07:46:49.289Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/incomingCallRecord.ts",
+      "destination": "src/lib/incomingCallRecord.ts",
+      "sourceSha256": "efd8d863e541a78c3f3164f5d38f22c4c68330dae1892e1e3f92a9e9b650b589",
+      "gitSha256": "efd8d863e541a78c3f3164f5d38f22c4c68330dae1892e1e3f92a9e9b650b589",
+      "bytes": 2671,
+      "sourceModifiedAt": "2026-09-22T11:44:34.470Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/incomingWrapUp.test.ts",
+      "destination": "src/lib/incomingWrapUp.test.ts",
+      "sourceSha256": "23481b91ab02a5fdc075ed3aef228ec27d0f88623ee783c6dc3523459be3150e",
+      "gitSha256": "23481b91ab02a5fdc075ed3aef228ec27d0f88623ee783c6dc3523459be3150e",
+      "bytes": 2750,
+      "sourceModifiedAt": "2026-04-21T09:18:52.762Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/incomingWrapUp.ts",
+      "destination": "src/lib/incomingWrapUp.ts",
+      "sourceSha256": "2bf378785db2c7f5d2b008b91436b929d8788a289716a9884f09453f1ad03376",
+      "gitSha256": "2bf378785db2c7f5d2b008b91436b929d8788a289716a9884f09453f1ad03376",
+      "bytes": 2349,
+      "sourceModifiedAt": "2026-04-21T09:18:52.658Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/intakeSave.ts",
+      "destination": "src/lib/intakeSave.ts",
+      "sourceSha256": "4c3810620913cf25efb7b66be8194dc116ad3509e8de087d9cfd31f3ea689364",
+      "gitSha256": "4c3810620913cf25efb7b66be8194dc116ad3509e8de087d9cfd31f3ea689364",
+      "bytes": 3508,
+      "sourceModifiedAt": "2026-04-18T07:37:09.067Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/liveCallState.test.ts",
+      "destination": "src/lib/liveCallState.test.ts",
+      "sourceSha256": "33fa0a672b5b8f6d6b51f750316d5c067fef9861be8c0525b59a2485240c91cf",
+      "gitSha256": "33fa0a672b5b8f6d6b51f750316d5c067fef9861be8c0525b59a2485240c91cf",
+      "bytes": 3177,
+      "sourceModifiedAt": "2026-04-28T07:22:24.927Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/liveCallState.ts",
+      "destination": "src/lib/liveCallState.ts",
+      "sourceSha256": "723716e27f51fb8212bd09053652444445ed3d5d5b86d88627f2fe8e53a92fca",
+      "gitSha256": "723716e27f51fb8212bd09053652444445ed3d5d5b86d88627f2fe8e53a92fca",
+      "bytes": 2778,
+      "sourceModifiedAt": "2026-05-21T07:01:38.252Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/liveMonitor.test.ts",
+      "destination": "src/lib/liveMonitor.test.ts",
+      "sourceSha256": "2ae0573e199fffd4f55e1a489b53a145fcd82d4b272f1da8cb758cfb358625f6",
+      "gitSha256": "2ae0573e199fffd4f55e1a489b53a145fcd82d4b272f1da8cb758cfb358625f6",
+      "bytes": 2488,
+      "sourceModifiedAt": "2026-09-11T05:53:29.134Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/liveMonitor.ts",
+      "destination": "src/lib/liveMonitor.ts",
+      "sourceSha256": "0f275c69cd1f68240e076c4aae24513ddd554668d94c590b87204b89479b43a7",
+      "gitSha256": "0f275c69cd1f68240e076c4aae24513ddd554668d94c590b87204b89479b43a7",
+      "bytes": 2081,
+      "sourceModifiedAt": "2026-09-11T05:53:29.134Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/mdReporting.ts",
+      "destination": "src/lib/mdReporting.ts",
+      "sourceSha256": "de3fa9bbf36f6f61b79ca52f9d406cc8fce50a8a058a5723d7620e46d744d3ea",
+      "gitSha256": "de3fa9bbf36f6f61b79ca52f9d406cc8fce50a8a058a5723d7620e46d744d3ea",
+      "bytes": 2654,
+      "sourceModifiedAt": "2026-09-10T07:19:40.170Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/outgoingCallRecord.test.ts",
+      "destination": "src/lib/outgoingCallRecord.test.ts",
+      "sourceSha256": "1916976dcb35cadd419b9de2641b9dfb2c044748ce0bcc529ad66711db370d24",
+      "gitSha256": "1916976dcb35cadd419b9de2641b9dfb2c044748ce0bcc529ad66711db370d24",
+      "bytes": 845,
+      "sourceModifiedAt": "2026-05-19T11:45:51.397Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/outgoingCallRecord.ts",
+      "destination": "src/lib/outgoingCallRecord.ts",
+      "sourceSha256": "a2e53084f4461e8d67099d20dc42eef7c6470f9f02c3985a2f585083e20cd52a",
+      "gitSha256": "a2e53084f4461e8d67099d20dc42eef7c6470f9f02c3985a2f585083e20cd52a",
+      "bytes": 4211,
+      "sourceModifiedAt": "2026-05-19T11:45:27.980Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/phone.ts",
+      "destination": "src/lib/phone.ts",
+      "sourceSha256": "f6c30fd2134979943c71d3fb74759309d22c0401ed7a40160c68a1740b3fcf88",
+      "gitSha256": "f6c30fd2134979943c71d3fb74759309d22c0401ed7a40160c68a1740b3fcf88",
+      "bytes": 1299,
+      "sourceModifiedAt": "2026-04-15T07:44:04.864Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/recordingPlayback.test.ts",
+      "destination": "src/lib/recordingPlayback.test.ts",
+      "sourceSha256": "4e80f01fd82caf876d5d411c3e4d8eb86eb635c59f8d591c260803e812180871",
+      "gitSha256": "4e80f01fd82caf876d5d411c3e4d8eb86eb635c59f8d591c260803e812180871",
+      "bytes": 2061,
+      "sourceModifiedAt": "2026-04-18T12:01:11.150Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/recordingPlayback.ts",
+      "destination": "src/lib/recordingPlayback.ts",
+      "sourceSha256": "99b97444bd93d0006b90f6d55c6da22bad09d1c8570f204f18e3a1173ace1372",
+      "gitSha256": "99b97444bd93d0006b90f6d55c6da22bad09d1c8570f204f18e3a1173ace1372",
+      "bytes": 2749,
+      "sourceModifiedAt": "2026-04-18T12:18:12.668Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/reportExport.test.ts",
+      "destination": "src/lib/reportExport.test.ts",
+      "sourceSha256": "ab2c5fab4559181b7381f6462ee12a831549dadeb8125d41fd07e65e7c233806",
+      "gitSha256": "ab2c5fab4559181b7381f6462ee12a831549dadeb8125d41fd07e65e7c233806",
+      "bytes": 3877,
+      "sourceModifiedAt": "2026-09-12T08:13:18.331Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/reportExport.ts",
+      "destination": "src/lib/reportExport.ts",
+      "sourceSha256": "62634ac06526e7744887e24642bf965a0f0808dc164662672167d7a638da9b41",
+      "gitSha256": "62634ac06526e7744887e24642bf965a0f0808dc164662672167d7a638da9b41",
+      "bytes": 5077,
+      "sourceModifiedAt": "2026-09-12T08:26:52.019Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/roles.ts",
+      "destination": "src/lib/roles.ts",
+      "sourceSha256": "4135476164a33fe1e3785cecd20c44b56801d4ec4a715bc6f82c627140517912",
+      "gitSha256": "4135476164a33fe1e3785cecd20c44b56801d4ec4a715bc6f82c627140517912",
+      "bytes": 269,
+      "sourceModifiedAt": "2026-07-10T11:34:30.063Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/routePreload.ts",
+      "destination": "src/lib/routePreload.ts",
+      "sourceSha256": "ce205b89e145ec5a55fa48256f3a25062f17525c8a7ee5602830ee7227c3fc24",
+      "gitSha256": "ce205b89e145ec5a55fa48256f3a25062f17525c8a7ee5602830ee7227c3fc24",
+      "bytes": 5406,
+      "sourceModifiedAt": "2026-09-21T10:20:34.742Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/safeReload.ts",
+      "destination": "src/lib/safeReload.ts",
+      "sourceSha256": "798baa7324ae46e4495838a915cc1e5e09d80e0c877d27d8291b7dc25c4a186c",
+      "gitSha256": "798baa7324ae46e4495838a915cc1e5e09d80e0c877d27d8291b7dc25c4a186c",
+      "bytes": 3120,
+      "sourceModifiedAt": "2026-04-17T12:32:52.296Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/sipClient.test.ts",
+      "destination": "src/lib/sipClient.test.ts",
+      "sourceSha256": "1cecebe30a1a50ec50b84a6910032dd8ebfba43a806786b2d5950b494c925fd2",
+      "gitSha256": "1cecebe30a1a50ec50b84a6910032dd8ebfba43a806786b2d5950b494c925fd2",
+      "bytes": 852,
+      "sourceModifiedAt": "2026-09-09T06:41:34.421Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/sipClient.ts",
+      "destination": "src/lib/sipClient.ts",
+      "sourceSha256": "f36e4db1e611a0a8aa2696adbc715321abf550f8cf8ee853af0bd28e74f7c496",
+      "gitSha256": "c39c0cfb508c1f550004511dfff5d131c4d00d0aff19cc5e12f3c345266bb4c1",
+      "bytes": 3284,
+      "sourceModifiedAt": "2026-09-09T06:41:34.421Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/sipRegistration.test.ts",
+      "destination": "src/lib/sipRegistration.test.ts",
+      "sourceSha256": "0b77c14adf0b18172f354fae4c72836ee60f7fb8d1e6cf6fe81c579d028d4233",
+      "gitSha256": "0b77c14adf0b18172f354fae4c72836ee60f7fb8d1e6cf6fe81c579d028d4233",
+      "bytes": 3019,
+      "sourceModifiedAt": "2026-09-09T06:36:55.351Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/sipRegistration.ts",
+      "destination": "src/lib/sipRegistration.ts",
+      "sourceSha256": "87a9c3109b7f060a96142712296e41425968c075141d8e65c059e3ec4e751510",
+      "gitSha256": "87a9c3109b7f060a96142712296e41425968c075141d8e65c059e3ec4e751510",
+      "bytes": 866,
+      "sourceModifiedAt": "2026-09-09T06:36:55.351Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/transferContext.test.ts",
+      "destination": "src/lib/transferContext.test.ts",
+      "sourceSha256": "ab08a31951744d3d00c604f4c838ac5d4158be7dea07ffdaaf48888afdfb17a9",
+      "gitSha256": "ab08a31951744d3d00c604f4c838ac5d4158be7dea07ffdaaf48888afdfb17a9",
+      "bytes": 2481,
+      "sourceModifiedAt": "2026-04-24T05:45:54.102Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/transferContext.ts",
+      "destination": "src/lib/transferContext.ts",
+      "sourceSha256": "706dcca50b5e126b06aa99ccb42df468bac61a58e015a65f085571f8284cbb92",
+      "gitSha256": "706dcca50b5e126b06aa99ccb42df468bac61a58e015a65f085571f8284cbb92",
+      "bytes": 1105,
+      "sourceModifiedAt": "2026-04-24T05:45:54.034Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/utils.ts",
+      "destination": "src/lib/utils.ts",
+      "sourceSha256": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+      "gitSha256": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+      "bytes": 169,
+      "sourceModifiedAt": "2026-03-20T05:51:17.039Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/visitTimeline.test.ts",
+      "destination": "src/lib/visitTimeline.test.ts",
+      "sourceSha256": "9c0b992bb0be9a70d37a34fe3323362c9882d3b46812bd46d53b3fcd01d8430e",
+      "gitSha256": "9c0b992bb0be9a70d37a34fe3323362c9882d3b46812bd46d53b3fcd01d8430e",
+      "bytes": 936,
+      "sourceModifiedAt": "2026-04-17T07:17:30.597Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/lib/visitTimeline.ts",
+      "destination": "src/lib/visitTimeline.ts",
+      "sourceSha256": "96cde8cf88ecb5ae02cd9562423a3fec24cc1b614223611f0dc031d5eabc2a1e",
+      "gitSha256": "96cde8cf88ecb5ae02cd9562423a3fec24cc1b614223611f0dc031d5eabc2a1e",
+      "bytes": 951,
+      "sourceModifiedAt": "2026-09-12T08:18:18.256Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/main.tsx",
+      "destination": "src/main.tsx",
+      "sourceSha256": "dad282180f33de4a438abfd906eea7a75b9a4299eb965f18689eb09640dfd23c",
+      "gitSha256": "dad282180f33de4a438abfd906eea7a75b9a4299eb965f18689eb09640dfd23c",
+      "bytes": 3734,
+      "sourceModifiedAt": "2026-07-16T06:20:31.734Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/AdminPanel.tsx",
+      "destination": "src/pages/AdminPanel.tsx",
+      "sourceSha256": "e310aa3f6b766895fc8ecb1f6bee044bda561b45799e9e40c19c7bcac624d3a3",
+      "gitSha256": "e310aa3f6b766895fc8ecb1f6bee044bda561b45799e9e40c19c7bcac624d3a3",
+      "bytes": 168167,
+      "sourceModifiedAt": "2026-09-22T07:20:31.475Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/AgentStatusBoardPage.tsx",
+      "destination": "src/pages/AgentStatusBoardPage.tsx",
+      "sourceSha256": "ebd7314d221905bba34e4371cd76b3fceb564aebcbbd209c25e0fcf1098c68f8",
+      "gitSha256": "ebd7314d221905bba34e4371cd76b3fceb564aebcbbd209c25e0fcf1098c68f8",
+      "bytes": 30764,
+      "sourceModifiedAt": "2026-09-15T12:31:57.201Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/AgentStatusBoardSwitcherPage.tsx",
+      "destination": "src/pages/AgentStatusBoardSwitcherPage.tsx",
+      "sourceSha256": "53921e5735aad785078ae923a276598aa695226217c90e92eed3735e4bedc11c",
+      "gitSha256": "53921e5735aad785078ae923a276598aa695226217c90e92eed3735e4bedc11c",
+      "bytes": 1809,
+      "sourceModifiedAt": "2026-05-14T10:33:06.540Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/BranchesPage.tsx",
+      "destination": "src/pages/BranchesPage.tsx",
+      "sourceSha256": "5c9cf6a043c748ac216d69bd2265b71fc22a62c961ecb19df596038c9ac7f1cd",
+      "gitSha256": "5c9cf6a043c748ac216d69bd2265b71fc22a62c961ecb19df596038c9ac7f1cd",
+      "bytes": 10504,
+      "sourceModifiedAt": "2026-05-28T07:03:49.253Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/CallsPage.test.tsx",
+      "destination": "src/pages/CallsPage.test.tsx",
+      "sourceSha256": "b89a5f58426cc14b0338ecda55eb8758ab8b2420ff10f7ae7b70535656a8cb2b",
+      "gitSha256": "b89a5f58426cc14b0338ecda55eb8758ab8b2420ff10f7ae7b70535656a8cb2b",
+      "bytes": 8307,
+      "sourceModifiedAt": "2026-09-22T11:48:48.766Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/CallsPage.tsx",
+      "destination": "src/pages/CallsPage.tsx",
+      "sourceSha256": "798980dce041555171aa22266e55d2c47c153910de32be3fa3bb73e0d7012b6e",
+      "gitSha256": "798980dce041555171aa22266e55d2c47c153910de32be3fa3bb73e0d7012b6e",
+      "bytes": 52377,
+      "sourceModifiedAt": "2026-09-22T11:48:48.766Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/DashboardHome.tsx",
+      "destination": "src/pages/DashboardHome.tsx",
+      "sourceSha256": "65ae7e2f4489b08f44a72d1a6ce04986a6ad4dd46abd818a5173b982ceed35db",
+      "gitSha256": "65ae7e2f4489b08f44a72d1a6ce04986a6ad4dd46abd818a5173b982ceed35db",
+      "bytes": 83006,
+      "sourceModifiedAt": "2026-09-12T08:18:18.248Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/FollowUpsPage.tsx",
+      "destination": "src/pages/FollowUpsPage.tsx",
+      "sourceSha256": "3912f26f0b49c6c1b384fbce6f6b576282d61a8d416030114cc6fdac4b61f0e4",
+      "gitSha256": "3912f26f0b49c6c1b384fbce6f6b576282d61a8d416030114cc6fdac4b61f0e4",
+      "bytes": 11083,
+      "sourceModifiedAt": "2026-09-12T08:18:18.256Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/Index.tsx",
+      "destination": "src/pages/Index.tsx",
+      "sourceSha256": "d48c0c6b12b8d52c764e1c14d7df8e173d26eeb068d26ead71a84fc652b97dbf",
+      "gitSha256": "d48c0c6b12b8d52c764e1c14d7df8e173d26eeb068d26ead71a84fc652b97dbf",
+      "bytes": 638,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/LoginPage.tsx",
+      "destination": "src/pages/LoginPage.tsx",
+      "sourceSha256": "abb395de586f0db390f3ce084053fdae8451cc7b10e2e625d1332d1d27084aeb",
+      "gitSha256": "abb395de586f0db390f3ce084053fdae8451cc7b10e2e625d1332d1d27084aeb",
+      "bytes": 5264,
+      "sourceModifiedAt": "2026-05-14T09:17:49.849Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/MDDashboard.tsx",
+      "destination": "src/pages/MDDashboard.tsx",
+      "sourceSha256": "f1ce5f337e11fbdeba55480e9939923a8d6794558aede6f352c867319977c639",
+      "gitSha256": "f1ce5f337e11fbdeba55480e9939923a8d6794558aede6f352c867319977c639",
+      "bytes": 16363,
+      "sourceModifiedAt": "2026-09-12T08:18:18.236Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/NotFound.tsx",
+      "destination": "src/pages/NotFound.tsx",
+      "sourceSha256": "a36a58816a781780bd3ffd098d916c5cf45c0908a618b897f489889c3d7fe80f",
+      "gitSha256": "a36a58816a781780bd3ffd098d916c5cf45c0908a618b897f489889c3d7fe80f",
+      "bytes": 727,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/ReportsPage.tsx",
+      "destination": "src/pages/ReportsPage.tsx",
+      "sourceSha256": "61f11d5751339f5e15d499b65c5ea5a2b39ce56e66c7cc1770a148cba9b545c2",
+      "gitSha256": "61f11d5751339f5e15d499b65c5ea5a2b39ce56e66c7cc1770a148cba9b545c2",
+      "bytes": 56042,
+      "sourceModifiedAt": "2026-09-17T09:21:41.318Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/SeoMarketingLeadDashboard.tsx",
+      "destination": "src/pages/SeoMarketingLeadDashboard.tsx",
+      "sourceSha256": "ae3fb0cfecc09379edd5dbb02f28e11ecda2d9c5adbef06cb70e397b7e6d71bf",
+      "gitSha256": "ae3fb0cfecc09379edd5dbb02f28e11ecda2d9c5adbef06cb70e397b7e6d71bf",
+      "bytes": 80194,
+      "sourceModifiedAt": "2026-09-22T07:35:43.381Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/pages/StatusDashboardPage.tsx",
+      "destination": "src/pages/StatusDashboardPage.tsx",
+      "sourceSha256": "c7d5d42860ed81457d8c8936e5836d61ee8ad8e79530a2aac316cac943609e53",
+      "gitSha256": "c7d5d42860ed81457d8c8936e5836d61ee8ad8e79530a2aac316cac943609e53",
+      "bytes": 26730,
+      "sourceModifiedAt": "2026-09-12T08:18:18.240Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/test/example.test.ts",
+      "destination": "src/test/example.test.ts",
+      "sourceSha256": "f0278cbf0875cdc304f02ceebbc62e93e2690a1c284d7ff2ebbae509e4d70349",
+      "gitSha256": "f0278cbf0875cdc304f02ceebbc62e93e2690a1c284d7ff2ebbae509e4d70349",
+      "bytes": 143,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/test/setup.ts",
+      "destination": "src/test/setup.ts",
+      "sourceSha256": "7fb65ef092291d0278639dc0567ebfd960f097fef0c869d43d0b9b4485449bfc",
+      "gitSha256": "7fb65ef092291d0278639dc0567ebfd960f097fef0c869d43d0b9b4485449bfc",
+      "bytes": 353,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/src/vite-env.d.ts",
+      "destination": "src/vite-env.d.ts",
+      "sourceSha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+      "gitSha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+      "bytes": 38,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/tailwind.config.ts",
+      "destination": "tailwind.config.ts",
+      "sourceSha256": "cdd39f00f667af9eccce45c4861170a54d914efadf84ef760dcd969caffa9cd4",
+      "gitSha256": "cdd39f00f667af9eccce45c4861170a54d914efadf84ef760dcd969caffa9cd4",
+      "bytes": 3919,
+      "sourceModifiedAt": "2026-04-09T13:32:02.604Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/tsconfig.app.json",
+      "destination": "tsconfig.app.json",
+      "sourceSha256": "b12030bfe21ea5be66670842c71d66d194d1771f93f0b8c076e97c867b4b0552",
+      "gitSha256": "b12030bfe21ea5be66670842c71d66d194d1771f93f0b8c076e97c867b4b0552",
+      "bytes": 680,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/tsconfig.json",
+      "destination": "tsconfig.json",
+      "sourceSha256": "406e63e666958bb699aae6562e561a0cec963ee3dfe771c644ace7d97304974f",
+      "gitSha256": "406e63e666958bb699aae6562e561a0cec963ee3dfe771c644ace7d97304974f",
+      "bytes": 396,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/tsconfig.node.json",
+      "destination": "tsconfig.node.json",
+      "sourceSha256": "a96b9ba5e40d95b92adf56431fdf9cbe25b5c2557621f0666615bff6889dfc50",
+      "gitSha256": "a96b9ba5e40d95b92adf56431fdf9cbe25b5c2557621f0666615bff6889dfc50",
+      "bytes": 481,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/vite.config.ts",
+      "destination": "vite.config.ts",
+      "sourceSha256": "4595e3a76a2859602c6c6b756ce45ca9a9608174a40ee2c59bdbf69e9db2ba4f",
+      "gitSha256": "4595e3a76a2859602c6c6b756ce45ca9a9608174a40ee2c59bdbf69e9db2ba4f",
+      "bytes": 1033,
+      "sourceModifiedAt": "2026-04-18T10:46:28.908Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-gold-nexus/vitest.config.ts",
+      "destination": "vitest.config.ts",
+      "sourceSha256": "22df78a929489810bd67e5b3379d852da46ea8befd8d6d08ffaf7b8016ef36b5",
+      "gitSha256": "22df78a929489810bd67e5b3379d852da46ea8befd8d6d08ffaf7b8016ef36b5",
+      "bytes": 391,
+      "sourceModifiedAt": "2026-03-20T05:51:17.043Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-api/server.js",
+      "destination": "backend/production/server.js",
+      "sourceSha256": "f6d7b36ffc9c4afb6adfe446af8d3f1a373c84823bc4f6ce425de15c74d305ff",
+      "gitSha256": "73d08eb3ef170b45601833ebabddfd7945eaa2659bac13a58e93fee4c19eff60",
+      "bytes": 1375870,
+      "sourceModifiedAt": "2026-09-22T12:04:12.616Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-api/intake-workflow.mjs",
+      "destination": "backend/production/intake-workflow.mjs",
+      "sourceSha256": "13aabd934369c5189818bd573e28510229894435c8d91ed6308f2c2858f4b263",
+      "gitSha256": "13aabd934369c5189818bd573e28510229894435c8d91ed6308f2c2858f4b263",
+      "bytes": 21559,
+      "sourceModifiedAt": "2026-09-22T11:57:59.928Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-api/md-reporting.mjs",
+      "destination": "backend/production/md-reporting.mjs",
+      "sourceSha256": "9cfe3c8c9dd5df88ae28a099f7e9c0e8923df58c61514ac85ce587bd20ebee1f",
+      "gitSha256": "9cfe3c8c9dd5df88ae28a099f7e9c0e8923df58c61514ac85ce587bd20ebee1f",
+      "bytes": 16816,
+      "sourceModifiedAt": "2026-09-12T08:26:46.107Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-api/package.json",
+      "destination": "backend/production/package.json",
+      "sourceSha256": "8b217be21426458c760491a1a89c736a65dfe4846c8c1bb4ed6dcb91f60eb305",
+      "gitSha256": "aca58c2ebe0781e85269e05bc0a565f3421611a877ad2098d387f3eeafc9ade6",
+      "bytes": 199,
+      "sourceModifiedAt": "2026-03-24T10:22:21.650Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-api/package-lock.json",
+      "destination": "backend/production/package-lock.json",
+      "sourceSha256": "15ef85a392b84cf2102658a817ade3cd73e285fd71235975212710cc5a8ee066",
+      "gitSha256": "15ef85a392b84cf2102658a817ade3cd73e285fd71235975212710cc5a8ee066",
+      "bytes": 35278,
+      "sourceModifiedAt": "2026-03-24T10:22:24.890Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-api/update_customer_sources.mjs",
+      "destination": "backend/production/update_customer_sources.mjs",
+      "sourceSha256": "50897b6ed98c6a76db2f80ecd01d8a2ccbf6b51955461d513d764468e56cd20a",
+      "gitSha256": "ccebb97e9da4cdf1515b534cf02c87cdfd56ead6c5dcbee862c145cfe1b652be",
+      "bytes": 5623,
+      "sourceModifiedAt": "2026-09-17T06:59:07.433Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-api-next/baseline/server.js",
+      "destination": "backend/modular/baseline/server.js",
+      "sourceSha256": "d675ad768e68d4822634b406cabe8476e8e015f54be966018c0aab39f361992e",
+      "gitSha256": "43281706d939eb3da12d46e325fa276ba9df181785008628be23d1f664c1a618",
+      "bytes": 1368413,
+      "sourceModifiedAt": "2026-09-21T10:35:52.825Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/attica-api-next/baseline/intake-workflow.mjs",
+      "destination": "backend/modular/baseline/intake-workflow.mjs",
+      "sourceSha256": "d40f3c762f1f090ccac625b0fde794668e21b134b821ce8040285fa3c7b4e465",
+      "gitSha256": "d40f3c762f1f090ccac625b0fde794668e21b134b821ce8040285fa3c7b4e465",
+      "bytes": 19634,
+      "sourceModifiedAt": "2026-09-15T11:22:05.319Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-api-next/baseline/md-reporting.mjs",
+      "destination": "backend/modular/baseline/md-reporting.mjs",
+      "sourceSha256": "9cfe3c8c9dd5df88ae28a099f7e9c0e8923df58c61514ac85ce587bd20ebee1f",
+      "gitSha256": "9cfe3c8c9dd5df88ae28a099f7e9c0e8923df58c61514ac85ce587bd20ebee1f",
+      "bytes": 16816,
+      "sourceModifiedAt": "2026-09-12T08:26:46.107Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-api-next/baseline/package.json",
+      "destination": "backend/modular/baseline/package.json",
+      "sourceSha256": "8b217be21426458c760491a1a89c736a65dfe4846c8c1bb4ed6dcb91f60eb305",
+      "gitSha256": "8b217be21426458c760491a1a89c736a65dfe4846c8c1bb4ed6dcb91f60eb305",
+      "bytes": 195,
+      "sourceModifiedAt": "2026-03-24T10:22:21.650Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/attica-api-next/baseline/package-lock.json",
+      "destination": "backend/modular/baseline/package-lock.json",
+      "sourceSha256": "15ef85a392b84cf2102658a817ade3cd73e285fd71235975212710cc5a8ee066",
+      "gitSha256": "15ef85a392b84cf2102658a817ade3cd73e285fd71235975212710cc5a8ee066",
+      "bytes": 35278,
+      "sourceModifiedAt": "2026-03-24T10:22:24.890Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/opt/attica-reporting-api/package-lock.json",
+      "destination": "backend/reporting/package-lock.json",
+      "sourceSha256": "350b24b5b3f55c8be077c0d27981cc80f86efd0f60add466101927a37cd47b9e",
+      "gitSha256": "350b24b5b3f55c8be077c0d27981cc80f86efd0f60add466101927a37cd47b9e",
+      "bytes": 37434,
+      "sourceModifiedAt": "2026-08-20T06:12:40.017Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/opt/attica-reporting-api/package.json",
+      "destination": "backend/reporting/package.json",
+      "sourceSha256": "0b77a09cb378adda4a0f82c1ce982400f1e71533943558bfe18f316fd83313f3",
+      "gitSha256": "0b77a09cb378adda4a0f82c1ce982400f1e71533943558bfe18f316fd83313f3",
+      "bytes": 298,
+      "sourceModifiedAt": "2026-08-20T06:12:21.997Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/opt/attica-reporting-api/server.js",
+      "destination": "backend/reporting/server.js",
+      "sourceSha256": "f357d0d010133bcef191e420672254766fa07b5d069828c62d84a09814c2e7dc",
+      "gitSha256": "f357d0d010133bcef191e420672254766fa07b5d069828c62d84a09814c2e7dc",
+      "bytes": 20099,
+      "sourceModifiedAt": "2026-09-13T08:45:14.408Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/opt/attica-reporting-api/server.js",
+      "destination": "deployment/reporting-api/server.js",
+      "sourceSha256": "f357d0d010133bcef191e420672254766fa07b5d069828c62d84a09814c2e7dc",
+      "gitSha256": "f357d0d010133bcef191e420672254766fa07b5d069828c62d84a09814c2e7dc",
+      "bytes": 20099,
+      "sourceModifiedAt": "2026-09-13T08:45:14.408Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/var/www/warroom-atticagold/index.html",
+      "destination": "deployment/war-room/static/index.html",
+      "sourceSha256": "5e8381bf4ec920ad5ab49288d982b3c61978dcd70d6df32a5990e528bed57a29",
+      "gitSha256": "5e8381bf4ec920ad5ab49288d982b3c61978dcd70d6df32a5990e528bed57a29",
+      "bytes": 24,
+      "sourceModifiedAt": "2026-08-20T06:51:13.522Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/var/lib/asterisk/agi-bin/attica-intake-ended.php",
+      "destination": "telephony/agi-bin/attica-intake-ended.php",
+      "sourceSha256": "003179d1a670640b778a559f34a2f0e1dc7106a9731873c1806b14748091f908",
+      "gitSha256": "003179d1a670640b778a559f34a2f0e1dc7106a9731873c1806b14748091f908",
+      "bytes": 1865,
+      "sourceModifiedAt": "2026-09-22T11:57:29.792Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/systemd/system/attica-api.service",
+      "destination": "deployment/systemd/attica-api.service",
+      "sourceSha256": "9d95410c6e58ee318876e3004f06288b07ac18e151ad359be06e1ffa94368804",
+      "gitSha256": "8b291a0bf71990b4fcc8f347dc9dd27e89085426bd048641c5319f716b42eb3d",
+      "bytes": 912,
+      "sourceModifiedAt": "2026-08-20T07:53:58.063Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/etc/systemd/system/attica-api-next-preview.service",
+      "destination": "deployment/systemd/attica-api-next-preview.service",
+      "sourceSha256": "34a0d2e1afcd3484a6f1a9e286347afe717671d8bf58bf43a2b90523d593088d",
+      "gitSha256": "34a0d2e1afcd3484a6f1a9e286347afe717671d8bf58bf43a2b90523d593088d",
+      "bytes": 893,
+      "sourceModifiedAt": "2026-09-21T11:41:03.448Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/systemd/system/attica-reporting-api.service",
+      "destination": "deployment/systemd/attica-reporting-api.service",
+      "sourceSha256": "4cb346ad6760d84ee5a54b0a993f916642216f34428301c20078aedce0c449e5",
+      "gitSha256": "4cb346ad6760d84ee5a54b0a993f916642216f34428301c20078aedce0c449e5",
+      "bytes": 348,
+      "sourceModifiedAt": "2026-08-20T06:12:52.169Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/systemd/system/attica-firewall-blocks.service",
+      "destination": "deployment/systemd/attica-firewall-blocks.service",
+      "sourceSha256": "5a66d811dba175e5e118c67f36860d9c20ff128341a23a3d0206bd457805b194",
+      "gitSha256": "5a66d811dba175e5e118c67f36860d9c20ff128341a23a3d0206bd457805b194",
+      "bytes": 266,
+      "sourceModifiedAt": "2026-05-27T05:43:01.224Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/systemd/system/attica-tata-sip-firewall.service",
+      "destination": "deployment/systemd/attica-tata-sip-firewall.service",
+      "sourceSha256": "6c7dbf0ac1046f29df46cd4b1d48a3b7fb5b71e68d241da0e81c719ed2414d9d",
+      "gitSha256": "6c7dbf0ac1046f29df46cd4b1d48a3b7fb5b71e68d241da0e81c719ed2414d9d",
+      "bytes": 379,
+      "sourceModifiedAt": "2026-04-13T11:55:18.535Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/systemd/system/attica-api.service.d/google-marketing.conf",
+      "destination": "deployment/systemd/attica-api.service.d/google-marketing.conf",
+      "sourceSha256": "ff54c32d82939b67aec8d0e5d2c7b224cc86a337e9d38f008298dcd05ff09762",
+      "gitSha256": "565ac9a053210e2135b5564a84336b675134e7a5f2679229610ffee8857bef85",
+      "bytes": 288,
+      "sourceModifiedAt": "2026-08-27T06:07:53.736Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/etc/systemd/system/attica-api.service.d/meta-realtime.conf",
+      "destination": "deployment/systemd/attica-api.service.d/meta-realtime.conf",
+      "sourceSha256": "4ec022d1597114879bc8ffadf66f2bec02127172c83154f30e4ee794d94df259",
+      "gitSha256": "4ec022d1597114879bc8ffadf66f2bec02127172c83154f30e4ee794d94df259",
+      "bytes": 102,
+      "sourceModifiedAt": "2026-09-11T06:34:05.410Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/apache2/sites-enabled/atticagold.xyz-le-ssl.conf",
+      "destination": "deployment/apache/atticagold.xyz-le-ssl.conf",
+      "sourceSha256": "e44cb3ec323813969aae7e9c329fce2ce221f02bc06fc1039578d08af38926ff",
+      "gitSha256": "e44cb3ec323813969aae7e9c329fce2ce221f02bc06fc1039578d08af38926ff",
+      "bytes": 908,
+      "sourceModifiedAt": "2026-09-01T05:58:13.409Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/apache2/sites-available/atticagold.xyz.conf",
+      "destination": "deployment/apache/atticagold.xyz.conf",
+      "sourceSha256": "26e746226c3d8a45346d839a0a24814c759163581a9930440e3bad2b6423c2e2",
+      "gitSha256": "26e746226c3d8a45346d839a0a24814c759163581a9930440e3bad2b6423c2e2",
+      "bytes": 1145,
+      "sourceModifiedAt": "2026-04-22T13:54:17.893Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/apache2/sites-available/warroom.atticagold.xyz-le-ssl.conf",
+      "destination": "deployment/apache/warroom.atticagold.xyz-le-ssl.conf",
+      "sourceSha256": "cbf762ea94f739592f33ebf12e3f24d3a13130f85619b09639a78fabb4cc0b0c",
+      "gitSha256": "cbf762ea94f739592f33ebf12e3f24d3a13130f85619b09639a78fabb4cc0b0c",
+      "bytes": 791,
+      "sourceModifiedAt": "2026-08-20T07:02:21.004Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/apache2/sites-available/warroom.atticagold.xyz.conf",
+      "destination": "deployment/apache/warroom.atticagold.xyz.conf",
+      "sourceSha256": "9cf14166f6f70f63e315b9144280ad259b56eae903b92088b3f77b6855cae055",
+      "gitSha256": "9cf14166f6f70f63e315b9144280ad259b56eae903b92088b3f77b6855cae055",
+      "bytes": 690,
+      "sourceModifiedAt": "2026-08-20T07:02:21.000Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/attica/iptables.rules",
+      "destination": "deployment/firewall/iptables.rules",
+      "sourceSha256": "42a83a663d75df3e225b150cd48123f1771a31cce14ff791f7871d19b4c8b1ac",
+      "gitSha256": "42a83a663d75df3e225b150cd48123f1771a31cce14ff791f7871d19b4c8b1ac",
+      "bytes": 2227,
+      "sourceModifiedAt": "2026-09-18T06:05:45.175Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/cron.d/attica-rotate-tata-did",
+      "destination": "deployment/cron/attica-rotate-tata-did",
+      "sourceSha256": "6869462d2a80c05c1d3b0ac8aaa9cb5d25d6ab74459a8f2ca86bee5081e770f1",
+      "gitSha256": "6869462d2a80c05c1d3b0ac8aaa9cb5d25d6ab74459a8f2ca86bee5081e770f1",
+      "bytes": 394,
+      "sourceModifiedAt": "2026-07-20T09:05:12.505Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/usr/local/sbin/attica-rotate-tata-did",
+      "destination": "scripts/attica-rotate-tata-did",
+      "sourceSha256": "0b074ca1c5295f69d95bad1c99ab34148cf4a13d6bb81a39e5bcae0331512aef",
+      "gitSha256": "0b074ca1c5295f69d95bad1c99ab34148cf4a13d6bb81a39e5bcae0331512aef",
+      "bytes": 4499,
+      "sourceModifiedAt": "2026-07-20T09:05:22.877Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/deploy-frontend.sh",
+      "destination": "scripts/deploy-frontend.sh",
+      "sourceSha256": "ef4572a756cc0ed8a62d61317f8235d8829fdbc1e6bfc70b28a4cad06b76c47b",
+      "gitSha256": "7a9004654fbf4d633d2e564850b3289496b6dfbf5f94e8958700304caa92c7be",
+      "bytes": 1031,
+      "sourceModifiedAt": "2026-05-28T07:12:18.175Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/root/fix-connections.sh",
+      "destination": "scripts/fix-connections.sh",
+      "sourceSha256": "91694f80ad88220f177e657e0f083942ca63693cfb7a672b15df47c758fc9c2b",
+      "gitSha256": "91694f80ad88220f177e657e0f083942ca63693cfb7a672b15df47c758fc9c2b",
+      "bytes": 1831,
+      "sourceModifiedAt": "2026-05-19T10:29:08.379Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/root/fix-stale-calls.sh",
+      "destination": "scripts/fix-stale-calls.sh",
+      "sourceSha256": "4c0656587688401d222751ea6f85d8bb61c282b88bd379ba38844359eca0c750",
+      "gitSha256": "4c0656587688401d222751ea6f85d8bb61c282b88bd379ba38844359eca0c750",
+      "bytes": 147,
+      "sourceModifiedAt": "2026-04-04T07:07:20.929Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/asterisk.conf",
+      "destination": "telephony/asterisk/asterisk.conf.template",
+      "sourceSha256": "d549e3a9e5583599dd6b827cf6cee86dcbba913abfc71e0740a97ea5e1d78ec9",
+      "gitSha256": "d549e3a9e5583599dd6b827cf6cee86dcbba913abfc71e0740a97ea5e1d78ec9",
+      "bytes": 6121,
+      "sourceModifiedAt": "2026-03-18T08:27:41.567Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/modules.conf",
+      "destination": "telephony/asterisk/modules.conf.template",
+      "sourceSha256": "0dae28958466be94ff02c7b9a7f9fa89a41552653a4679affff538b508b904c0",
+      "gitSha256": "0dae28958466be94ff02c7b9a7f9fa89a41552653a4679affff538b508b904c0",
+      "bytes": 414,
+      "sourceModifiedAt": "2026-03-21T11:09:51.790Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/extensions.conf",
+      "destination": "telephony/asterisk/extensions.conf.template",
+      "sourceSha256": "d4ef8227415bc73cd8ad3a7be9a6e113fb32a23c086d3978a2d7eb62c2fdbcab",
+      "gitSha256": "d4ef8227415bc73cd8ad3a7be9a6e113fb32a23c086d3978a2d7eb62c2fdbcab",
+      "bytes": 40976,
+      "sourceModifiedAt": "2026-09-22T12:22:01.440Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/attica-intake.conf",
+      "destination": "telephony/asterisk/attica-intake.conf.template",
+      "sourceSha256": "d1052cb82fe23322feb211a767d6205e34786cd53c40a5d3534aa8b163da11ae",
+      "gitSha256": "d1052cb82fe23322feb211a767d6205e34786cd53c40a5d3534aa8b163da11ae",
+      "bytes": 1653,
+      "sourceModifiedAt": "2026-09-22T11:57:29.792Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/pjsip.conf",
+      "destination": "telephony/asterisk/pjsip.conf.template",
+      "sourceSha256": "0414674b6cf5f2c932c62f2dc64ff613b07f3fc4ddbe1dbfc0e6ff64feeefe91",
+      "gitSha256": "6fbdfb05f7aaa993cb4f67d39e16be62d80a0d666e76a231247960a11013725f",
+      "bytes": 16574,
+      "sourceModifiedAt": "2026-09-22T05:28:54.111Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/etc/asterisk/sip.conf",
+      "destination": "telephony/asterisk/sip.conf.template",
+      "sourceSha256": "c27bddb625c1896b335ce828493820fafd16c06a4be4e93d6476889d94678bb3",
+      "gitSha256": "e7aa4b7d829116fc02ec53c210fe2bb28290cacd8d9da806aebf8888120831af",
+      "bytes": 10457,
+      "sourceModifiedAt": "2026-09-30T21:00:01.659Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/etc/asterisk/queues.conf",
+      "destination": "telephony/asterisk/queues.conf.template",
+      "sourceSha256": "289fb8a20538b3611a5e36da53c8ffe5708e9581f6f3158ead67b9b7580592e6",
+      "gitSha256": "289fb8a20538b3611a5e36da53c8ffe5708e9581f6f3158ead67b9b7580592e6",
+      "bytes": 918,
+      "sourceModifiedAt": "2026-09-30T14:20:00.667Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/http.conf",
+      "destination": "telephony/asterisk/http.conf.template",
+      "sourceSha256": "14cd94a7a0fe38643c2f15852d484b55d06eea725d947359e2668020fab1771d",
+      "gitSha256": "14cd94a7a0fe38643c2f15852d484b55d06eea725d947359e2668020fab1771d",
+      "bytes": 191,
+      "sourceModifiedAt": "2026-04-04T11:04:35.180Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/rtp.conf",
+      "destination": "telephony/asterisk/rtp.conf.template",
+      "sourceSha256": "c940e0d937940dea5f579623278af5945b2b857aea21cce9f603db9cf8028b08",
+      "gitSha256": "c940e0d937940dea5f579623278af5945b2b857aea21cce9f603db9cf8028b08",
+      "bytes": 6697,
+      "sourceModifiedAt": "2026-04-24T08:16:44.570Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/manager.conf",
+      "destination": "telephony/asterisk/manager.conf.template",
+      "sourceSha256": "4d6e11cdedd166248506c1ff4cb6f7f1be1cbb3ebc7a6c082644709e07425f37",
+      "gitSha256": "38f0b4ce9756f1e76a087fa5a73d5f48600e46fc55a5ee3b3e92aeb638961707",
+      "bytes": 863,
+      "sourceModifiedAt": "2026-03-18T10:42:05.055Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/etc/asterisk/cdr.conf",
+      "destination": "telephony/asterisk/cdr.conf.template",
+      "sourceSha256": "daf0e00d53cda929764dd70659c9a9511ef9b8e41bb5dce329d2cbef33a34713",
+      "gitSha256": "daf0e00d53cda929764dd70659c9a9511ef9b8e41bb5dce329d2cbef33a34713",
+      "bytes": 8231,
+      "sourceModifiedAt": "2026-03-18T08:25:42.059Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/cdr_mysql.conf",
+      "destination": "telephony/asterisk/cdr_mysql.conf.template",
+      "sourceSha256": "2a5a431d6e02b84a2a4c9d64c22dbcb6906c64ee1f9d1b4c77256c82cf4e374c",
+      "gitSha256": "2883472aadcac7691bc3f8348fd700b25d117a0ef84c28233beb4f47f42b4f3a",
+      "bytes": 2408,
+      "sourceModifiedAt": "2026-03-18T08:25:42.067Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/etc/asterisk/res_config_mysql.conf",
+      "destination": "telephony/asterisk/res_config_mysql.conf.template",
+      "sourceSha256": "044eab7c354f751b7fbf821a16e4bec45e39e70e63b2ab47327e8c220deaa30e",
+      "gitSha256": "3f6be93f537966af01664e992029042a5100e1816bff45928e5e7377f991d18a",
+      "bytes": 2075,
+      "sourceModifiedAt": "2026-03-18T08:25:42.215Z",
+      "adaptedForGit": true
+    },
+    {
+      "source": "/etc/asterisk/extconfig.conf",
+      "destination": "telephony/asterisk/extconfig.conf.template",
+      "sourceSha256": "2c0442b6b5836d8283d2d18dad8fdb4659a4539e96f3df6511a53121714bff27",
+      "gitSha256": "2c0442b6b5836d8283d2d18dad8fdb4659a4539e96f3df6511a53121714bff27",
+      "bytes": 4191,
+      "sourceModifiedAt": "2026-03-18T08:25:42.131Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/features.conf",
+      "destination": "telephony/asterisk/features.conf.template",
+      "sourceSha256": "ceedefec8e6b469c9a4797c4aa9e0e0157cba8bfa0d35fac9c1ad8f2110cd8a5",
+      "gitSha256": "ceedefec8e6b469c9a4797c4aa9e0e0157cba8bfa0d35fac9c1ad8f2110cd8a5",
+      "bytes": 161,
+      "sourceModifiedAt": "2026-03-30T11:12:06.422Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/logger.conf",
+      "destination": "telephony/asterisk/logger.conf.template",
+      "sourceSha256": "212e014b58a9105312c8ab0bc4bebcfb25bf813bfdd68bd02f196fbeda22441b",
+      "gitSha256": "212e014b58a9105312c8ab0bc4bebcfb25bf813bfdd68bd02f196fbeda22441b",
+      "bytes": 6893,
+      "sourceModifiedAt": "2026-03-18T08:25:42.167Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/confbridge.conf",
+      "destination": "telephony/asterisk/confbridge.conf.template",
+      "sourceSha256": "bc27748a5d0aa8f35d1a6886499327b99a1c37ff0160027218ab961d153cb8f2",
+      "gitSha256": "bc27748a5d0aa8f35d1a6886499327b99a1c37ff0160027218ab961d153cb8f2",
+      "bytes": 29836,
+      "sourceModifiedAt": "2026-03-18T08:25:42.115Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/etc/asterisk/musiconhold.conf",
+      "destination": "telephony/asterisk/musiconhold.conf.template",
+      "sourceSha256": "a0585597480eb2d5e093b8c6ffbbeeed7dec9685fdb497ed7adb6b822cb5b752",
+      "gitSha256": "a0585597480eb2d5e093b8c6ffbbeeed7dec9685fdb497ed7adb6b822cb5b752",
+      "bytes": 5938,
+      "sourceModifiedAt": "2026-03-18T08:25:42.183Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/var/lib/asterisk/sounds/attica/ivr-english.wav",
+      "destination": "telephony/sounds/attica/ivr-english.wav",
+      "sourceSha256": "3e61cab61130acb67eb4cefc9b2b14f40e959e8dab57065569ebda78bae64ae0",
+      "gitSha256": "3e61cab61130acb67eb4cefc9b2b14f40e959e8dab57065569ebda78bae64ae0",
+      "bytes": 156812,
+      "sourceModifiedAt": "2026-04-13T10:08:31.636Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/var/lib/asterisk/sounds/attica/ivr-hindi.wav",
+      "destination": "telephony/sounds/attica/ivr-hindi.wav",
+      "sourceSha256": "698e23b508ca1596cd19897f62f41024f36a61bb07398d8db77fc00e85eb7427",
+      "gitSha256": "698e23b508ca1596cd19897f62f41024f36a61bb07398d8db77fc00e85eb7427",
+      "bytes": 218670,
+      "sourceModifiedAt": "2026-04-13T10:08:31.636Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/var/lib/asterisk/sounds/attica/ivr-kannada.wav",
+      "destination": "telephony/sounds/attica/ivr-kannada.wav",
+      "sourceSha256": "b333727449fa3a22368959c9f94d5bffb124ed1ba186d94863ef10b1d5929419",
+      "gitSha256": "b333727449fa3a22368959c9f94d5bffb124ed1ba186d94863ef10b1d5929419",
+      "bytes": 187324,
+      "sourceModifiedAt": "2026-04-13T10:08:31.640Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/var/lib/asterisk/sounds/attica/ivr-main.wav",
+      "destination": "telephony/sounds/attica/ivr-main.wav",
+      "sourceSha256": "00d16d4a284e066ac9a4ee62fa5f85a2c435e9cbc2f96ab0bb9daa54e4ede630",
+      "gitSha256": "00d16d4a284e066ac9a4ee62fa5f85a2c435e9cbc2f96ab0bb9daa54e4ede630",
+      "bytes": 272692,
+      "sourceModifiedAt": "2026-03-25T09:58:22.634Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/var/lib/asterisk/sounds/attica/ivr-tamil.wav",
+      "destination": "telephony/sounds/attica/ivr-tamil.wav",
+      "sourceSha256": "ba889ae9a0e8f809cd673943a02c811ab7bc95dd74f82658954d17334ca529d3",
+      "gitSha256": "ba889ae9a0e8f809cd673943a02c811ab7bc95dd74f82658954d17334ca529d3",
+      "bytes": 230374,
+      "sourceModifiedAt": "2026-04-13T10:08:31.640Z",
+      "adaptedForGit": false
+    },
+    {
+      "source": "/var/lib/asterisk/sounds/attica/ivr-telugu.wav",
+      "destination": "telephony/sounds/attica/ivr-telugu.wav",
+      "sourceSha256": "a6aaa4be6e0838811b8fae4ab51293e7defc4232f19212a06813eb33d2cbf2b2",
+      "gitSha256": "a6aaa4be6e0838811b8fae4ab51293e7defc4232f19212a06813eb33d2cbf2b2",
+      "bytes": 206968,
+      "sourceModifiedAt": "2026-04-13T10:08:31.644Z",
+      "adaptedForGit": false
+    }
+  ],
+  "finalizedAt": "2026-09-30T23:14:06.129Z",
+  "originalSourceHashesVerified": 330,
+  "telephonyActiveConfigurationsVerified": 18
+}

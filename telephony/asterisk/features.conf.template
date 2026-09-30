@@ -1,0 +1,10 @@
+[general]
+transferdigittimeout=3
+atxfernoanswertimeout=15
+atxferloopdelay=10
+atxfercallbackretries=2
+
+[featuremap]
+blindxfer => ##
+atxfer => *2
+disconnect => *0

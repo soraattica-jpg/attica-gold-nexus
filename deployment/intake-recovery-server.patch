@@ -1,0 +1,24 @@
+--- server.js.before
++++ server.js
+@@ -30451,6 +30451,21 @@
+   }
+ });
+ 
++app.get('/api/intake-workflow/pending', async (req, res) => {
++  res.set('Cache-Control','no-store');
++  try {
++    const agentId = normalizeAgentId(req.query.agentId);
++    const workflow = await intakeWorkflows.readPending(agentId);
++    if (!workflow) return res.json({success:true,workflow:null,call:null});
++    const [[agent]] = await pool.query('SELECT extension FROM attica_agents WHERE id=?',[agentId]);
++    const endpoint = agent && getAgentLiveEndpointState(agent.extension);
++    // Never reopen an old form over a live or ringing PBX call.
++    if (!isAgentEndpointExplicitlyIdle(endpoint)) return res.json({success:true,workflow:null,call:null});
++    const [[call]] = await pool.query('SELECT * FROM attica_calls WHERE id=? AND agent_id=?',[workflow.callId,agentId]);
++    return res.json({success:true,workflow:call ? workflow : null,call:call ? serializeCallRow(call) : null});
++  } catch (error) { res.status(503).json({success:false,error:'Unable to restore pending intake'}); }
++});
++
+ app.get('/api/intake-workflow', async (req, res) => {
+   try {
+     res.json({ success:true, workflow:await intakeWorkflows.read(cleanCanonicalCallId(req.query.callId,120),normalizeAgentId(req.query.agentId)) });

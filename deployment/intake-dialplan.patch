@@ -1,0 +1,91 @@
+--- /etc/asterisk/extensions.conf.before
++++ /etc/asterisk/extensions.conf
+@@ -50,6 +50,7 @@
+ 
+ [tata-outbound-dial]
+ exten => s,1,NoOp(Tata outbound backup dial ${ARG1})
++ same => n,Gosub(attica-intake-track,s,1)
+  same => n,Set(TATA_DIAL_NUM=${FILTER(0-9,${ARG1})})
+  same => n,Set(TATA_DIAL_OUT=0${TATA_DIAL_NUM})
+  same => n,Set(TATA_DIAL_TIMEOUT=${IF($["${ARG2}"=""]?${OUTBOUND_RING_TIMEOUT}:${ARG2})})
+@@ -94,6 +95,7 @@
+ 
+ [gsm-outbound-dial]
+ exten => s,1,NoOp(GSM primary outbound dial ${ARG1} with Tata backup on trunk failure)
++ same => n,Gosub(attica-intake-track,s,1)
+  same => n,Set(GSM_DIAL_NUM=${FILTER(0-9,${ARG1})})
+  same => n,Set(GSM_DIAL_TIMEOUT=${IF($["${ARG2}"=""]?${OUTBOUND_RING_TIMEOUT}:${ARG2})})
+  same => n,ExecIf($[${GSM_DIAL_TIMEOUT} > ${OUTBOUND_RING_TIMEOUT}]?Set(GSM_DIAL_TIMEOUT=${OUTBOUND_RING_TIMEOUT}))
+@@ -453,7 +455,7 @@
+ exten => _20XX,1,NoOp(WebRTC Call to ${EXTEN})
+  same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+  same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+-exten => _20XX,n,Dial(PJSIP/${EXTEN},30,tT)
++exten => _20XX,n,Dial(PJSIP/${EXTEN},30,tTb(attica-intake-track^s^1))
+ exten => _20XX,n,Hangup()
+ 
+ ;==========================================================
+@@ -500,13 +502,13 @@
+ [attica-transfer-agent]
+ exten => _20XX,1,NoOp(Transfer target ${EXTEN})
+  same => n,Set(CALLERID(name)=Attica Transfer)
+- same => n,Dial(PJSIP/${EXTEN},25,tT)
++ same => n,Dial(PJSIP/${EXTEN},25,tTb(attica-intake-track^s^1))
+  same => n,Hangup()
+ 
+ [attica-transfer-direct]
+ exten => _20XX,1,NoOp(Direct transfer customer leg to ${EXTEN})
+  same => n,Set(CALLERID(name)=Attica Transfer)
+- same => n,Dial(PJSIP/${EXTEN},25,tT)
++ same => n,Dial(PJSIP/${EXTEN},25,tTb(attica-intake-track^s^1))
+  same => n,Hangup()
+ 
+ [attica-conference-outbound]
+@@ -752,36 +754,36 @@
+  same => n,Goto(english,1)
+ 
+ exten => sticky,1,NoOp(Trying sticky agent ${STICKY_AGENT} for ${CALLER_STICKY_SCOPE})
+- same => n,Dial(PJSIP/${STICKY_AGENT},20,tT)
++ same => n,Dial(PJSIP/${STICKY_AGENT},20,tTb(attica-intake-track^s^1))
+  same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${DIALSTATUS}"="ANSWER"]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${STICKY_AGENT}))
+  same => n,GotoIf($["${DIALSTATUS}"="ANSWER"]?queue-complete,1)
+  same => n,Goto(s,select-language)
+ 
+-exten => kannada,1,Queue(attica-kannada,t)
++exten => kannada,1,Queue(attica-kannada,tb(attica-intake-track^s^1))
+  same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+  same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+  same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+  same => n,Goto(attica-missed,s,1)
+ 
+-exten => tamil,1,Queue(attica-tamil,t)
++exten => tamil,1,Queue(attica-tamil,tb(attica-intake-track^s^1))
+  same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+  same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+  same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+  same => n,Goto(attica-missed,s,1)
+ 
+-exten => telugu,1,Queue(attica-telugu,t)
++exten => telugu,1,Queue(attica-telugu,tb(attica-intake-track^s^1))
+  same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+  same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+  same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+  same => n,Goto(attica-missed,s,1)
+ 
+-exten => hindi,1,Queue(attica-hindi,t)
++exten => hindi,1,Queue(attica-hindi,tb(attica-intake-track^s^1))
+  same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+  same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+  same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+  same => n,Goto(attica-missed,s,1)
+ 
+-exten => english,1,Queue(attica-english,t)
++exten => english,1,Queue(attica-english,tb(attica-intake-track^s^1))
+  same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+  same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+  same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+@@ -889,3 +891,4 @@
+  same => n,Hangup()
+ 
+ ;==========================================================
++#include attica-intake.conf

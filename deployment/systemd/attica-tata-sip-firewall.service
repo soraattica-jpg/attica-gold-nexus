@@ -1,0 +1,12 @@
+[Unit]
+Description=Allow TATA SIP SBC through local firewall
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c '/usr/sbin/iptables -C INPUT -s 10.53.179.2/32 -p udp --dport 5060 -j ACCEPT || /usr/sbin/iptables -I INPUT 4 -s 10.53.179.2/32 -p udp --dport 5060 -j ACCEPT'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

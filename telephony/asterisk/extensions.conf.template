@@ -1,0 +1,776 @@
+;==========================================================
+; Extensions Configuration - Attica Gold Private Limited
+; TATA SIP Trunk
+; DID: 8068711201 | Username: 68711200
+;==========================================================
+
+[general]
+static=yes
+writeprotect=no
+clearglobalvars=no
+priorityjumping=no
+
+[globals]
+TRUNK=tatasip
+PILOTNUM=8068711200
+OUTBOUND_DID=8068711209
+OUTBOUND_CLI=68711209
+TATA_DID_NO_AC=68711209
+TATA_PILOT_FULL=8068711200
+TATA_PILOT_NO_AC=68711200
+DOMAIN=10.53.179.2
+OUTBOUND_RING_TIMEOUT=60
+NEW_TATA_TRUNK=TATA_NEW
+NEW_TATA_PILOT=8065200220
+NEW_TATA_DEFAULT_OUTBOUND_DID=8065200221
+NEW_TATA_DOMAIN=ka.ims.ttl.in
+; One-day incoming 2-of-5 test gate. Leave blank to disable.
+; Set to an IST date like 2026-08-14, then run: asterisk -rx "dialplan reload"
+ATTICA_2OF5_TARGET_DATE=
+ATTICA_2OF5_COUNT=0
+ATTICA_2OF5_REJECTED_COUNT=0
+ATTICA_2OF5_TOTAL_REJECTED_COUNT=0
+ATTICA_2OF5_STOP_LIMIT=0
+ATTICA_2OF5_STOP_COUNT=0
+ATTICA_2OF5_RATE_SECONDS=0
+ATTICA_2OF5_LAST_ROUTE_EPOCH=0
+
+;==========================================================
+; TATA OUTBOUND IDENTITY
+;==========================================================
+[tata-outbound-identity]
+exten => s,1,NoOp(Set Tata outbound identity from dynamic AstDB DID)
+ same => n,Set(TATA_ACTIVE_DID=${DB(TATA/outbound_did)})
+ same => n,ExecIf($["${TATA_ACTIVE_DID}"=""]?Set(TATA_ACTIVE_DID=${OUTBOUND_DID}))
+ same => n,Set(TATA_ACTIVE_DID_NO_AC=${TATA_ACTIVE_DID:2})
+ same => n,NoOp(Tata outbound active DID ${TATA_ACTIVE_DID} CLI ${TATA_ACTIVE_DID_NO_AC} PPI ${TATA_PILOT_NO_AC})
+ same => n,Set(CALLERID(num)=${TATA_ACTIVE_DID_NO_AC})
+ same => n,Set(CALLERID(name)=ATTICA GOLD)
+ same => n,SipRemoveHeader()
+ same => n,SipAddHeader(P-Preferred-Identity: <sip:${TATA_PILOT_NO_AC}@${DOMAIN}>)
+ same => n,Return()
+
+;==========================================================
+; NEW TATA SIP CIRCUIT OUTBOUND IDENTITY
+; Pilot: 8065200220 | approved outbound CLI range: 8065200221-8065200399
+; The active CLI can be set in AstDB at NEW_TATA/outbound_did.  When unset,
+; use the first approved outbound DID.  The pilot is used only as PPI.
+;==========================================================
+[new-tata-outbound-identity]
+exten => s,1,NoOp(Set new Tata outbound identity from active approved DID)
+ same => n,Set(NEW_TATA_ACTIVE_DID=${FILTER(0-9,${DB(NEW_TATA/outbound_did)})})
+ same => n,ExecIf($[${LEN(${NEW_TATA_ACTIVE_DID})} = 0]?Set(NEW_TATA_ACTIVE_DID=${NEW_TATA_DEFAULT_OUTBOUND_DID}))
+ same => n,GotoIf($[${LEN(${NEW_TATA_ACTIVE_DID})} != 10]?invalid-cli)
+ same => n,GotoIf($["${NEW_TATA_ACTIVE_DID:0:7}" != "8065200"]?invalid-cli)
+ same => n,Set(NEW_TATA_DID_SUFFIX=${NEW_TATA_ACTIVE_DID:7:3})
+ same => n,GotoIf($[${NEW_TATA_DID_SUFFIX} < 221 | ${NEW_TATA_DID_SUFFIX} > 399]?invalid-cli)
+ same => n,NoOp(New Tata outbound active DID ${NEW_TATA_ACTIVE_DID} PPI ${NEW_TATA_PILOT})
+ same => n,Set(CALLERID(num)=${NEW_TATA_ACTIVE_DID})
+ same => n,Set(CALLERID(name)=ATTICA GOLD)
+ same => n,SipRemoveHeader()
+ same => n,SipAddHeader(P-Preferred-Identity: <sip:${NEW_TATA_PILOT}@${NEW_TATA_DOMAIN}>)
+ same => n,Return()
+ same => n(invalid-cli),NoOp(Invalid new Tata outbound DID - using ${NEW_TATA_DEFAULT_OUTBOUND_DID})
+ same => n,Set(NEW_TATA_ACTIVE_DID=${NEW_TATA_DEFAULT_OUTBOUND_DID})
+ same => n,Set(CALLERID(num)=${NEW_TATA_ACTIVE_DID})
+ same => n,Set(CALLERID(name)=ATTICA GOLD)
+ same => n,SipRemoveHeader()
+ same => n,SipAddHeader(P-Preferred-Identity: <sip:${NEW_TATA_PILOT}@${NEW_TATA_DOMAIN}>)
+ same => n,Return()
+
+[tata-outbound-dial]
+exten => s,1,NoOp(Select Tata outbound circuit for ${ARG1})
+ same => n,Set(TATA_OUTBOUND_ROUTE=${DB(TATA_ROUTING/primary)})
+ same => n,ExecIf($["${TATA_OUTBOUND_ROUTE}"=""]?Set(TATA_OUTBOUND_ROUTE=TATA_PRIMARY))
+ same => n,GotoIf($["${TATA_OUTBOUND_ROUTE}"="TATA_NEW"]?new:primary)
+ same => n(primary),Gosub(tata-primary-outbound-dial,s,1(${ARG1},${ARG2}))
+ same => n,Return()
+ same => n(new),Gosub(tata-new-outbound-dial,s,1(${ARG1},${ARG2}))
+ same => n,Return()
+
+[tata-primary-outbound-dial]
+exten => s,1,NoOp(Existing Tata outbound dial ${ARG1})
+ same => n,Gosub(attica-intake-track,s,1)
+ same => n,Set(TATA_DIAL_NUM=${FILTER(0-9,${ARG1})})
+ same => n,Set(TATA_DIAL_OUT=0${TATA_DIAL_NUM})
+ same => n,Set(TATA_DIAL_TIMEOUT=${IF($["${ARG2}"=""]?${OUTBOUND_RING_TIMEOUT}:${ARG2})})
+ same => n,ExecIf($[${TATA_DIAL_TIMEOUT} > ${OUTBOUND_RING_TIMEOUT}]?Set(TATA_DIAL_TIMEOUT=${OUTBOUND_RING_TIMEOUT}))
+ same => n,Gosub(tata-outbound-identity,s,1)
+ ; Use interruptible ringback: Tata early media (183/RTP) must replace it when available.
+ same => n,Dial(SIP/${TATA_DIAL_OUT}@tatasip,${TATA_DIAL_TIMEOUT},RtTo)
+ same => n,NoOp(Tata outbound result number=${TATA_DIAL_OUT} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} dialedtime=${DIALEDTIME} answeredtime=${ANSWEREDTIME})
+ ; Only a carrier-reported busy result is treated as busy. A normal answered hangup is not.
+ same => n,GotoIf($["${DIALSTATUS}"="BUSY" | "${HANGUPCAUSE}"="17"]?carrier-busy)
+ same => n,Return()
+ same => n(carrier-busy),NoOp(Tata carrier BUSY number=${TATA_DIAL_OUT} cause=${HANGUPCAUSE})
+ same => n,Busy(2)
+ same => n,Return()
+
+[tata-new-outbound-dial]
+exten => s,1,NoOp(TATA_NEW outbound dial ${ARG1})
+ same => n,Gosub(attica-intake-track,s,1)
+ same => n,Set(__TRUNK_CODE=TATA_NEW)
+ same => n,Set(__CARRIER_TRUNK=CAMPAIGN_CALLS)
+ same => n,Set(__CALL_DIRECTION=OUTGOING)
+ same => n,Set(__TATA_PILOT=${NEW_TATA_PILOT})
+ same => n,Set(CHANNEL(accountcode)=CAMPAIGN_CALLS_OUT)
+ same => n,Set(GROUP(tata-new)=all)
+ same => n,Set(GROUP(tata-new-direction)=outgoing)
+ same => n,Set(NEW_TATA_ACTIVE_CHANNELS=${GROUP_COUNT(all@tata-new)})
+ same => n,Set(NEW_TATA_OUTBOUND_CHANNELS=${GROUP_COUNT(outgoing@tata-new-direction)})
+ same => n,GotoIf($[${NEW_TATA_ACTIVE_CHANNELS} > 60 | ${NEW_TATA_OUTBOUND_CHANNELS} > 50]?capacity)
+ same => n,Set(TATA_DIAL_NUM=${FILTER(0-9,${ARG1})})
+ same => n,Set(TATA_DIAL_OUT=0${TATA_DIAL_NUM})
+ same => n,Set(TATA_DIAL_TIMEOUT=${IF($["${ARG2}"=""]?${OUTBOUND_RING_TIMEOUT}:${ARG2})})
+ same => n,ExecIf($[${TATA_DIAL_TIMEOUT} > ${OUTBOUND_RING_TIMEOUT}]?Set(TATA_DIAL_TIMEOUT=${OUTBOUND_RING_TIMEOUT}))
+ same => n,Gosub(new-tata-outbound-identity,s,1)
+ ; Uppercase R allows real Tata early media to replace local ringback.
+ same => n,Dial(SIP/${TATA_DIAL_OUT}@${NEW_TATA_TRUNK},${TATA_DIAL_TIMEOUT},RtTo)
+ same => n,NoOp(TATA_NEW outbound result number=${TATA_DIAL_OUT} cli=${NEW_TATA_ACTIVE_DID} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} dialedtime=${DIALEDTIME} answeredtime=${ANSWEREDTIME})
+ same => n,GotoIf($["${DIALSTATUS}"="BUSY" | "${HANGUPCAUSE}"="17"]?carrier-busy)
+ same => n,Return()
+ same => n(carrier-busy),NoOp(TATA_NEW carrier BUSY number=${TATA_DIAL_OUT} cause=${HANGUPCAUSE})
+ same => n,Busy(2)
+ same => n,Return()
+ same => n(capacity),NoOp(TATA_NEW capacity reserved active=${NEW_TATA_ACTIVE_CHANNELS} outbound=${NEW_TATA_OUTBOUND_CHANNELS})
+ same => n,Hangup(34)
+
+; GSM outbound has been removed. All production outbound calls use Tata SIP.
+
+;==========================================================
+; DEFAULT CONTEXT — Internal Calls Between Extensions
+;==========================================================
+[default]
+; Internal extension dialing (1001–1030)
+exten => _10XX,1,NoOp(Internal Call to ${EXTEN})
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => _10XX,n,Dial(SIP/${EXTEN},30,tTo)
+exten => _10XX,n,Voicemail(${EXTEN}@default,u)
+exten => _10XX,n,Hangup()
+
+; Voicemail access
+exten => *97,1,VoiceMailMain(${CALLERID(num)}@default)
+exten => *97,n,Hangup()
+
+; Echo test
+exten => *43,1,Answer()
+exten => *43,n,Playback(demo-echotest)
+exten => *43,n,Echo()
+exten => *43,n,Hangup()
+
+; Speaking clock
+exten => *60,1,Answer()
+exten => *60,n,SayUnixTime()
+exten => *60,n,Hangup()
+
+; Catch-all for incoming that lands here
+exten => s,1,NoOp(Incoming call to default context)
+exten => s,n,Answer()
+exten => s,n,Playback(hello-world)
+exten => s,n,Hangup()
+exten => h,1,NoOp(Default hangup caller=${CALLERID(num)} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+ same => n,Verbose(2,Attica default hangup caller=${CALLERID(num)} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+
+; GSM gateway test routes removed; no GSM dialing is available.
+
+;==========================================================
+; OUTBOUND CALLS VIA TATA - Used by VICIdial / auto dial
+;==========================================================
+[airtel-outbound]
+; VICIdial AGI call logging
+exten => _9X.,1,AGI(agi://127.0.0.1:4577/call_log)
+
+; Normalize the dialed number and route outgoing/follow-up calls via Tata SIP.
+exten => _9X.,n,Ringing()
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+ same => n,Set(OUTNUM=${EXTEN:1})
+ same => n,ExecIf($["${OUTNUM:0:3}" = "+91"]?Set(OUTNUM=${OUTNUM:3}))
+ same => n,ExecIf($["${OUTNUM:0:2}" = "91"]?Set(OUTNUM=${OUTNUM:2}))
+ same => n,ExecIf($["${OUTNUM:0:1}" = "0"]?Set(OUTNUM=${OUTNUM:1}))
+exten => _9X.,n,Gosub(tata-outbound-dial,s,1(${OUTNUM},${OUTBOUND_RING_TIMEOUT}))
+exten => _9X.,n,Hangup()
+exten => h,1,NoOp(Airtel outbound hangup caller=${CALLERID(num)} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+ same => n,Verbose(2,Attica airtel outbound hangup caller=${CALLERID(num)} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+
+;==========================================================
+; MANUAL OUTBOUND — For direct dialing from SIP phones
+; Dial 0 + number (e.g., 09876543210)
+;==========================================================
+[manual-outbound]
+; Local calls (10 digits with 0 prefix)
+exten => _0XXXXXXXXXX,1,NoOp(Manual Outbound: ${EXTEN})
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => _0XXXXXXXXXX,n,Gosub(tata-outbound-dial,s,1(${EXTEN:1},${OUTBOUND_RING_TIMEOUT}))
+exten => _0XXXXXXXXXX,n,Hangup()
+
+; Mobile calls (10 digits with 0 prefix)
+exten => _0ZXXXXXXXXX,1,NoOp(Manual Outbound Mobile: ${EXTEN})
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => _0ZXXXXXXXXX,n,Gosub(tata-outbound-dial,s,1(${EXTEN:1},${OUTBOUND_RING_TIMEOUT}))
+exten => _0ZXXXXXXXXX,n,Hangup()
+exten => h,1,NoOp(Manual outbound hangup caller=${CALLERID(num)} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+ same => n,Verbose(2,Attica manual outbound hangup caller=${CALLERID(num)} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+
+;==========================================================
+; INBOUND CALLS FROM TATA
+;==========================================================
+;==========================================================
+[ivr-main]
+exten => s,1,Answer()
+exten => s,n,Wait(1)
+exten => s,n,Set(CHANNEL(language)=en)
+
+; Play welcome message
+; Record your own: asterisk -rx "file convert /tmp/welcome.wav /var/lib/asterisk/sounds/attica-welcome.gsm"
+exten => s,n,Background(hello-world)
+
+; Wait for input: 1=Sales, 2=Support, 0=Operator
+exten => s,n,WaitExten(5)
+
+; If no input, go to operator
+exten => s,n,Goto(ivr-main,0,1)
+
+; Option 1 — Sales / Outbound Team
+exten => 1,1,NoOp(IVR: Caller pressed 1 - Sales)
+exten => 1,n,Goto(queue-sales,s,1)
+
+; Option 2 — Support / Inbound Team
+exten => 2,1,NoOp(IVR: Caller pressed 2 - Support)
+exten => 2,n,Goto(queue-support,s,1)
+
+; Option 0 — Operator
+exten => 0,1,NoOp(IVR: Caller pressed 0 - Operator)
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => 0,n,Dial(SIP/1001,30,tTo)
+exten => 0,n,Voicemail(1001@default,u)
+exten => 0,n,Hangup()
+
+; Invalid input
+exten => i,1,Playback(invalid)
+exten => i,n,Goto(ivr-main,s,1)
+
+; Timeout
+exten => t,1,Goto(ivr-main,0,1)
+
+;==========================================================
+; CALL QUEUES
+;==========================================================
+[queue-sales]
+exten => s,1,NoOp(Entering Sales Queue)
+exten => s,n,Answer()
+exten => s,n,Queue(sales_queue,tT,,,120)
+exten => s,n,Voicemail(1001@default,u)
+exten => s,n,Hangup()
+
+[queue-support]
+exten => s,1,NoOp(Entering Support Queue)
+exten => s,n,Answer()
+exten => s,n,Queue(support_queue,tT,,,120)
+exten => s,n,Voicemail(1001@default,u)
+exten => s,n,Hangup()
+
+;==========================================================
+; VICIDIAL REQUIRED CONTEXTS
+;==========================================================
+[trunkinbound-vicidial]
+exten => _X.,1,AGI(agi://127.0.0.1:4577/call_log)
+exten => _X.,n,Hangup()
+
+[VICIdial-auto]
+exten => _X.,1,AGI(agi://127.0.0.1:4577/call_log)
+exten => _X.,n,Hangup()
+
+;==========================================================
+; WEBRTC EXTENSIONS — Internal Dialing
+;==========================================================
+[default]
+exten => _20XX,1,NoOp(WebRTC Call to ${EXTEN})
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => _20XX,n,Dial(PJSIP/${EXTEN},30,tTb(attica-intake-track^s^1))
+exten => _20XX,n,Hangup()
+
+;==========================================================
+; WEBRTC OUTBOUND VIA TATA (from default context)
+;==========================================================
+[default]
+; WebRTC agents dial any number - route via Tata SIP.
+exten => _+91XXXXXXXXXX,1,NoOp(WebRTC Outbound: ${EXTEN})
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => _+91XXXXXXXXXX,n,Gosub(tata-outbound-dial,s,1(${EXTEN:3},${OUTBOUND_RING_TIMEOUT}))
+exten => _+91XXXXXXXXXX,n,Hangup()
+
+; 91 + 10 digits without a plus sign
+exten => _91XXXXXXXXXX,1,NoOp(WebRTC Outbound 91-prefix: ${EXTEN})
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => _91XXXXXXXXXX,n,Gosub(tata-outbound-dial,s,1(${EXTEN:2},${OUTBOUND_RING_TIMEOUT}))
+exten => _91XXXXXXXXXX,n,Hangup()
+
+; 10-digit number
+exten => _ZXXXXXXXXX,1,NoOp(WebRTC Outbound 10digit: ${EXTEN})
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-${EXTEN})
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => _ZXXXXXXXXX,n,Gosub(tata-outbound-dial,s,1(${EXTEN},${OUTBOUND_RING_TIMEOUT}))
+exten => _ZXXXXXXXXX,n,Hangup()
+
+; With + prefix
+exten => _+ZXXXXXXXXX,1,NoOp(WebRTC Outbound +: ${EXTEN})
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-outbound)
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+exten => _+ZXXXXXXXXX,n,Gosub(tata-outbound-dial,s,1(${EXTEN:1},${OUTBOUND_RING_TIMEOUT}))
+exten => _+ZXXXXXXXXX,n,Hangup()
+
+;==========================================================
+; WEBRTC CONFERENCE MERGE — Used by Agent Intake Form
+;==========================================================
+[attica-conference]
+exten => _X!,1,NoOp(Joining Attica conference ${EXTEN})
+ same => n,Answer()
+ same => n,ConfBridge(${EXTEN})
+ same => n,Hangup()
+
+[attica-transfer-agent]
+exten => _20XX,1,NoOp(Transfer target ${EXTEN})
+ same => n,Set(CALLERID(name)=Attica Transfer)
+ same => n,Dial(PJSIP/${EXTEN},25,tTb(attica-intake-track^s^1))
+ same => n,Hangup()
+
+[attica-transfer-direct]
+exten => _20XX,1,NoOp(Direct transfer customer leg to ${EXTEN})
+ same => n,Set(CALLERID(name)=Attica Transfer)
+ same => n,Dial(PJSIP/${EXTEN},25,tTb(attica-intake-track^s^1))
+ same => n,Hangup()
+
+[attica-conference-outbound]
+exten => _ZXXXXXXXXX,1,NoOp(Conference outbound to ${EXTEN})
+ same => n,Gosub(tata-outbound-dial,s,1(${EXTEN},${OUTBOUND_RING_TIMEOUT}))
+ same => n,Hangup()
+
+;==========================================================
+; INBOUND FROM TATA - Ring WebRTC Agents
+;==========================================================
+
+;==========================================================
+; INBOUND FROM TATA - Round-Robin to Active Agents
+;==========================================================
+
+;==========================================================
+; INBOUND FROM TATA - IVR + Language Routing
+;==========================================================
+[attica-block-check]
+exten => s,1,NoOp(PBX blocked-number check for ${ARG1})
+ same => n,Set(BLOCK_PHONE=${FILTER(0-9,${ARG1})})
+ same => n,ExecIf($[${LEN(${BLOCK_PHONE})} > 10]?Set(BLOCK_PHONE=${BLOCK_PHONE:-10}))
+ same => n,ExecIf($[${LEN(${BLOCK_PHONE})} = 0]?Return())
+ same => n,Set(IS_BLOCKED=${DB_EXISTS(attica-blocked/${BLOCK_PHONE})})
+ same => n,NoOp(PBX blocked-number result ${BLOCK_PHONE} => ${IS_BLOCKED})
+ same => n,GotoIf($["${IS_BLOCKED}"="1"]?blocked,1)
+ same => n,Return()
+
+exten => blocked,1,NoOp(Rejecting blocked caller ${BLOCK_PHONE})
+ same => n,Hangup(21)
+
+[attica-inbound-dedupe]
+exten => s,1,Set(DUPLICATE_CALLER_KEY=${FILTER(0-9,${ARG1})})
+ same => n,ExecIf($[${LEN(${DUPLICATE_CALLER_KEY})} > 10]?Set(DUPLICATE_CALLER_KEY=${DUPLICATE_CALLER_KEY:-10}))
+ same => n,Set(IS_DUPLICATE_INBOUND=0)
+ same => n,Set(DUPLICATE_CALLER_COUNT=0)
+ same => n,ExecIf($["${DUPLICATE_CALLER_KEY}" != ""]?Set(GROUP(inbound-dup)=caller-${DUPLICATE_CALLER_KEY}))
+ same => n,ExecIf($["${DUPLICATE_CALLER_KEY}" != ""]?Set(DUPLICATE_CALLER_COUNT=${GROUP_COUNT(caller-${DUPLICATE_CALLER_KEY}@inbound-dup)}))
+ same => n,ExecIf($[${DUPLICATE_CALLER_COUNT} > 1]?Set(IS_DUPLICATE_INBOUND=1))
+ same => n,ExecIf($["${IS_DUPLICATE_INBOUND}"="1"]?Verbose(2,Duplicate inbound caller ${DUPLICATE_CALLER_KEY} allowed with ${DUPLICATE_CALLER_COUNT} live legs))
+ same => n,Return()
+
+[trunkinbound]
+exten => s,1,NoOp(Inbound default/keepalive from ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+; New Tata circuit inbound pilot.  The dedicated peer context below always
+; normalizes its request URI to this DID before the shared inbound workflow.
+exten => 8065200220,1,NoOp(Inbound new Tata pilot DID 8065200220: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,+918065200220,1)
+
+exten => 68711200,1,NoOp(Inbound TATA account: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 8068711200,1,NoOp(Inbound TATA pilot DID 8068711200: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 08068711200,1,NoOp(Inbound TATA pilot DID 08068711200: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => +918068711200,1,NoOp(Inbound TATA pilot DID +918068711200: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 68711277,1,NoOp(Inbound TATA DID alias 68711277: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 68711228,1,NoOp(Inbound TATA active outbound DID alias 68711228: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 8068711277,1,NoOp(Inbound TATA DID alias 8068711277: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 8068711228,1,NoOp(Inbound TATA active outbound DID alias 8068711228: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 08068711228,1,NoOp(Inbound TATA active outbound DID alias 08068711228: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => +918068711277,1,NoOp(Inbound TATA DID alias +918068711277: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => +918068711228,1,NoOp(Inbound TATA active outbound DID alias +918068711228: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => _687112XX,1,NoOp(Inbound TATA DID wildcard ${EXTEN}: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => _80687112XX,1,NoOp(Inbound TATA DID wildcard ${EXTEN}: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => _080687112XX,1,NoOp(Inbound TATA DID wildcard ${EXTEN}: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => _+9180687112XX,1,NoOp(Inbound TATA DID wildcard ${EXTEN}: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 8880300300,1,NoOp(Inbound public DID 8880300300: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 08880300300,1,NoOp(Inbound public DID 08880300300: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => +918880300300,1,NoOp(Inbound public DID +918880300300: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => +918068711201,1,NoOp(Inbound TATA DID E164: ${CALLERID(num)} to ${EXTEN})
+ same => n,Goto(trunkinbound,8068711201,1)
+
+exten => 8068711201,1,NoOp(Inbound TATA DID: ${CALLERID(num)} to ${EXTEN})
+ same => n,Set(DID=8068711201)
+ same => n,Set(INBOUND_CALLER_KEY=${FILTER(0-9,${CALLERID(num)})})
+ same => n,ExecIf($[${LEN(${INBOUND_CALLER_KEY})} > 10]?Set(INBOUND_CALLER_KEY=${INBOUND_CALLER_KEY:-10}))
+ same => n,GotoIf($["${INBOUND_CALLER_KEY}"="" | "${INBOUND_CALLER_KEY}"="8068711200" | "${INBOUND_CALLER_KEY}"="8068711201"]?invalid-inbound-caller,1)
+ same => n,Gosub(attica-block-check,s,1(${CALLERID(num)}))
+ same => n,Gosub(attica-inbound-dedupe,s,1(${CALLERID(num)}))
+ same => n,ExecIf($["${IS_DUPLICATE_INBOUND}"="1"]?NoOp(Allow duplicate inbound caller=${CALLERID(num)} count=${DUPLICATE_CALLER_COUNT}))
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-inbound)
+ same => n,Set(__LANGUAGE_IVR_ATTEMPTS=0)
+ same => n,Answer()
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+ same => n,Goto(attica-ivr,s,1)
+
+exten => _+91ZXXXXXXXXX,1,NoOp(Inbound: ${CALLERID(num)} to ${EXTEN})
+ same => n,Set(DID=${EXTEN:-10})
+ same => n,Set(INBOUND_CALLER_KEY=${FILTER(0-9,${CALLERID(num)})})
+ same => n,ExecIf($[${LEN(${INBOUND_CALLER_KEY})} > 10]?Set(INBOUND_CALLER_KEY=${INBOUND_CALLER_KEY:-10}))
+ same => n,GotoIf($["${INBOUND_CALLER_KEY}"="" | "${INBOUND_CALLER_KEY}"="8068711200" | "${INBOUND_CALLER_KEY}"="8068711201"]?invalid-inbound-caller,1)
+ same => n,Gosub(attica-block-check,s,1(${CALLERID(num)}))
+ same => n,Gosub(attica-inbound-dedupe,s,1(${CALLERID(num)}))
+ same => n,ExecIf($["${IS_DUPLICATE_INBOUND}"="1"]?NoOp(Allow duplicate inbound caller=${CALLERID(num)} count=${DUPLICATE_CALLER_COUNT}))
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-inbound)
+ same => n,Set(__LANGUAGE_IVR_ATTEMPTS=0)
+ same => n,Answer()
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+ same => n,Goto(attica-ivr,s,1)
+
+exten => _ZXXXXXXXXX,1,NoOp(Inbound 10digit: ${CALLERID(num)} to ${EXTEN})
+ same => n,Set(DID=${EXTEN})
+ same => n,Set(INBOUND_CALLER_KEY=${FILTER(0-9,${CALLERID(num)})})
+ same => n,ExecIf($[${LEN(${INBOUND_CALLER_KEY})} > 10]?Set(INBOUND_CALLER_KEY=${INBOUND_CALLER_KEY:-10}))
+ same => n,GotoIf($["${INBOUND_CALLER_KEY}"="" | "${INBOUND_CALLER_KEY}"="8068711200" | "${INBOUND_CALLER_KEY}"="8068711201"]?invalid-inbound-caller,1)
+ same => n,Gosub(attica-block-check,s,1(${CALLERID(num)}))
+ same => n,Gosub(attica-inbound-dedupe,s,1(${CALLERID(num)}))
+ same => n,ExecIf($["${IS_DUPLICATE_INBOUND}"="1"]?NoOp(Allow duplicate inbound caller=${CALLERID(num)} count=${DUPLICATE_CALLER_COUNT}))
+ same => n,Set(CALLFILENAME=\${STRFTIME(\${EPOCH},,%Y%m%d-%H%M%S)}-\${FILTER(0-9,\${CALLERID(num)})}-inbound)
+ same => n,Set(__LANGUAGE_IVR_ATTEMPTS=0)
+ same => n,Answer()
+ same => n,MixMonitor(/var/spool/asterisk/monitor/${CALLFILENAME}.wav,b)
+ same => n,Goto(attica-ivr,s,1)
+exten => duplicate-inbound,1,NoOp(Allow duplicate inbound caller=${CALLERID(num)} did=${DID} count=${DUPLICATE_CALLER_COUNT})
+ same => n,Verbose(2,Allow duplicate inbound caller=${CALLERID(num)} did=${DID} count=${DUPLICATE_CALLER_COUNT})
+ same => n,Goto(attica-ivr,s,1)
+exten => invalid-inbound-caller,1,NoOp(Reject invalid inbound caller=${CALLERID(num)} normalized=${INBOUND_CALLER_KEY} did=${DID})
+ same => n,Verbose(2,Reject invalid inbound caller=${CALLERID(num)} normalized=${INBOUND_CALLER_KEY} did=${DID})
+ same => n,Hangup(21)
+exten => h,1,NoOp(Trunk inbound hangup caller=${CALLERID(num)} did=${DID} lang=${LANG_SELECTED} queue=${QUEUESTATUS} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+ same => n,Verbose(2,Attica trunk inbound hangup caller=${CALLERID(num)} did=${DID} lang=${LANG_SELECTED} queue=${QUEUESTATUS} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+
+;==========================================================
+; TATA_NEW INBOUND NORMALIZATION AND ENTRY
+; Accept pilot/range as 10 digit, 0-prefixed, +91/E.164 or 8-digit local DID.
+;==========================================================
+[from-tata-new]
+exten => s,1,NoOp(TATA_NEW inbound default from ${CALLERID(num)} to ${EXTEN})
+ same => n,Gosub(tata-new-did-entry,s,1(8065200220))
+ same => n,Hangup()
+exten => _X!,1,Gosub(tata-new-did-entry,s,1(${EXTEN}))
+ same => n,Hangup()
+exten => _+X!,1,Gosub(tata-new-did-entry,s,1(${EXTEN}))
+ same => n,Hangup()
+
+[tata-new-did-entry]
+exten => s,1,Set(TATA_NEW_DID=${FILTER(0-9,${ARG1})})
+ same => n,ExecIf($[${LEN(${TATA_NEW_DID})}=12 & "${TATA_NEW_DID:0:2}"="91"]?Set(TATA_NEW_DID=${TATA_NEW_DID:2}))
+ same => n,ExecIf($[${LEN(${TATA_NEW_DID})}=11 & "${TATA_NEW_DID:0:1}"="0"]?Set(TATA_NEW_DID=${TATA_NEW_DID:1}))
+ same => n,ExecIf($[${LEN(${TATA_NEW_DID})}=8 & "${TATA_NEW_DID:0:5}"="65200"]?Set(TATA_NEW_DID=80${TATA_NEW_DID}))
+ same => n,GotoIf($[${LEN(${TATA_NEW_DID})} != 10]?invalid)
+ same => n,GotoIf($["${TATA_NEW_DID:0:7}" != "8065200"]?invalid)
+ same => n,Set(TATA_NEW_DID_SUFFIX=${TATA_NEW_DID:7:3})
+ same => n,GotoIf($[${TATA_NEW_DID_SUFFIX} >= 220 & ${TATA_NEW_DID_SUFFIX} <= 399]?valid:invalid)
+ same => n(valid),Goto(tata-new-inbound,${TATA_NEW_DID},1)
+ same => n(invalid),NoOp(Reject TATA_NEW invalid DID raw=${ARG1} normalized=${TATA_NEW_DID})
+ same => n,Hangup(1)
+
+[tata-new-inbound]
+exten => _X!,1,NoOp(TATA_NEW inbound DID=${EXTEN} caller=${CALLERID(num)})
+ same => n,Set(__TRUNK_CODE=CAMPAIGN_CALLS)
+ same => n,Set(__CARRIER_TRUNK=CAMPAIGN_CALLS)
+ same => n,Set(__CALL_SOURCE=Campaign Calls)
+ same => n,Set(__CALL_DIRECTION=INCOMING)
+ same => n,Set(__TATA_PILOT=${NEW_TATA_PILOT})
+ same => n,Set(__INBOUND_DID=${EXTEN})
+ same => n,Set(CHANNEL(accountcode)=CAMPAIGN_CALLS_IN)
+ same => n,Set(GROUP(tata-new)=all)
+ same => n,Set(GROUP(tata-new-direction)=incoming)
+ same => n,Set(NEW_TATA_ACTIVE_CHANNELS=${GROUP_COUNT(all@tata-new)})
+ same => n,Goto(trunkinbound,+91${EXTEN},1)
+
+;==========================================================
+; IVR MENU — Language Selection
+;==========================================================
+[attica-ivr]
+exten => s,1,NoOp(IVR Start for ${CALLERID(num)})
+ same => n,Set(__LANGUAGE_IVR_ATTEMPTS=$[${LANGUAGE_IVR_ATTEMPTS} + 1])
+ same => n,GotoIf($[${LANGUAGE_IVR_ATTEMPTS} > 2]?language-failed,1)
+ same => n,Set(TIMEOUT(digit)=5)
+ same => n,Set(TIMEOUT(response)=10)
+ same => n,Background(attica/ivr-main)
+ same => n,WaitExten(8)
+
+; 1 = Kannada
+exten => 1,1,NoOp(Language: Kannada)
+ same => n,Set(CDR(language)=Kannada)
+ same => n,Set(LANG_SELECTED=Kannada)
+ same => n,Set(CHANNEL(language)=ka)
+ same => n,Set(IVR_SAVE_SOURCE=ivr-selection)
+ same => n,Goto(attica-language-queue,s,1)
+
+; 2 = Tamil
+exten => 2,1,NoOp(Language: Tamil)
+ same => n,Set(CDR(language)=Tamil)
+ same => n,Set(LANG_SELECTED=Tamil)
+ same => n,Set(CHANNEL(language)=ta)
+ same => n,Set(IVR_SAVE_SOURCE=ivr-selection)
+ same => n,Goto(attica-language-queue,s,1)
+
+; 3 = Telugu
+exten => 3,1,NoOp(Language: Telugu)
+ same => n,Set(CDR(language)=Telugu)
+ same => n,Set(LANG_SELECTED=Telugu)
+ same => n,Set(CHANNEL(language)=te)
+ same => n,Set(IVR_SAVE_SOURCE=ivr-selection)
+ same => n,Goto(attica-language-queue,s,1)
+
+; 4 = Hindi
+exten => 4,1,NoOp(Language: Hindi)
+ same => n,Set(CDR(language)=Hindi)
+ same => n,Set(LANG_SELECTED=Hindi)
+ same => n,Set(CHANNEL(language)=hi)
+ same => n,Set(IVR_SAVE_SOURCE=ivr-selection)
+ same => n,Goto(attica-language-queue,s,1)
+
+; 5 = English
+exten => 5,1,NoOp(Language: English)
+ same => n,Set(CDR(language)=English)
+ same => n,Set(LANG_SELECTED=English)
+ same => n,Set(CHANNEL(language)=en)
+ same => n,Set(IVR_SAVE_SOURCE=ivr-selection)
+ same => n,Goto(attica-language-queue,s,1)
+
+; Invalid or timeout — fail over to live English agents quickly.
+exten => i,1,Playback(invalid)
+ same => n,Goto(language-failed,1)
+exten => t,1,NoOp(Language IVR timeout - defaulting to English queue)
+ same => n,Goto(language-failed,1)
+exten => language-failed,1,NoOp(Language IVR failed for ${CALLERID(num)} after ${LANGUAGE_IVR_ATTEMPTS} attempts - defaulting to English queue)
+ same => n,Set(CDR(language)=English)
+ same => n,Set(LANG_SELECTED=English)
+ same => n,Set(CHANNEL(language)=en)
+ same => n,Set(IVR_SAVE_SOURCE=ivr-default-english)
+ same => n,Goto(attica-language-queue,s,1)
+exten => h,1,NoOp(Language IVR hangup caller=${CALLERID(num)} lang=${LANG_SELECTED})
+ same => n,GotoIf($["${LANG_SELECTED}"!=""]?selected-done)
+ same => n,TrySystem(/usr/bin/curl --connect-timeout 1 --max-time 2 -s --get --data-urlencode "phone=${CALLERID(num)}" --data-urlencode "language=${LANG_SELECTED}" --data-urlencode "source=ivr-hangup" "http://127.0.0.1:3001/api/save-call-ivr" >/dev/null 2>&1 &)
+ same => n(selected-done),NoOp(Language selected, queue context owns the call outcome)
+
+;==========================================================
+; LANGUAGE QUEUE ROUTER
+;==========================================================
+[attica-language-queue]
+exten => s,1,NoOp(Route ${CALLERID(num)} to ${LANG_SELECTED} queue after ${IVR_PURPOSE})
+ same => n,Gosub(temp-incoming-2-of-5,s,1)
+ same => n,TrySystem(/usr/bin/curl --connect-timeout 1 --max-time 1 -s --get --data-urlencode "phone=${CALLERID(num)}" --data-urlencode "language=${LANG_SELECTED}" --data-urlencode "source=${IVR_SAVE_SOURCE}" "http://127.0.0.1:3001/api/save-call-ivr" >/dev/null 2>&1 &)
+ same => n,Set(CALLER_STICKY_KEY=${FILTER(0-9,${CALLERID(num)})})
+ same => n,ExecIf($[${LEN(${CALLER_STICKY_KEY})} > 10]?Set(CALLER_STICKY_KEY=${CALLER_STICKY_KEY:-10}))
+ same => n,Set(STICKY_LANG_KEY=${TOLOWER(${FILTER(abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,${LANG_SELECTED})})})
+ same => n,ExecIf($["${STICKY_LANG_KEY}"=""]?Set(STICKY_LANG_KEY=english))
+ same => n,Set(CALLER_STICKY_SCOPE=${CALLER_STICKY_KEY}-${STICKY_LANG_KEY})
+ same => n,Set(IS_VALID_STICKY_CALLER=1)
+ same => n,ExecIf($[${LEN(${CALLER_STICKY_KEY})} != 10]?Set(IS_VALID_STICKY_CALLER=0))
+ same => n,ExecIf($["${CALLER_STICKY_KEY}"="8068711200"]?Set(IS_VALID_STICKY_CALLER=0))
+ same => n,ExecIf($["${CALLER_STICKY_KEY}"="8068711201"]?Set(IS_VALID_STICKY_CALLER=0))
+ same => n,NoOp(Skip sticky direct dial route caller directly to language queue)
+ same => n(select-language),GotoIf($["${LANG_SELECTED}"="Kannada"]?kannada,1)
+ same => n,GotoIf($["${LANG_SELECTED}"="Tamil"]?tamil,1)
+ same => n,GotoIf($["${LANG_SELECTED}"="Telugu"]?telugu,1)
+ same => n,GotoIf($["${LANG_SELECTED}"="Hindi"]?hindi,1)
+ same => n,Goto(english,1)
+
+exten => sticky,1,NoOp(Trying sticky agent ${STICKY_AGENT} for ${CALLER_STICKY_SCOPE})
+ same => n,Dial(PJSIP/${STICKY_AGENT},20,tTb(attica-intake-track^s^1))
+ same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${DIALSTATUS}"="ANSWER"]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${STICKY_AGENT}))
+ same => n,GotoIf($["${DIALSTATUS}"="ANSWER"]?queue-complete,1)
+ same => n,Goto(s,select-language)
+
+exten => kannada,1,Queue(attica-kannada,tb(attica-intake-track^s^1))
+ same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+ same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+ same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+ same => n,Goto(attica-missed,s,1)
+
+exten => tamil,1,Queue(attica-tamil,tb(attica-intake-track^s^1))
+ same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+ same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+ same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+ same => n,Goto(attica-missed,s,1)
+
+exten => telugu,1,Queue(attica-telugu,tb(attica-intake-track^s^1))
+ same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+ same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+ same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+ same => n,Goto(attica-missed,s,1)
+
+exten => hindi,1,Queue(attica-hindi,tb(attica-intake-track^s^1))
+ same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+ same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+ same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+ same => n,Goto(attica-missed,s,1)
+
+exten => english,1,Queue(attica-english,tb(attica-intake-track^s^1))
+ same => n,Set(ANSWERED_AGENT=${CUT(MEMBERINTERFACE,/,2)})
+ same => n,ExecIf($["${IS_VALID_STICKY_CALLER}"="1" & "${ANSWERED_AGENT}" != ""]?Set(DB(attica-sticky/${CALLER_STICKY_SCOPE})=${ANSWERED_AGENT}))
+ same => n,GotoIf($["${ANSWERED_AGENT}" != ""]?queue-complete,1)
+ same => n,Goto(attica-missed,s,1)
+
+exten => queue-complete,1,Hangup()
+exten => h,1,NoOp(Language queue hangup caller=${CALLERID(num)} lang=${LANG_SELECTED} purpose=${IVR_PURPOSE} queue=${QUEUESTATUS} answeredAgent=${ANSWERED_AGENT} member=${MEMBERINTERFACE} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+ same => n,Verbose(2,Attica language queue hangup caller=${CALLERID(num)} lang=${LANG_SELECTED} purpose=${IVR_PURPOSE} queue=${QUEUESTATUS} answeredAgent=${ANSWERED_AGENT} member=${MEMBERINTERFACE} dialstatus=${DIALSTATUS} hangupcause=${HANGUPCAUSE} bridgepeer=${BRIDGEPEER})
+ same => n,GotoIf($["${TEMP_INBOUND_DROP}"="1" | "${TEMP_2OF5_DROP}"="1"]?done)
+ same => n,GotoIf($["${ANSWERED_AGENT}"!="" | "${BRIDGEPEER}"!=""]?done)
+ same => n,TrySystem(/usr/bin/curl --connect-timeout 1 --max-time 2 -s --get --data-urlencode "phone=${CALLERID(num)}" --data-urlencode "language=${LANG_SELECTED}" --data-urlencode "purpose=${IVR_PURPOSE}" --data-urlencode "source=ivr-queue-hangup" --data-urlencode "uniqueId=${UNIQUEID}" --data-urlencode "queueStatus=${QUEUESTATUS}" --data-urlencode "hangupCause=${HANGUPCAUSE}" "http://127.0.0.1:3001/api/save-call-ivr" >/dev/null 2>&1 &)
+ same => n(done),NoOp(Language queue hangup outcome sync complete)
+
+;==========================================================
+; ONE-DAY 2-OF-5 INCOMING GATE
+; Applies after a valid language/default-language route and before CRM save/Queue().
+; Disabled unless ATTICA_2OF5_TARGET_DATE equals today's IST date.
+; Uses only in-memory GLOBAL vars; the counter resets on Asterisk restart/reload.
+;==========================================================
+[temp-incoming-2-of-5]
+exten => s,1,NoOp(One-day 2-of-5 gate check caller=${CALLERID(num)} target=${ATTICA_2OF5_TARGET_DATE})
+ same => n,Set(GATE_TARGET=${ATTICA_2OF5_TARGET_DATE})
+ same => n,GotoIf($["${GATE_TARGET}"=""]?allow)
+ same => n,Set(GATE_TODAY=${STRFTIME(${EPOCH},Asia/Kolkata,%Y-%m-%d)})
+ same => n,GotoIf($["${GATE_TODAY}"!="${GATE_TARGET}"]?expired)
+ same => n,GotoIf($["${GATE_ALREADY_CHECKED}"="1"]?allow)
+ same => n,Set(GATE_ALREADY_CHECKED=1)
+ same => n,Set(GATE_LOCK_OK=${LOCK(attica-temp-2of5)})
+ same => n,GotoIf($["${GATE_LOCK_OK}"!="1"]?allow)
+ same => n,Set(GATE_STOP_LIMIT=${GLOBAL(ATTICA_2OF5_STOP_LIMIT)})
+ same => n,ExecIf($["${GATE_STOP_LIMIT}"=""]?Set(GATE_STOP_LIMIT=0))
+ same => n,Set(GATE_STOP_COUNT=${GLOBAL(ATTICA_2OF5_STOP_COUNT)})
+ same => n,ExecIf($["${GATE_STOP_COUNT}"=""]?Set(GATE_STOP_COUNT=0))
+ same => n,Set(GATE_STOP_COUNT=$[${GATE_STOP_COUNT} + 1])
+ same => n,Set(GLOBAL(ATTICA_2OF5_STOP_COUNT)=${GATE_STOP_COUNT})
+ same => n,GotoIf($[${GATE_STOP_LIMIT} > 0 & ${GATE_STOP_COUNT} > ${GATE_STOP_LIMIT}]?hard-reject)
+ same => n,Set(GATE_RATE_SECONDS=${GLOBAL(ATTICA_2OF5_RATE_SECONDS)})
+ same => n,ExecIf($["${GATE_RATE_SECONDS}"=""]?Set(GATE_RATE_SECONDS=0))
+ same => n,GotoIf($[${GATE_RATE_SECONDS} <= 0]?cycle-check)
+ same => n,Set(GATE_LAST_ROUTE_EPOCH=${GLOBAL(ATTICA_2OF5_LAST_ROUTE_EPOCH)})
+ same => n,ExecIf($["${GATE_LAST_ROUTE_EPOCH}"=""]?Set(GATE_LAST_ROUTE_EPOCH=0))
+ same => n,Set(GATE_RATE_REMAINING=$[${GATE_RATE_SECONDS} - (${EPOCH} - ${GATE_LAST_ROUTE_EPOCH})])
+ same => n,GotoIf($[${GATE_LAST_ROUTE_EPOCH} > 0 & ${GATE_RATE_REMAINING} > 0]?rate-reject)
+ same => n,Set(GLOBAL(ATTICA_2OF5_LAST_ROUTE_EPOCH)=${EPOCH})
+ same => n,Set(GLOBAL(ATTICA_2OF5_COUNT)=1)
+ same => n,Set(GATE_UNLOCK_OK=${UNLOCK(attica-temp-2of5)})
+ same => n,Goto(allow)
+ same => n(cycle-check),NoOp(2-of-5 cycle mode active)
+ same => n,Set(GATE_COUNT=${GLOBAL(ATTICA_2OF5_COUNT)})
+ same => n,ExecIf($["${GATE_COUNT}"=""]?Set(GATE_COUNT=0))
+ same => n,Set(GATE_COUNT=$[${GATE_COUNT} + 1])
+ same => n,ExecIf($[${GATE_COUNT} > 5]?Set(GATE_COUNT=1))
+ same => n,Set(GLOBAL(ATTICA_2OF5_COUNT)=${GATE_COUNT})
+ same => n,Set(GATE_UNLOCK_OK=${UNLOCK(attica-temp-2of5)})
+ same => n,GotoIf($[${GATE_COUNT}=1]?allow)
+ same => n,GotoIf($[${GATE_COUNT}=3]?allow:reject)
+ same => n(expired),Set(GLOBAL(ATTICA_2OF5_COUNT)=0)
+ same => n,Set(GLOBAL(ATTICA_2OF5_REJECTED_COUNT)=0)
+ same => n,Set(GLOBAL(ATTICA_2OF5_TOTAL_REJECTED_COUNT)=0)
+ same => n,Set(GLOBAL(ATTICA_2OF5_STOP_LIMIT)=0)
+ same => n,Set(GLOBAL(ATTICA_2OF5_STOP_COUNT)=0)
+ same => n,Set(GLOBAL(ATTICA_2OF5_RATE_SECONDS)=0)
+ same => n,Set(GLOBAL(ATTICA_2OF5_LAST_ROUTE_EPOCH)=0)
+ same => n,Return()
+ same => n(allow),NoOp(One-day 2-of-5 ALLOW position=${GATE_COUNT} date=${GATE_TODAY})
+ same => n,Return()
+ same => n(hard-reject),Set(GATE_COUNT=BLOCK)
+ same => n,Set(GATE_UNLOCK_OK=${UNLOCK(attica-temp-2of5)})
+ same => n,NoOp(One-day 2-of-5 HARD REJECT after stop count=${GATE_STOP_COUNT} limit=${GATE_STOP_LIMIT} date=${GATE_TODAY})
+ same => n,Goto(reject)
+ same => n(rate-reject),Set(GATE_COUNT=RATE)
+ same => n,Set(GATE_UNLOCK_OK=${UNLOCK(attica-temp-2of5)})
+ same => n,NoOp(One-day rate gate REJECT remaining=${GATE_RATE_REMAINING}s last=${GATE_LAST_ROUTE_EPOCH} rate=${GATE_RATE_SECONDS} date=${GATE_TODAY})
+ same => n,Goto(reject)
+ same => n(reject),NoOp(One-day 2-of-5 REJECT position=${GATE_COUNT} date=${GATE_TODAY})
+ same => n,Set(GATE_REJECTED_COUNT=${GLOBAL(ATTICA_2OF5_REJECTED_COUNT)})
+ same => n,ExecIf($["${GATE_REJECTED_COUNT}"=""]?Set(GATE_REJECTED_COUNT=0))
+ same => n,Set(GATE_REJECTED_COUNT=$[${GATE_REJECTED_COUNT} + 1])
+ same => n,Set(GLOBAL(ATTICA_2OF5_REJECTED_COUNT)=${GATE_REJECTED_COUNT})
+ same => n,Set(GATE_TOTAL_REJECTED_COUNT=${GLOBAL(ATTICA_2OF5_TOTAL_REJECTED_COUNT)})
+ same => n,ExecIf($["${GATE_TOTAL_REJECTED_COUNT}"=""]?Set(GATE_TOTAL_REJECTED_COUNT=0))
+ same => n,Set(GATE_TOTAL_REJECTED_COUNT=$[${GATE_TOTAL_REJECTED_COUNT} + 1])
+ same => n,Set(GLOBAL(ATTICA_2OF5_TOTAL_REJECTED_COUNT)=${GATE_TOTAL_REJECTED_COUNT})
+ same => n,Set(__TEMP_2OF5_DROP=1)
+ same => n,Set(TEMP_INBOUND_DROP=1)
+ same => n,Set(CDR_PROP(disable)=1)
+ same => n,Set(CDR(userfield)=SYSTEM_REJECTED_2_OF_5_TEST)
+ same => n,Hangup(21)
+
+;==========================================================
+; MISSED CALL HANDLER — Save to DB
+;==========================================================
+[attica-missed]
+exten => s,1,NoOp(Missed call from ${CALLERID(num)})
+ same => n,System(curl -s -X POST http://localhost:3001/api/calls -H "Content-Type: application/json" -d '{"id":"MISS-'${EPOCH}'","callerId":"${CALLERID(num)}","callerName":"Missed","customerName":"Unknown","agentId":"NONE","agentName":"No Agent","direction":"incoming","status":"missed","duration":"00:00","time":"${STRFTIME(${EPOCH},Asia/Kolkata,%H:%M)}","date":"${STRFTIME(${EPOCH},Asia/Kolkata,%Y-%m-%d)}","language":"${LANG_SELECTED}","businessType":"${IVR_BUSINESS_TYPE}","hasRecording":false,"branch":"","place":"","purpose":"${IVR_PURPOSE}","callbackStatus":"Pending","followUpFlag":true}')
+ same => n,Playback(vm-goodbye)
+ same => n,Hangup()
+
+; Test recording
+[default]
+exten => *99,1,Answer()
+ same => n,MixMonitor(/var/spool/asterisk/monitor/test-recording.wav,b)
+ same => n,Playback(demo-echotest)
+ same => n,Echo()
+ same => n,Hangup()
+
+;==========================================================
+#include attica-intake.conf

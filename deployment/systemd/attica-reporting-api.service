@@ -1,0 +1,17 @@
+[Unit]
+Description=Attica read-only War Room Reporting API
+After=network.target mysql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/attica-reporting-api
+EnvironmentFile=/etc/attica/reporting-api.env
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+User=root
+Group=root
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

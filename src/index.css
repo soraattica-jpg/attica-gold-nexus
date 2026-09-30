@@ -63,6 +63,13 @@
     @apply border-border;
   }
 
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: "Outfit", system-ui, sans-serif;
@@ -97,6 +104,192 @@
 
   .control-field {
     @apply w-full rounded-xl border bg-background px-3 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+  }
+
+  .agent-form-overlay {
+    padding: clamp(4px, 0.7vw, 12px);
+  }
+
+  .agent-form-shell {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+  }
+
+  .agent-form-inline-shell {
+    width: 100%;
+    height: 100%;
+  }
+
+  .agent-form-host {
+    max-width: none;
+  }
+
+  .agent-form-shell .agent-intake-content,
+  .agent-form-shell .agent-intake-body {
+    min-height: 0;
+  }
+
+  .agent-form-shell .history-panel {
+    min-height: 0;
+  }
+
+  .agent-form-shell .history-panel > .min-h-0 {
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  /* Keep the live intake form readable. Fit the layout with spacing and grids,
+     never by shrinking the entire form. */
+  .agent-form-shell {
+    font-size: 14px;
+  }
+
+  .agent-form-shell h2,
+  .agent-form-shell h3 {
+    font-size: 15px !important;
+    font-weight: 700;
+  }
+
+  .agent-form-shell label,
+  .agent-form-shell .field-label {
+    font-size: 11px !important;
+    font-weight: 700;
+  }
+
+  .agent-form-shell input,
+  .agent-form-shell select,
+  .agent-form-shell textarea {
+    font-size: 14px !important;
+  }
+
+  .agent-form-shell button {
+    font-size: 13px !important;
+  }
+
+  .agent-form-shell .call-status-label,
+  .agent-form-shell .timing-label {
+    font-size: 10px !important;
+  }
+
+  .agent-form-shell .call-status-value,
+  .agent-form-shell .timing-value {
+    font-size: 15px !important;
+    font-weight: 700;
+  }
+
+  .agent-form-shell .procedure-step {
+    font-size: 11px !important;
+  }
+
+  .agent-form-shell .procedure-arrow {
+    font-size: 11px !important;
+  }
+
+  .agent-form-shell .history-panel,
+  .agent-form-shell .history-panel * {
+    font-size: 12px;
+  }
+
+  .agent-form-shell .footer-status {
+    font-size: 12px !important;
+  }
+
+  @media (max-height: 800px) {
+    .agent-form-shell .control-field {
+      min-height: 28px;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .agent-form-shell .action-gold,
+    .agent-form-shell .action-outline {
+      min-height: 28px;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .agent-form-shell header {
+      padding-top: 0.3rem;
+      padding-bottom: 0.3rem;
+    }
+
+    .agent-form-shell [data-testid="call-status-bar"] {
+      margin-top: 0.25rem;
+      padding-top: 0.3rem;
+      padding-bottom: 0.3rem;
+    }
+
+    .agent-form-shell [data-testid="intake-fixed-footer"] {
+      min-height: 48px;
+      height: 48px;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
+  }
+
+  @media (max-width: 1400px), (max-height: 800px) {
+    .agent-form-shell h2,
+    .agent-form-shell h3 {
+      font-size: 14px !important;
+    }
+
+    .agent-form-shell label,
+    .agent-form-shell .field-label {
+      font-size: 10px !important;
+    }
+
+    .agent-form-shell input,
+    .agent-form-shell select,
+    .agent-form-shell textarea {
+      font-size: 13px !important;
+    }
+
+    .agent-form-shell button {
+      font-size: 13px !important;
+    }
+  }
+
+  @media (min-width: 1600px) and (min-height: 801px) {
+    .agent-form-shell input,
+    .agent-form-shell select,
+    .agent-form-shell textarea {
+      font-size: 14px !important;
+    }
+  }
+
+  @media (max-height: 700px) {
+    .agent-form-shell .agent-intake-body {
+      padding-top: 0.2rem;
+      padding-bottom: 0.2rem;
+    }
+
+    .agent-form-shell .schedule-grid {
+      gap: 0.2rem 0.35rem;
+    }
+
+    .agent-form-shell .schedule-panel {
+      padding-top: 0.2rem;
+      padding-bottom: 0.2rem;
+    }
+
+    .agent-form-shell .schedule-panel .mb-1 {
+      margin-bottom: 0.15rem;
+    }
+  }
+
+  @media (max-height: 620px) {
+    .agent-form-shell .agent-intake-body {
+      overflow-y: auto;
+    }
+  }
+
+  @media (max-width: 1050px) {
+    .agent-form-shell .agent-intake-body {
+      padding-left: 0.45rem;
+      padding-right: 0.45rem;
+    }
   }
 
   .action-gold {
@@ -188,6 +381,152 @@
     color: hsl(var(--attica-gold-deep));
     text-shadow: 0 0 16px hsl(var(--attica-gold) / 0.55);
     animation: livePulse 2s ease-in-out infinite;
+  }
+
+  .agent-status-board-grid {
+    display: grid;
+    align-items: stretch;
+    gap: 10px;
+    grid-auto-rows: minmax(150px, auto);
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    height: auto;
+    min-height: min-content;
+  }
+
+  .agent-status-board-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    justify-content: flex-start;
+    min-height: 150px;
+    min-width: 0;
+    overflow: visible;
+  }
+
+  .agent-status-board-card-header {
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  .agent-status-board-status-badge {
+    border-width: 1px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    max-width: none;
+    overflow: visible;
+    padding: 4px 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  .agent-status-board-agent-name {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .agent-status-board-agent-id {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+
+  .agent-status-board-card-metrics {
+    display: grid;
+    flex: 1 1 auto;
+    gap: 6px;
+    grid-template-rows: auto 1fr;
+    margin-top: 8px;
+    min-height: min-content;
+  }
+
+  .agent-status-board-metric-wide {
+    align-items: center;
+    border-radius: 0.375rem;
+    border-width: 1px;
+    display: flex;
+    justify-content: space-between;
+    min-height: 34px;
+    padding: 6px 8px;
+  }
+
+  .agent-status-board-metric-grid {
+    display: grid;
+    gap: 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: min-content;
+  }
+
+  .agent-status-board-metric-box {
+    align-items: center;
+    border-radius: 0.375rem;
+    border-width: 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 0;
+    overflow: visible;
+    padding: 6px 5px;
+    text-align: center;
+  }
+
+  .agent-status-board-metric-label {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .agent-status-board-call-value {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .agent-status-board-metric-value {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  @media (max-width: 420px) {
+    .agent-status-board-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (min-width: 421px) and (max-width: 639px) {
+    .agent-status-board-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 1199px) {
+    .agent-status-board-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1200px) and (max-width: 1599px) {
+    .agent-status-board-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+
+  .agent-status-board-grid.agent-status-board-grid--live {
+    align-content: start;
+    height: auto;
   }
 
   .sidebar-active {
