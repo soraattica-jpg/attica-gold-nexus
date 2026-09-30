@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import mysql from 'mysql2/promise';
+import {createCustomerHistoryModule} from '../modules/customer-history/index.js';
+import {serializePreviewCall,serializePreviewIntake,createPreviewProfileBuilder} from '../modules/customer-history/preview-adapters.js';
+const config=JSON.parse(readFileSync(new URL('../.private/customer-history-db.json',import.meta.url),'utf8'));
+assert.equal(config.database,'attica_next_customer_history');assert.equal(config.user,'attica_history_read');
+async function feature(){const db=await mysql.createConnection(config);return {db,...createCustomerHistoryModule({db,serializeCalls:async rows=>rows.map(serializePreviewCall),serializeIntakes:serializePreviewIntake,buildProfile:createPreviewProfileBuilder(db)})};}
+test('MariaDB: primary, +91 and alternate numbers resolve one customer and newest-first histories',async()=>{const {db,service}=await feature();try{for(const input of ['9000000001','919000000001','9000000002']){const value=await service.callHistory({phone:input});assert.equal(value.total,2);assert.deepEqual(value.results.map(r=>r.id),['TEST-CALL-2','TEST-CALL-1']);}const intakes=await service.intakes({phone:'9000000002'});assert.equal(intakes.phone,'9000000001');assert.deepEqual(intakes.results.map(r=>r.callId),['TEST-CALL-2','TEST-CALL-1']);}finally{await db.end();}});
+test('MariaDB: customer ID falls back through calls and profile returns reusable saved fields',async()=>{const {db,service}=await feature();try{assert.equal(await service.resolve('','TEST-CUSTOMER-CALL'),'9000000003');const profile=await service.profile({phone:'9000000002'});assert.equal(profile.customerName,'Staging Customer');assert.equal(profile.language,'Kannada');assert.equal(profile.branch,'Staging Branch');assert.equal(profile.mob2,'9000000002');assert.equal(profile.hasSavedDetails,true);}finally{await db.end();}});
+test('MariaDB: staging account is SELECT-only and cannot inspect or mutate production',async()=>{const {db}=await feature();try{await assert.rejects(db.query("UPDATE attica_customers SET notes='x' WHERE customer_uid='TEST-CUSTOMER-1'"),e=>e.errno===1142);for(const sql of ['SELECT COUNT(*) FROM asterisk.attica_calls','UPDATE asterisk.attica_calls SET notes=notes WHERE 1=0'])await assert.rejects(db.query(sql),e=>[1044,1142].includes(e.errno));}finally{await db.end();}});

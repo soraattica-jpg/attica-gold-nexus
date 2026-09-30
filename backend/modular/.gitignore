@@ -1,0 +1,9 @@
+node_modules/
+baseline/
+runtime/
+.env*
+!.env.example
+*.log
+coverage/
+
+.private/

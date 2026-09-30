@@ -1,0 +1,1 @@
+export function createIntakeRepository(adapters){for(const key of['saveForm','syncIvr','customerIdForPhone','toIso','readPending','pendingCall','readWorkflow','mutateWorkflow','isRetryable'])if(typeof adapters?.[key]!=='function')throw new Error(`Intake adapter missing: ${key}`);return adapters;}

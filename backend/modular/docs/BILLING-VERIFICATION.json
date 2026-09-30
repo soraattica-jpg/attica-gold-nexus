@@ -1,0 +1,28 @@
+{
+  "verifiedAt": "2026-09-21T12:55:49.575Z",
+  "previewPort": 3101,
+  "dataset": "synthetic-select-only",
+  "externalBillingSync": false,
+  "scope": [
+    "GET /api/customerdata/list",
+    "GET /api/customerdata"
+  ],
+  "checks": [
+    "Authentication required",
+    "Date list and stable billing fields",
+    "Normalized +91 lookup",
+    "Strict and combined lookup behavior",
+    "Database writes and production access denied",
+    "No external customer-data calls in preview",
+    "Preview restart persistence"
+  ],
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "productionDeployment": false
+}

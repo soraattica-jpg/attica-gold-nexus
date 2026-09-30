@@ -1,0 +1,28 @@
+{
+  "verifiedAt": "2026-09-21T12:55:52.666Z",
+  "previewPort": 3101,
+  "scope": [
+    "POST /api/intake-forms",
+    "GET /api/intake-workflow/pending",
+    "GET /api/intake-workflow",
+    "POST /api/intake-workflow"
+  ],
+  "checks": [
+    "Authentication",
+    "Draft revision concurrency",
+    "Explicit manual submission",
+    "No auto-submit deadline",
+    "Restart draft recovery",
+    "Stable call identity",
+    "Production database denied"
+  ],
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "productionDeployment": false
+}

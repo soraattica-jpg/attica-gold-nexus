@@ -1,0 +1,25 @@
+{
+  "verifiedAt": "2026-09-21T12:55:53.282Z",
+  "scope": [
+    "GET /api/agents",
+    "GET /api/agents/:id",
+    "GET /api/agent-sessions"
+  ],
+  "checks": [
+    "Authentication",
+    "List shape",
+    "Detail errors",
+    "Session pagination",
+    "Preview restart",
+    "No Asterisk or production database access"
+  ],
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "productionDeployment": false
+}

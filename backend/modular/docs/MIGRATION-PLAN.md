@@ -1,0 +1,155 @@
+# Migration plan and validation record
+
+## Completed: phase 1, isolated Branches slice
+
+Exact original locations in the hash-verified private baseline (not moving current line numbers):
+
+| Endpoint | Original source range | Candidate status |
+| --- | --- | --- |
+| GET /api/branches | `server.js:29405–29420` | MIGRATED + TESTED |
+| POST /api/branches | `server.js:29422–29433` | MIGRATED + TESTED |
+| PUT /api/branches/:id | `server.js:29435–29449` | MIGRATED + TESTED |
+| DELETE /api/branches/:id | `server.js:29451–29456` | MIGRATED + TESTED |
+| GET /api/branches/search-nearby | `server.js:29459–29531` | MIGRATED + TESTED |
+| GET /api/branches/autocomplete | `server.js:30581–30591` | MIGRATED + TESTED |
+
+`serializeBranchRow` was replaced at original `server.js:29383–29403` by dependency wiring. The five catalog/nearby registrations are mounted at original line 29405; autocomplete stays at its original registration position, line 30581. See `scripts/prepare-runtime.js` for the AST-based replacement and `docs/BASELINE.json` for the source hash.
+
+The service preserves URL precedence, create defaults, update aliases, soft deletion, nearby geocoder order, distance calculation/radius fallback and empty autocomplete error responses. SQL stays in the repository. The original database proxy is injected so async request/transaction routing stays intact. The nearby service receives existing Google/Photon helpers; their implementation has not moved yet.
+
+Verification: 32 legacy-versus-module cases, one HTTP test, one unchanged-statements test, one route-order test, and one logging test: **36 passing contract/HTTP/structure/logging tests**, plus **3 real MariaDB tests**. Syntax check passed for the generated full candidate. These checks establish the extracted Branches contract, not full-system production readiness. No real SMS, hold/transfer, queue, bill or customer-history flow was exercised.
+
+Private baseline recorded before changes; Git baseline commit and production/staging marker branches exist. `refactor/modular-server` contains candidate work. Marker branches are not deployment automation.
+
+## Infrastructure track: startup and adapter isolation
+
+1. Move database configuration behind explicit injected executors and backend-only environment configuration; retain the AsyncLocalStorage pool proxy and pool sizing behavior.
+2. Separate import/registration from schema initialization, queue updates, filesystem writes and job startup. Preserve the single scheduler / multiple API worker topology.
+3. Prepare a separate staging database and provider stubs, including no-op Asterisk adapters. Do not start a duplicate scheduler against production.
+4. Test startup, shutdown, worker restarts, configuration errors and absence of side effects when modules are imported.
+
+## Completed: phase 2, Admin Messages preview
+
+Six message/UI-refresh endpoints and the private-message-only portion of PUT /api/agents/:id are now extracted. Exact original ranges, shared-state dependencies, original behavior limitations, test-auth policy and verification are in `docs/ADMIN-MESSAGES-NEXT.md`. No other agent update logic was moved. API inventory distinguishes the partial agent endpoint from fully migrated routes.
+
+## Completed: phase 3, Customer History preview
+
+Four read routes are extracted with shared customer-ID/primary/alternate-mobile resolution. Exact source locations, collaborator boundaries and verification are in `docs/CUSTOMER-HISTORY.md` and `docs/CUSTOMER-HISTORY-VERIFICATION.json`. The preview uses a synthetic SELECT-only MariaDB schema. Remote customer-data sync remains legacy.
+
+## Completed: phase 4, core call Reports preview
+
+Five core call-report endpoints are MIGRATED + TESTED: dashboard statistics, date details, full-dataset report summary, server-side list pagination and streaming CSV export. See `docs/REPORTS-CORE.md`. SEO/marketing reporting remains a separate feature; the already-separated baseline `md-reporting.mjs` remains unchanged.
+
+## Completed: phase 5, Billing / customer-data lookup preview
+
+Two read endpoints are extracted with their date-list and normalized-phone lookup behavior. Exact source locations, strict/cached/local/remote fallback behavior and isolation evidence are in `docs/BILLING.md` and `docs/BILLING-VERIFICATION.json`. The preview uses a dedicated synthetic SELECT-only MariaDB schema and never calls the external customer-data API or starts background billing synchronization.
+
+## Completed: phase 6, SMS abstraction retaining Kaleyra
+
+Send, log and delivery-callback routes now use an SMS service plus an injected Kaleyra provider client. Exact route locations, payload/audit behavior and fake-delivery isolation are in `docs/SMS-KALEYRA.md` and `docs/SMS-VERIFICATION.json`. Preview sends go only to an in-memory fake sink and isolated SMS schema; no provider credential or network request is used.
+
+## Completed: phase 7, Follow-Ups preview
+
+Six follow-up and status-queue registrations are MIGRATED + TESTED. Exact source ranges and isolation details are in `docs/FOLLOWUPS.md` and `docs/FOLLOWUPS-VERIFICATION.json`. The preview uses a dedicated writable synthetic schema, starts no jobs and exposes no Asterisk/dialer adapter. Production candidate wiring retains the existing queue and auto-dial collaborators.
+
+## Completed: phase 8, Agent Intake routes preview
+
+Four intake form/workflow registrations are MIGRATED + TESTED. Candidate wiring retains the existing intake workflow engine and locked upsert behavior. Preview uses an isolated synthetic schema and verifies revision conflicts, explicit manual submission, no auto-submit deadline, pending restore and restart persistence. See `docs/INTAKE.md` and `docs/INTAKE-VERIFICATION.json`.
+
+## Completed: phase 9A, Agent Status reads
+
+Agent list, detail and session-history reads are MIGRATED + TESTED. Production candidate adapters preserve runtime/PJSIP overlays; preview returns synthetic status records and performs no Asterisk/PJSIP access. Agent mutations and call-state controls remain separate call-critical work. See `docs/AGENT-STATUS.md`.
+
+## Completed: phase 9B, Rates and pledge-place reference data
+
+Four metal-rate registrations and two pledge-place registrations are extracted into `modules/reference-data`. The preview uses authenticated, process-local synthetic state and proves restart reset without database access. Candidate wiring retains the original MariaDB and pledge-place adapters. See `docs/REFERENCE-DATA.md` and `docs/REFERENCE-DATA-VERIFICATION.json`.
+
+## Completed: all remaining route registrations
+
+Every `server.js` route declaration now has an explicit feature owner. The 69 preserved-handler mount statements cover 75 paths including aliases across seven bounded feature modules; original paths, middleware/handlers and order are byte-preserved and hash-tested. The generic compatibility registry is removed. See `docs/FEATURE-ROUTE-OWNERSHIP.md`.
+
+## In progress: phase 10, SEO & Marketing reporting
+
+The active production SEO/Marketing dashboard contains a compatibility patch
+for IST date filters, response-cache refresh and scoped exports. Its current
+live source ranges are `server.js:25162–25267` and `server.js:26819–27043`.
+The first reusable extraction is now in `modules/seo-marketing/`; it includes
+date normalization, cache policy, role checks, routes, controller and an
+injected repository contract. See `docs/SEO-MARKETING.md`.
+
+The module is mounted on 3101 with a SELECT-only flattened reporting snapshot.
+It has route, IST-boundary, cache, authorization, pagination and scoped-export
+tests; the first real-data comparison matches summary and spend metrics for
+2026-09-21. CSV schemas and current-page/all-matching export scope now also
+match the live endpoints. It is deliberately not marked `MIGRATED + TESTED`
+yet because broader date/filter and field-value export parity remains before
+cutover. New SEO/Marketing changes belong in this module first. A production
+hotfix may remain a minimal compatibility patch only while the candidate is
+validated.
+
+## Following feature slices
+
+1. Low-risk reference and utility data.
+2. Outgoing Dialer, Incoming Calls, Asterisk / AMI / Queues last.
+
+Keep 2–4 low-risk modules isolated before considering promotion. Do not replace existing business rules with simplified sample functions. WATI remains a separate optional integration slice.
+
+## Production cutover (not executed)
+
+- Recheck live file hashes and incorporate subsequent production fixes before promotion. Never overwrite newer fixes with the captured baseline.
+- Require a fully isolated staging run for the affected feature, preserving endpoint paths, request bodies, response shapes, error codes, authorization and registration order.
+- Run a controlled real-provider geocoding smoke test before Branches promotion: authentication, timeout, response mapping and failure/fallback behavior, with no database writes. MariaDB parity is verified; live geocoding remains an open gate.
+- Capture the existing deployed release and service/proxy configuration for rollback.
+- Plan a maintenance window or verified parallel API-only cutover; do not assume zero interruption. Keep exactly one production scheduler.
+- Switch only after review/approval of the concrete tested candidate. Monitor API failures, submissions and worker health, and roll back to the captured release if needed.
+
+## Current production status
+
+Phases 1–9 and the complete registration boundary make no production deployment. The production service remains `/root/attica-api/server.js` on port 3001. The persistent preview is loopback-only on 3101. Extracted feature previews use isolated datasets; Agent Status is synthetic only. SIP trunks, queue strategy and routing configuration are outside this change.
+
+As of 22 September 2026, the live source is 34,943 lines. No legacy block has
+been deleted from production yet, so the production reduction count is zero.
+The candidate's 67-line entrypoint is a target architecture measure, not a
+claim that live production has already been replaced.
+
+## Verification follow-up
+
+- `docs/REVIEW-VERIFICATION.json`: seven read-only HTTP parity probes against production, normal restart, crash recovery, logging, deployed frontend scan and unchanged production file hashes.
+- `npm test`: 155 passing tests; `npm run test:database`: 25 passing real MariaDB tests. Registration tests verify all 120 paths, exact order, feature ownership, method contracts and byte-preserved legacy handler arguments.
+- `deployment/attica-api-next-preview.service`: installed and enabled, `Restart=always`, structured journald logs, loopback binding, blocked access to production source, configuration and database files.
+- Credentials: `/etc/attica-next/preview-db.json` (SELECT-only snapshot) and `/etc/attica-next/contract-db.json` (writes only to the separate contract-test database). Both are root-only and outside Git. Branches receives only its read credential through systemd LoadCredential. The Admin Messages preview additionally reads ignored, root-only `.private/messages-preview-db.json` and `.private/message-actors.json`; its contract tests use `.private/messages-contract-db.json`. No production credentials are used by either adapter.
+- Branches and unrelated preview mutations reject POST/PUT/DELETE with 405 by design. Admin Messages test-authenticated mutations are allowed only against synthetic staging data. Parity of the underlying mutation handlers is tested directly with original handlers on the contract-test database. Do not describe the public preview's write-block policy as the production mutation contract.
+- Production list ignores page/limit/sort/filter inputs and returns every active branch. Autocomplete uses `q` and LIMIT 15; nearby uses location or coordinates and LIMIT 10. This refactor preserves those behaviors rather than adding pagination.
+- Live geocoding services are not enabled on port 3101. Google/Photon order, failure fallbacks and request arguments are covered through injected test adapters; real provider/network availability is not certified by this verification.
+- Production source/service/proxy and call handling remain unchanged. No live mutation endpoints were exercised.
+
+## Next feature-extraction track
+
+The registration goal is complete. Continue decomposing feature-owned preserved business handlers by risk: reference/admin data, marketing reports, billing, agent mutations, lead ingestion, follow-up/autodial operations, calls, and finally Asterisk/AMI/queues. Each deeper extraction must replace one preserved handler with a controller/service implementation without changing its route contract or order.
+
+## Permanent module-first development rule
+
+All future changes begin with `docs/MODULE-MAP.md`, `docs/API-INVENTORY.md`
+and the existing module search. New business logic belongs in its owner module;
+the legacy production `server.js` is limited to bootstrap, route mounting,
+narrow compatibility shims or urgent hotfixes. Run `npm run check:large-files`
+for substantial changes. The current recorded legacy baseline is 34,943 lines,
+with a warning when it grows by more than 300 lines. See
+`docs/DEVELOPMENT-RULES.md` for the required workflow and thresholds.
+
+## Staged infrastructure: dual Tata circuits
+
+The new circuit's immutable metadata, DID/CLI validation, manual primary-route
+selection and channel-capacity rules now live in `integrations/asterisk/`.
+The existing circuit remains the selected live outbound route; there is no
+automatic failover. The PBX has separate inbound normalization/tagging for
+`TATA_NEW`, but carrier authentication and DID activation are still external
+commissioning gates. See `docs/TATA-DUAL-CIRCUIT.md`. This does not mark the
+remaining Asterisk/AMI/call-control monolith extraction complete.
+
+Campaign-circuit attribution now lives in
+`modules/call-records/call-attribution.service.js`. Incoming calls on pilot
+`8065200220` and DID range `8065200221–8065200399` are classified as business
+source `Campaign Calls` and carrier `CAMPAIGN_CALLS`. Outgoing calls on that
+physical circuit retain their existing Auto Dial, Follow-Up, Manual Dial or
+Outgoing source while storing `CAMPAIGN_CALLS` separately as the carrier.
