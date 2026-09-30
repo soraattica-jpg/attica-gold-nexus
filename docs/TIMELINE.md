@@ -13,6 +13,7 @@ Times are UTC.
 | September 22, 2026 | SEO/marketing parity work, module rules, dual Tata routing and call attribution | `39c9ef8` through `6afedda` |
 | September 30, 2026 | Modular history imported into the complete-project branch | Subtree commit `f0a53a7` |
 | September 30, 2026 | Current frontend, APIs, schema, telephony, deployment and IVR source committed | `5176d7c` and `SOURCE-SNAPSHOT.json` |
+| September 30, 2026, 23:54 UTC | Complete project branch published to GitHub | Initial published commit `f2e4261`; [open the branch](https://github.com/soraattica-jpg/attica-gold-nexus/tree/chore/full-call-center-project-20260930) |
 
 The frontend changes after March 20 were uncommitted on the server. They
 enter Git in the September 30 snapshot without invented earlier commit dates.

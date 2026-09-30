@@ -55,15 +55,15 @@ git status --short
 git push -u origin chore/full-call-center-project-20260930
 ```
 
-GitHub reads succeeded, but a push dry-run found no GitHub write
-authentication on this server. The local branch is ready for publication
-after a write-enabled SSH key or Git credential is configured.
+The complete project branch was published to GitHub on September 30, 2026
+at 23:54 UTC. Open the [published branch](https://github.com/soraattica-jpg/attica-gold-nexus/tree/chore/full-call-center-project-20260930).
 
-A dedicated upload key has been generated outside the repository. Its public
-key is `/root/attica-git-migration/private/github-deploy-key.pub`. Add that
-public key as a write-enabled deploy key at
-`https://github.com/soraattica-jpg/attica-gold-nexus/settings/keys` to enable
-the server to publish this branch. The private key stays on this server.
+This server uses a dedicated repository deploy key. Its public key is
+`/root/attica-git-migration/private/github-deploy-key.pub`; the private key
+remains outside the repository. The local repository's SSH command and
+`origin` push URL are configured, and this branch tracks its GitHub branch,
+so future commits from this checkout can be published with `git push`.
+Other clones need their own GitHub authentication.
 
 ## Snapshot contents
 

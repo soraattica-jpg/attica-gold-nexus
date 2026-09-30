@@ -32,6 +32,7 @@
     "databaseOrTelephonyOperationsTriggered": false
   },
   "gitHistoryScan": {
+    "scannedCommit": "5176d7c",
     "reachableObjects": 1076,
     "textBlobsChecked": 773,
     "capturedCredentialValuesChecked": 45,
@@ -40,7 +41,10 @@
   "publication": {
     "repository": "soraattica-jpg/attica-gold-nexus",
     "readAccess": "confirmed",
-    "pushAccess": "blocked; no HTTPS credentials or GitHub SSH authentication available",
-    "remoteBranchPublished": false
+    "pushAccess": "confirmed via the dedicated repository SSH deploy key",
+    "remoteBranchPublished": true,
+    "publishedAt": "2026-09-30T23:54:52Z",
+    "initialPublishedCommit": "f2e42614871a536f85f39ae28a7338643abc7c9f",
+    "branchUrl": "https://github.com/soraattica-jpg/attica-gold-nexus/tree/chore/full-call-center-project-20260930"
   }
 }
