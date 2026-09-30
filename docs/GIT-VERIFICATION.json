@@ -1,6 +1,8 @@
 {
   "verifiedAt": "2026-09-30T23:14:39Z",
   "branch": "chore/full-call-center-project-20260930",
+  "sourceSnapshotCommit": "5176d7c",
+  "trackedProjectFiles": 526,
   "frontend": {
     "build": "passed",
     "testFiles": 39,
@@ -28,6 +30,12 @@
     "liveServicesRestarted": false,
     "originalProjectSourceChanged": false,
     "databaseOrTelephonyOperationsTriggered": false
+  },
+  "gitHistoryScan": {
+    "reachableObjects": 1076,
+    "textBlobsChecked": 773,
+    "capturedCredentialValuesChecked": 45,
+    "findings": 0
   },
   "publication": {
     "repository": "soraattica-jpg/attica-gold-nexus",
