@@ -1,0 +1,907 @@
+[global]
+type=global
+keep_alive_interval=10
+
+;==========================================================
+; PJSIP TRANSPORT (WSS via HTTP server on 8089)
+;==========================================================
+[transport-wss]
+type=transport
+protocol=wss
+bind=0.0.0.0
+websocket_write_timeout=300000
+external_signaling_address=49.200.166.54
+external_media_address=49.200.166.54
+local_net=10.53.0.0/16
+local_net=192.168.0.0/16
+
+;==========================================================
+; WEBRTC ENDPOINT TEMPLATE
+;==========================================================
+[webrtc-endpoint](!)
+type=endpoint
+transport=transport-wss
+context=default
+disallow=all
+allow=ulaw
+allow=alaw
+webrtc=yes
+media_encryption=dtls
+dtls_setup=actpass
+dtls_verify=fingerprint
+dtls_cert_file=/etc/asterisk/keys/dtls-combined.pem
+dtls_private_key=/etc/asterisk/keys/dtls.key
+ice_support=yes
+media_use_received_transport=yes
+rtcp_mux=yes
+force_rport=yes
+rewrite_contact=yes
+rtp_symmetric=yes
+rtp_keepalive=15
+direct_media=no
+; Pass carrier early-media/progress audio (caller tune/announcements) to WebRTC agents.
+inband_progress=yes
+use_avpf=yes
+identify_by=username
+
+[webrtc-auth](!)
+type=auth
+auth_type=userpass
+
+[webrtc-aor](!)
+type=aor
+max_contacts=1
+default_expiration=300
+minimum_expiration=30
+maximum_expiration=600
+qualify_frequency=60
+qualify_timeout=8.0
+remove_existing=yes
+support_path=yes
+
+; --- Agent 01 (Ext 2001) ---
+[2001](webrtc-endpoint)
+auth=2001-auth
+aors=2001
+callerid="WebAgent 01" <2001>
+
+[2001-auth](webrtc-auth)
+username=2001
+password={{ASTERISK_PJSIP_2001_AUTH_PASSWORD}}
+
+[2001](webrtc-aor)
+
+; --- Agent 02 (Ext 2002) ---
+[2002](webrtc-endpoint)
+auth=2002-auth
+aors=2002
+callerid="WebAgent 02" <2002>
+
+[2002-auth](webrtc-auth)
+username=2002
+password={{ASTERISK_PJSIP_2002_AUTH_PASSWORD}}
+
+[2002](webrtc-aor)
+
+; --- Agent 03 (Ext 2003) ---
+[2003](webrtc-endpoint)
+auth=2003-auth
+aors=2003
+callerid="WebAgent 03" <2003>
+
+[2003-auth](webrtc-auth)
+username=2003
+password={{ASTERISK_PJSIP_2003_AUTH_PASSWORD}}
+
+[2003](webrtc-aor)
+
+; --- Agent 04 (Ext 2004) ---
+[2004](webrtc-endpoint)
+auth=2004-auth
+aors=2004
+callerid="WebAgent 04" <2004>
+
+[2004-auth](webrtc-auth)
+username=2004
+password={{ASTERISK_PJSIP_2004_AUTH_PASSWORD}}
+
+[2004](webrtc-aor)
+
+; --- Agent 05 (Ext 2005) ---
+[2005](webrtc-endpoint)
+auth=2005-auth
+aors=2005
+callerid="WebAgent 05" <2005>
+
+[2005-auth](webrtc-auth)
+username=2005
+password={{ASTERISK_PJSIP_2005_AUTH_PASSWORD}}
+
+[2005](webrtc-aor)
+
+; --- Agent 06 (Ext 2006) ---
+[2006](webrtc-endpoint)
+auth=2006-auth
+aors=2006
+callerid="WebAgent 06" <2006>
+
+[2006-auth](webrtc-auth)
+username=2006
+password={{ASTERISK_PJSIP_2006_AUTH_PASSWORD}}
+
+[2006](webrtc-aor)
+
+; --- Agent 07 (Ext 2007) ---
+[2007](webrtc-endpoint)
+auth=2007-auth
+aors=2007
+callerid="WebAgent 07" <2007>
+
+[2007-auth](webrtc-auth)
+username=2007
+password={{ASTERISK_PJSIP_2007_AUTH_PASSWORD}}
+
+[2007](webrtc-aor)
+
+; --- Agent 08 (Ext 2008) ---
+[2008](webrtc-endpoint)
+auth=2008-auth
+aors=2008
+callerid="WebAgent 08" <2008>
+
+[2008-auth](webrtc-auth)
+username=2008
+password={{ASTERISK_PJSIP_2008_AUTH_PASSWORD}}
+
+[2008](webrtc-aor)
+
+; --- Agent 09 (Ext 2009) ---
+[2009](webrtc-endpoint)
+auth=2009-auth
+aors=2009
+callerid="WebAgent 09" <2009>
+
+[2009-auth](webrtc-auth)
+username=2009
+password={{ASTERISK_PJSIP_2009_AUTH_PASSWORD}}
+
+[2009](webrtc-aor)
+
+; --- Agent 10 (Ext 2010) ---
+[2010](webrtc-endpoint)
+auth=2010-auth
+aors=2010
+callerid="WebAgent 10" <2010>
+
+[2010-auth](webrtc-auth)
+username=2010
+password={{ASTERISK_PJSIP_2010_AUTH_PASSWORD}}
+
+[2010](webrtc-aor)
+
+; --- Agent 11 (Ext 2011) ---
+[2011](webrtc-endpoint)
+auth=2011-auth
+aors=2011
+callerid="WebAgent 11" <2011>
+
+[2011-auth](webrtc-auth)
+username=2011
+password={{ASTERISK_PJSIP_2011_AUTH_PASSWORD}}
+
+[2011](webrtc-aor)
+
+; --- Agent 12 (Ext 2012) ---
+[2012](webrtc-endpoint)
+auth=2012-auth
+aors=2012
+callerid="WebAgent 12" <2012>
+
+[2012-auth](webrtc-auth)
+username=2012
+password={{ASTERISK_PJSIP_2012_AUTH_PASSWORD}}
+
+[2012](webrtc-aor)
+
+; --- Agent 13 (Ext 2013) ---
+[2013](webrtc-endpoint)
+auth=2013-auth
+aors=2013
+callerid="WebAgent 13" <2013>
+
+[2013-auth](webrtc-auth)
+username=2013
+password={{ASTERISK_PJSIP_2013_AUTH_PASSWORD}}
+
+[2013](webrtc-aor)
+
+; --- Agent 14 (Ext 2014) ---
+[2014](webrtc-endpoint)
+auth=2014-auth
+aors=2014
+callerid="WebAgent 14" <2014>
+
+[2014-auth](webrtc-auth)
+username=2014
+password={{ASTERISK_PJSIP_2014_AUTH_PASSWORD}}
+
+[2014](webrtc-aor)
+
+; --- Agent 15 (Ext 2015) ---
+[2015](webrtc-endpoint)
+auth=2015-auth
+aors=2015
+callerid="WebAgent 15" <2015>
+
+[2015-auth](webrtc-auth)
+username=2015
+password={{ASTERISK_PJSIP_2015_AUTH_PASSWORD}}
+
+[2015](webrtc-aor)
+
+; --- Agent 16 (Ext 2016) ---
+[2016](webrtc-endpoint)
+auth=2016-auth
+aors=2016
+callerid="WebAgent 16" <2016>
+
+[2016-auth](webrtc-auth)
+username=2016
+password={{ASTERISK_PJSIP_2016_AUTH_PASSWORD}}
+
+[2016](webrtc-aor)
+
+; --- Agent 17 (Ext 2017) ---
+[2017](webrtc-endpoint)
+auth=2017-auth
+aors=2017
+callerid="WebAgent 17" <2017>
+
+[2017-auth](webrtc-auth)
+username=2017
+password={{ASTERISK_PJSIP_2017_AUTH_PASSWORD}}
+
+[2017](webrtc-aor)
+
+; --- Agent 18 (Ext 2018) ---
+[2018](webrtc-endpoint)
+auth=2018-auth
+aors=2018
+callerid="WebAgent 18" <2018>
+
+[2018-auth](webrtc-auth)
+username=2018
+password={{ASTERISK_PJSIP_2018_AUTH_PASSWORD}}
+
+[2018](webrtc-aor)
+
+; --- Agent 19 (Ext 2019) ---
+[2019](webrtc-endpoint)
+auth=2019-auth
+aors=2019
+callerid="WebAgent 19" <2019>
+
+[2019-auth](webrtc-auth)
+username=2019
+password={{ASTERISK_PJSIP_2019_AUTH_PASSWORD}}
+
+[2019](webrtc-aor)
+
+; --- Agent 20 (Ext 2020) ---
+[2020](webrtc-endpoint)
+auth=2020-auth
+aors=2020
+callerid="WebAgent 20" <2020>
+
+[2020-auth](webrtc-auth)
+username=2020
+password={{ASTERISK_PJSIP_2020_AUTH_PASSWORD}}
+
+[2020](webrtc-aor)
+
+; --- Agent 21 (Ext 2021) ---
+[2021](webrtc-endpoint)
+auth=2021-auth
+aors=2021
+callerid="WebAgent 21" <2021>
+
+[2021-auth](webrtc-auth)
+username=2021
+password={{ASTERISK_PJSIP_2021_AUTH_PASSWORD}}
+
+[2021](webrtc-aor)
+
+; --- Agent 22 (Ext 2022) ---
+[2022](webrtc-endpoint)
+auth=2022-auth
+aors=2022
+callerid="WebAgent 22" <2022>
+
+[2022-auth](webrtc-auth)
+username=2022
+password={{ASTERISK_PJSIP_2022_AUTH_PASSWORD}}
+
+[2022](webrtc-aor)
+
+; --- Agent 23 (Ext 2023) ---
+[2023](webrtc-endpoint)
+auth=2023-auth
+aors=2023
+callerid="WebAgent 23" <2023>
+
+[2023-auth](webrtc-auth)
+username=2023
+password={{ASTERISK_PJSIP_2023_AUTH_PASSWORD}}
+
+[2023](webrtc-aor)
+
+; --- Agent 24 (Ext 2024) ---
+[2024](webrtc-endpoint)
+auth=2024-auth
+aors=2024
+callerid="WebAgent 24" <2024>
+
+[2024-auth](webrtc-auth)
+username=2024
+password={{ASTERISK_PJSIP_2024_AUTH_PASSWORD}}
+
+[2024](webrtc-aor)
+
+; --- Agent 25 (Ext 2025) ---
+[2025](webrtc-endpoint)
+auth=2025-auth
+aors=2025
+callerid="WebAgent 25" <2025>
+
+[2025-auth](webrtc-auth)
+username=2025
+password={{ASTERISK_PJSIP_2025_AUTH_PASSWORD}}
+
+[2025](webrtc-aor)
+
+; --- Agent 26 (Ext 2026) ---
+[2026](webrtc-endpoint)
+auth=2026-auth
+aors=2026
+callerid="WebAgent 26" <2026>
+
+[2026-auth](webrtc-auth)
+username=2026
+password={{ASTERISK_PJSIP_2026_AUTH_PASSWORD}}
+
+[2026](webrtc-aor)
+
+; --- Agent 27 (Ext 2027) ---
+[2027](webrtc-endpoint)
+auth=2027-auth
+aors=2027
+callerid="WebAgent 27" <2027>
+
+[2027-auth](webrtc-auth)
+username=2027
+password={{ASTERISK_PJSIP_2027_AUTH_PASSWORD}}
+
+[2027](webrtc-aor)
+
+; --- Agent 28 (Ext 2028) ---
+[2028](webrtc-endpoint)
+auth=2028-auth
+aors=2028
+callerid="WebAgent 28" <2028>
+
+[2028-auth](webrtc-auth)
+username=2028
+password={{ASTERISK_PJSIP_2028_AUTH_PASSWORD}}
+
+[2028](webrtc-aor)
+
+; --- Agent 29 (Ext 2029) ---
+[2029](webrtc-endpoint)
+auth=2029-auth
+aors=2029
+callerid="WebAgent 29" <2029>
+
+[2029-auth](webrtc-auth)
+username=2029
+password={{ASTERISK_PJSIP_2029_AUTH_PASSWORD}}
+
+[2029](webrtc-aor)
+
+; --- Agent 30 (Ext 2030) ---
+[2030](webrtc-endpoint)
+auth=2030-auth
+aors=2030
+callerid="WebAgent 30" <2030>
+
+[2030-auth](webrtc-auth)
+username=2030
+password={{ASTERISK_PJSIP_2030_AUTH_PASSWORD}}
+
+[2030](webrtc-aor)
+
+; Admin & QC endpoints
+[1001](webrtc-endpoint)
+allow_transfer=yes
+auth=1001-auth
+aors=1001
+callerid="WebAdmin 1001" <1001>
+
+[1001-auth]
+type=auth
+auth_type=userpass
+username=1001
+password={{ASTERISK_PJSIP_1001_AUTH_PASSWORD}}
+
+[1001](webrtc-aor)
+
+[1002](webrtc-endpoint)
+auth=1002-auth
+aors=1002
+callerid="WebQC 1002" <1002>
+
+[1002-auth]
+type=auth
+auth_type=userpass
+username=1002
+password={{ASTERISK_PJSIP_1002_AUTH_PASSWORD}}
+
+[1002](webrtc-aor)
+
+[1003](webrtc-endpoint)
+auth=1003-auth
+aors=1003
+callerid="WebQC 1003" <1003>
+
+[1003-auth]
+type=auth
+auth_type=userpass
+username=1003
+password={{ASTERISK_PJSIP_1003_AUTH_PASSWORD}}
+
+[1003](webrtc-aor)
+
+[1005](webrtc-endpoint)
+auth=1005-auth
+aors=1005
+callerid="WebAdmin 1005" <1005>
+
+[1005-auth]
+type=auth
+auth_type=userpass
+username=1005
+password={{ASTERISK_PJSIP_1005_AUTH_PASSWORD}}
+
+[1005](webrtc-aor)
+
+[1006](webrtc-endpoint)
+auth=1006-auth
+aors=1006
+callerid="WebAdmin 1006" <1006>
+
+[1006-auth]
+type=auth
+auth_type=userpass
+username=1006
+password={{ASTERISK_PJSIP_1006_AUTH_PASSWORD}}
+
+[1006](webrtc-aor)
+
+; --- Agent 31 (Ext 2031) ---
+[2031](webrtc-endpoint)
+auth=2031-auth
+aors=2031
+callerid="WebAgent 31" <2031>
+
+[2031-auth](webrtc-auth)
+username=2031
+password={{ASTERISK_PJSIP_2031_AUTH_PASSWORD}}
+
+[2031](webrtc-aor)
+
+; --- Agent 32 (Ext 2032) ---
+[2032](webrtc-endpoint)
+auth=2032-auth
+aors=2032
+callerid="WebAgent 32" <2032>
+
+[2032-auth](webrtc-auth)
+username=2032
+password={{ASTERISK_PJSIP_2032_AUTH_PASSWORD}}
+
+[2032](webrtc-aor)
+
+; --- Agent 33 (Ext 2033) ---
+[2033](webrtc-endpoint)
+auth=2033-auth
+aors=2033
+callerid="WebAgent 33" <2033>
+
+[2033-auth](webrtc-auth)
+username=2033
+password={{ASTERISK_PJSIP_2033_AUTH_PASSWORD}}
+
+[2033](webrtc-aor)
+
+; --- Agent 34 (Ext 2034) ---
+[2034](webrtc-endpoint)
+auth=2034-auth
+aors=2034
+callerid="WebAgent 34" <2034>
+
+[2034-auth](webrtc-auth)
+username=2034
+password={{ASTERISK_PJSIP_2034_AUTH_PASSWORD}}
+
+[2034](webrtc-aor)
+
+; --- Agent 35 (Ext 2035) ---
+[2035](webrtc-endpoint)
+auth=2035-auth
+aors=2035
+callerid="WebAgent 35" <2035>
+
+[2035-auth](webrtc-auth)
+username=2035
+password={{ASTERISK_PJSIP_2035_AUTH_PASSWORD}}
+
+[2035](webrtc-aor)
+
+; --- Agent 36 (Ext 2036) ---
+[2036](webrtc-endpoint)
+auth=2036-auth
+aors=2036
+callerid="WebAgent 36" <2036>
+
+[2036-auth](webrtc-auth)
+username=2036
+password={{ASTERISK_PJSIP_2036_AUTH_PASSWORD}}
+
+[2036](webrtc-aor)
+
+; --- Agent 37 (Ext 2037) ---
+[2037](webrtc-endpoint)
+auth=2037-auth
+aors=2037
+callerid="WebAgent 37" <2037>
+
+[2037-auth](webrtc-auth)
+username=2037
+password={{ASTERISK_PJSIP_2037_AUTH_PASSWORD}}
+
+[2037](webrtc-aor)
+
+; --- Agent 38 (Ext 2038) ---
+[2038](webrtc-endpoint)
+auth=2038-auth
+aors=2038
+callerid="WebAgent 38" <2038>
+
+[2038-auth](webrtc-auth)
+username=2038
+password={{ASTERISK_PJSIP_2038_AUTH_PASSWORD}}
+
+[2038](webrtc-aor)
+
+; --- Agent 39 (Ext 2039) ---
+[2039](webrtc-endpoint)
+auth=2039-auth
+aors=2039
+callerid="WebAgent 39" <2039>
+
+[2039-auth](webrtc-auth)
+username=2039
+password={{ASTERISK_PJSIP_2039_AUTH_PASSWORD}}
+
+[2039](webrtc-aor)
+
+; --- Agent 40 (Ext 2040) ---
+[2040](webrtc-endpoint)
+auth=2040-auth
+aors=2040
+callerid="WebAgent 40" <2040>
+
+[2040-auth](webrtc-auth)
+username=2040
+password={{ASTERISK_PJSIP_2040_AUTH_PASSWORD}}
+
+[2040](webrtc-aor)
+
+; --- Agent 41 (Ext 2041) ---
+[2041](webrtc-endpoint)
+auth=2041-auth
+aors=2041
+callerid="WebAgent 41" <2041>
+
+[2041-auth](webrtc-auth)
+username=2041
+password={{ASTERISK_PJSIP_2041_AUTH_PASSWORD}}
+
+[2041](webrtc-aor)
+
+; --- Agent 42 (Ext 2042) ---
+[2042](webrtc-endpoint)
+auth=2042-auth
+aors=2042
+callerid="WebAgent 42" <2042>
+
+[2042-auth](webrtc-auth)
+username=2042
+password={{ASTERISK_PJSIP_2042_AUTH_PASSWORD}}
+
+[2042](webrtc-aor)
+
+; --- Agent 43 (Ext 2043) ---
+[2043](webrtc-endpoint)
+auth=2043-auth
+aors=2043
+callerid="WebAgent 43" <2043>
+
+[2043-auth](webrtc-auth)
+username=2043
+password={{ASTERISK_PJSIP_2043_AUTH_PASSWORD}}
+
+[2043](webrtc-aor)
+
+; --- Agent 44 (Ext 2044) ---
+[2044](webrtc-endpoint)
+auth=2044-auth
+aors=2044
+callerid="WebAgent 44" <2044>
+
+[2044-auth](webrtc-auth)
+username=2044
+password={{ASTERISK_PJSIP_2044_AUTH_PASSWORD}}
+
+[2044](webrtc-aor)
+
+; --- Agent 45 (Ext 2045) ---
+[2045](webrtc-endpoint)
+auth=2045-auth
+aors=2045
+callerid="WebAgent 45" <2045>
+
+[2045-auth](webrtc-auth)
+username=2045
+password={{ASTERISK_PJSIP_2045_AUTH_PASSWORD}}
+
+[2045](webrtc-aor)
+
+; --- Agent 46 (Ext 2046) ---
+[2046](webrtc-endpoint)
+auth=2046-auth
+aors=2046
+callerid="WebAgent 46" <2046>
+
+[2046-auth](webrtc-auth)
+username=2046
+password={{ASTERISK_PJSIP_2046_AUTH_PASSWORD}}
+
+[2046](webrtc-aor)
+
+; --- Agent 47 (Ext 2047) ---
+[2047](webrtc-endpoint)
+auth=2047-auth
+aors=2047
+callerid="WebAgent 47" <2047>
+
+[2047-auth](webrtc-auth)
+username=2047
+password={{ASTERISK_PJSIP_2047_AUTH_PASSWORD}}
+
+[2047](webrtc-aor)
+
+; --- Agent 48 (Ext 2048) ---
+[2048](webrtc-endpoint)
+auth=2048-auth
+aors=2048
+callerid="WebAgent 48" <2048>
+
+[2048-auth](webrtc-auth)
+username=2048
+password={{ASTERISK_PJSIP_2048_AUTH_PASSWORD}}
+
+[2048](webrtc-aor)
+
+; --- Agent 49 (Ext 2049) ---
+[2049](webrtc-endpoint)
+auth=2049-auth
+aors=2049
+callerid="WebAgent 49" <2049>
+
+[2049-auth](webrtc-auth)
+username=2049
+password={{ASTERISK_PJSIP_2049_AUTH_PASSWORD}}
+
+[2049](webrtc-aor)
+
+; --- Agent 50 (Ext 2050) ---
+[2050](webrtc-endpoint)
+auth=2050-auth
+aors=2050
+callerid="WebAgent 50" <2050>
+
+[2050-auth](webrtc-auth)
+username=2050
+password={{ASTERISK_PJSIP_2050_AUTH_PASSWORD}}
+
+[2050](webrtc-aor)
+
+; --- Agent 51 (Ext 2051) ---
+[2051](webrtc-endpoint)
+auth=2051-auth
+aors=2051
+callerid="WebAgent 51" <2051>
+
+[2051-auth](webrtc-auth)
+username=2051
+password={{ASTERISK_PJSIP_2051_AUTH_PASSWORD}}
+
+[2051](webrtc-aor)
+
+; --- Agent 52 (Ext 2052) ---
+[2052](webrtc-endpoint)
+auth=2052-auth
+aors=2052
+callerid="WebAgent 52" <2052>
+
+[2052-auth](webrtc-auth)
+username=2052
+password={{ASTERISK_PJSIP_2052_AUTH_PASSWORD}}
+
+[2052](webrtc-aor)
+
+; --- Agent 53 (Ext 2053) ---
+[2053](webrtc-endpoint)
+auth=2053-auth
+aors=2053
+callerid="WebAgent 53" <2053>
+
+[2053-auth](webrtc-auth)
+username=2053
+password={{ASTERISK_PJSIP_2053_AUTH_PASSWORD}}
+
+[2053](webrtc-aor)
+
+; --- Agent 54 (Ext 2054) ---
+[2054](webrtc-endpoint)
+auth=2054-auth
+aors=2054
+callerid="WebAgent 54" <2054>
+
+[2054-auth](webrtc-auth)
+username=2054
+password={{ASTERISK_PJSIP_2054_AUTH_PASSWORD}}
+
+[2054](webrtc-aor)
+
+; --- Agent 55 (Ext 2055) ---
+[2055](webrtc-endpoint)
+auth=2055-auth
+aors=2055
+callerid="WebAgent 55" <2055>
+
+[2055-auth](webrtc-auth)
+username=2055
+password={{ASTERISK_PJSIP_2055_AUTH_PASSWORD}}
+
+[2055](webrtc-aor)
+
+; --- Agent 56 (Ext 2056) ---
+[2056](webrtc-endpoint)
+auth=2056-auth
+aors=2056
+callerid="WebAgent 56" <2056>
+
+[2056-auth](webrtc-auth)
+username=2056
+password={{ASTERISK_PJSIP_2056_AUTH_PASSWORD}}
+
+[2056](webrtc-aor)
+
+; --- Agent 57 (Ext 2057) ---
+[2057](webrtc-endpoint)
+auth=2057-auth
+aors=2057
+callerid="WebAgent 57" <2057>
+
+[2057-auth](webrtc-auth)
+username=2057
+password={{ASTERISK_PJSIP_2057_AUTH_PASSWORD}}
+
+[2057](webrtc-aor)
+
+; --- Agent 58 (Ext 2058) ---
+[2058](webrtc-endpoint)
+auth=2058-auth
+aors=2058
+callerid="WebAgent 58" <2058>
+
+[2058-auth](webrtc-auth)
+username=2058
+password={{ASTERISK_PJSIP_2058_AUTH_PASSWORD}}
+
+[2058](webrtc-aor)
+
+; --- Agent 59 (Ext 2059) ---
+[2059](webrtc-endpoint)
+auth=2059-auth
+aors=2059
+callerid="WebAgent 59" <2059>
+
+[2059-auth](webrtc-auth)
+username=2059
+password={{ASTERISK_PJSIP_2059_AUTH_PASSWORD}}
+
+[2059](webrtc-aor)
+
+; --- Agent 60 (Ext 2060) ---
+[2060](webrtc-endpoint)
+auth=2060-auth
+aors=2060
+callerid="WebAgent 60" <2060>
+
+[2060-auth](webrtc-auth)
+username=2060
+password={{ASTERISK_PJSIP_2060_AUTH_PASSWORD}}
+
+[2060](webrtc-aor)
+
+; --- Agent 62 (Ext 2062) ---
+[2062](webrtc-endpoint)
+auth=2062-auth
+aors=2062
+callerid="WebAgent 62" <2062>
+
+[2062-auth](webrtc-auth)
+username=2062
+password={{ASTERISK_PJSIP_2062_AUTH_PASSWORD}}
+
+[2062](webrtc-aor)
+
+; --- Agent 63 (Ext 2063) ---
+[2063](webrtc-endpoint)
+auth=2063-auth
+aors=2063
+callerid="WebAgent 63" <2063>
+
+[2063-auth](webrtc-auth)
+username=2063
+password={{ASTERISK_PJSIP_2063_AUTH_PASSWORD}}
+
+[2063](webrtc-aor)
+
+; --- AG065 Komathi C (Ext 2065) ---
+[2065](webrtc-endpoint)
+auth=2065-auth
+aors=2065
+callerid="WebAgent 65" <2065>
+
+[2065-auth](webrtc-auth)
+username=2065
+password={{ASTERISK_PJSIP_2065_AUTH_PASSWORD}}
+
+[2065](webrtc-aor)
+
+; --- AG066 Shivapadma (Ext 2066) ---
+[2066](webrtc-endpoint)
+auth=2066-auth
+aors=2066
+callerid="WebAgent 66" <2066>
+
+[2066-auth](webrtc-auth)
+username=2066
+password={{ASTERISK_PJSIP_2066_AUTH_PASSWORD}}
+
+[2066](webrtc-aor)
+
+; --- AG067 Maheshwari M (Ext 2067) ---
+[2067](webrtc-endpoint)
+auth=2067-auth
+aors=2067
+callerid="WebAgent 67" <2067>
+
+[2067-auth](webrtc-auth)
+username=2067
+password={{ASTERISK_PJSIP_2067_AUTH_PASSWORD}}
+
+[2067](webrtc-aor)

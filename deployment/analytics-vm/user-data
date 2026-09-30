@@ -1,0 +1,25 @@
+#cloud-config
+hostname: attica-analytics
+manage_etc_hosts: true
+timezone: Asia/Kolkata
+users:
+  - default
+  - name: attica
+    gecos: Attica Analytics
+    groups: [adm, sudo]
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIh5t5sQ7T3xZ8x38+DJFNbLNKpZTUu2r8NxpJjTzGeT attica-analytics-vm
+ssh_pwauth: false
+package_update: true
+packages:
+  - qemu-guest-agent
+  - curl
+  - jq
+  - htop
+  - net-tools
+runcmd:
+  - systemctl enable --now qemu-guest-agent
+  - echo "attica-analytics ready" > /etc/motd

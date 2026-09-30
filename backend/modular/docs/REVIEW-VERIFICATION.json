@@ -1,0 +1,68 @@
+{
+  "verifiedAt": "2026-09-21T12:55:46.409571+00:00",
+  "productionParity": [
+    {
+      "path": "/api/branches",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 197
+    },
+    {
+      "path": "/api/branches?page=2&limit=1&state=nonexistent&sort=name",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 197
+    },
+    {
+      "path": "/api/branches/autocomplete?q=Ban",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 4
+    },
+    {
+      "path": "/api/branches/autocomplete?q=zzzz-no-match",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 0
+    },
+    {
+      "path": "/api/branches/search-nearby?lat=12.97&lng=77.59",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 10
+    },
+    {
+      "path": "/api/branches/search-nearby?lat=0&lng=0",
+      "status": 200,
+      "matchedProduction": true,
+      "records": 10
+    },
+    {
+      "path": "/api/branches/search-nearby",
+      "status": 400,
+      "matchedProduction": true,
+      "records": null
+    }
+  ],
+  "branchesPreviewWritesHTTP": 405,
+  "cleanRestart": {
+    "before": "298534",
+    "after": "307169"
+  },
+  "automaticRecovery": {
+    "afterCrash": "307313"
+  },
+  "requestLogging": true,
+  "errorLogging": true,
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "deployedFrontendPreviewReferences": 0,
+  "productionProxyPort": 3001,
+  "productionDeployment": false
+}

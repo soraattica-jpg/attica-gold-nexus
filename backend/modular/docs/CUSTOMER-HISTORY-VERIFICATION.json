@@ -1,0 +1,23 @@
+{
+  "verifiedAt": "2026-09-21T12:55:48.099Z",
+  "previewPort": 3101,
+  "dataset": "synthetic-select-only",
+  "checks": [
+    "Authentication required",
+    "Primary/+91/alternate identity parity",
+    "Customer-ID fallback",
+    "Newest-first calls and intakes",
+    "Reusable profile fields",
+    "Database writes and production access denied",
+    "Preview restart persistence"
+  ],
+  "productionFilesUnchanged": {
+    "md-reporting.mjs": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "server.js": true,
+    "intake-workflow.mjs": true
+  },
+  "productionServiceUnchanged": true,
+  "productionDeployment": false
+}

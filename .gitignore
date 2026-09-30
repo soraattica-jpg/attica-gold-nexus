@@ -9,8 +9,10 @@ lerna-debug.log*
 
 node_modules
 dist
+public/integrations/wati/config.local.php
 dist-ssr
 *.local
+meta_api
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +24,34 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local configuration, credentials and keys
+.env
+.env.*
+!.env.example
+.private/
+private/
+*.pem
+*.key
+*service-account*.json
+secret-bindings.json
+
+# Working files, exports and server backups
+.tmp*
+.codex
+.agents/
+.antigravitycli/
+.runtime-patches/
+*.bak
+*.bak-*
+*.bak.*
+*.backup*
+*.pre-*
+reports/
+tmp-warroom/
+coverage/
+playwright-report/
+test-results/
+attica-customer-data-*.csv
+public/maps-app-urls*
+telephony/generated/

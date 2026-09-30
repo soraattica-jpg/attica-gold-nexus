@@ -1,0 +1,303 @@
+--- /root/attica-api/server.js.before
++++ /root/attica-api/server.js
+@@ -8,6 +8,7 @@
+ import { execSync } from 'child_process';
+ import { createHash, createSign } from 'crypto';
+ import { AsyncLocalStorage } from 'async_hooks';
++import { createIntakeWorkflowService, ensureIntakeWorkflowSchema, pendingIntakeSql } from './intake-workflow.mjs';
+ 
+ const JSON_BODY_LIMIT = '25mb';
+ const app = express();
+@@ -6081,6 +6082,12 @@
+ }
+ 
+ async function upsertIntakeFormRecord(connection, callLike = {}) {
++  if (!callLike.__intakeWorkflowWrite && callLike.id) {
++    const [[workflow]] = await connection.query('SELECT draft_json,draft_revision,finalized_at FROM attica_intake_workflows WHERE call_id=?', [callLike.id]);
++    if (workflow && (Number(workflow.draft_revision) > 0 || workflow.finalized_at)) {
++      return buildIntakeFormRecord(JSON.parse(workflow.draft_json));
++    }
++  }
+   let intakeForm = buildIntakeFormRecord(callLike);
+   if (!intakeForm?.callId) {
+     return null;
+@@ -11311,6 +11318,8 @@
+ 
+   const existingActiveCallId = cleanCanonicalCallId(agent.active_call_id, 120);
+   const wrapUpCallId = cleanCanonicalCallId(agent.wrap_up_call_id, 120);
++  const [[pendingIntake]] = await connection.query('SELECT call_id FROM attica_intake_workflows WHERE agent_id=? AND finalized_at IS NULL AND call_id<>? LIMIT 1', [normalizedAgentId,normalizedCallId]);
++  if (pendingIntake) return { success: false, error: 'Customer intake is pending server submission', statusCode: 423 };
+   const wrapUpUntilMs = getDateTimestamp(agent.wrap_up_until);
+   const wrapUpActive = !Number.isNaN(wrapUpUntilMs) && wrapUpUntilMs > Date.now();
+   if (wrapUpActive && wrapUpCallId !== normalizedCallId) {
+@@ -11456,8 +11465,10 @@
+   const normalizedNextStatus = normalizeAgentAvailabilityStatus(nextStatus, '');
+   const effectiveNextStatus = normalizedNextStatus || normalizeAgentAvailabilityStatus(agent.status, 'active');
+   const wrapUpCallId = existingActiveCallId || normalizedCallId;
++  const [[finishedIntake]] = await connection.query('SELECT finalized_at FROM attica_intake_workflows WHERE call_id=? AND agent_id=?', [wrapUpCallId,normalizedAgentId]);
+   const shouldStartWrapUp = Boolean(
+     wrapUpCallId
++    && !finishedIntake?.finalized_at
+     && ['active', 'outbound-auto', 'follow-up', 'manual-outgoing'].includes(effectiveNextStatus)
+   );
+ 
+@@ -11518,6 +11529,9 @@
+     return { success: false, affectedRows: 0 };
+   }
+ 
++  const [[finishedIntake]] = await connection.query('SELECT finalized_at FROM attica_intake_workflows WHERE call_id=? AND agent_id=?', [normalizedCallId,normalizedAgentId]);
++  if (finishedIntake?.finalized_at) return {success:true,affectedRows:0};
++
+   const [result] = await connection.query(
+     `UPDATE attica_agents
+      SET active_call_direction=CASE
+@@ -12163,7 +12177,7 @@
+   const today = getBusinessDateString();
+   await expireOldFollowUps();
+   const [agentRows, breakRows, callCountRows, followUpRows, languageRows, autoDialBusyRows, autoDialControl, conversionCountsByAgentId] = await Promise.all([
+-    pool.query("SELECT id, name, extension, status, is_logged_in, login_time, last_login_at, follow_up_started_at, follow_up_duration, incoming_access, outgoing_access, follow_up_access, wrap_up_until, wrap_up_call_id FROM attica_agents WHERE role='agent' ORDER BY id"),
++    pool.query(`SELECT id, name, extension, status, is_logged_in, login_time, last_login_at, follow_up_started_at, follow_up_duration, incoming_access, outgoing_access, follow_up_access, wrap_up_until, wrap_up_call_id, ${pendingIntakeSql('attica_agents.id')} AS intake_pending FROM attica_agents WHERE role='agent' ORDER BY id`),
+     pool.query('SELECT agent_id, break_type, created_at FROM attica_break_logs WHERE end_time IS NULL'),
+     pool.query(
+       `SELECT agent_id,
+@@ -12293,7 +12307,7 @@
+     const isManualOutgoing = agent.status === 'manual-outgoing' && hasOutgoingAccess;
+     const isLoggedIn = agent.is_logged_in === 1 || agent.is_logged_in === true;
+     const wrapUpUntilMs = getDateTimestamp(agent.wrap_up_until);
+-    const wrapUpActive = !Number.isNaN(wrapUpUntilMs) && wrapUpUntilMs > Date.now();
++    const wrapUpActive = Boolean(agent.intake_pending) || (!Number.isNaN(wrapUpUntilMs) && wrapUpUntilMs > Date.now());
+     const appHasActiveCall = Boolean(String(agent.active_call_id || '').trim());
+     const sipBlocksAutoDial = ['unavailable', 'in use', 'ringing', 'busy'].includes(normalizedSipStatus);
+     const isDialIdle = isLoggedIn
+@@ -15215,7 +15229,7 @@
+       normalizedAgentIds,
+     );
+     [agents] = await pool.query(
+-      `SELECT id, extension, status, incoming_access, is_logged_in, wrap_up_until FROM attica_agents WHERE role='agent' AND id IN (${placeholders}) ORDER BY id`,
++      `SELECT id, extension, status, incoming_access, is_logged_in, wrap_up_until, ${pendingIntakeSql('attica_agents.id')} AS intake_pending FROM attica_agents WHERE role='agent' AND id IN (${placeholders}) ORDER BY id`,
+       normalizedAgentIds,
+     );
+     [breaks] = await pool.query(
+@@ -15236,7 +15250,7 @@
+          AND wrap_up_until IS NOT NULL
+          AND wrap_up_until <= NOW()`
+     );
+-    [agents] = await pool.query("SELECT id, extension, status, incoming_access, is_logged_in, wrap_up_until FROM attica_agents WHERE role='agent' ORDER BY id");
++    [agents] = await pool.query(`SELECT id, extension, status, incoming_access, is_logged_in, wrap_up_until, ${pendingIntakeSql('attica_agents.id')} AS intake_pending FROM attica_agents WHERE role='agent' ORDER BY id`);
+     [breaks] = await pool.query('SELECT agent_id FROM attica_break_logs WHERE end_time IS NULL AND ended_at IS NULL');
+     [languageRows] = await pool.query('SELECT agent_id, language FROM attica_agent_languages');
+   }
+@@ -15268,7 +15282,7 @@
+     };
+ 
+     const wrapUpUntilMs = getDateTimestamp(agent.wrap_up_until);
+-    const wrapUpActive = !Number.isNaN(wrapUpUntilMs) && wrapUpUntilMs > Date.now();
++    const wrapUpActive = Boolean(agent.intake_pending) || (!Number.isNaN(wrapUpUntilMs) && wrapUpUntilMs > Date.now());
+     const endpointAvailability = endpointAvailabilityByExtension.get(extension);
+     const endpointUnavailable = endpointAvailability ? endpointAvailability.available === false : false;
+     const desiredQueueNames = getDesiredInboundQueueNamesForAgent(agent, languagesByAgentId, {
+@@ -21681,7 +21695,8 @@
+       existingHasRecording = Boolean(existingRows?.[0]?.has_recording);
+       existingRecordingName = cleanJustDialString(existingRows?.[0]?.recording_name, 255);
+     }
+-    if (!existingDuration) {
++    // A verified dialog identity must not be merged with a different recent call.
++    if (!existingDuration && !c.pbxSipCallId) {
+       const duplicateCallId = await findRecentDuplicateCallId({ ...c, id: normalizedCallId });
+       if (duplicateCallId) {
+         normalizedCallId = duplicateCallId;
+@@ -21967,6 +21982,7 @@
+     }
+     let clearedAgentWrapUp = false;
+     let releasedAgentCallSlot = false;
++    let intakeWorkflow = null;
+     const shouldClearAgentWrapUp = !isDraftSave
+       && persistedCall.agentId
+       && hasAgentSelectedCallbackStatus(persistedCall.callbackStatus);
+@@ -22188,6 +22204,12 @@
+ 
+       saveStage = 'intake-form-upsert';
+       await upsertIntakeFormRecord(connection, persistedCall);
++      if (c.pbxSipCallId) await intakeWorkflows.enroll(connection, persistedCall, c.pbxSipCallId);
++      const [[currentWorkflow]] = await connection.query('SELECT * FROM attica_intake_workflows WHERE call_id=?', [persistedCall.id]);
++      intakeWorkflow = currentWorkflow || null;
++      if (currentWorkflow && (Number(currentWorkflow.draft_revision) > 0 || currentWorkflow.finalized_at)) {
++        await intakeWorkflows.writeIntake(connection, currentWorkflow, Boolean(currentWorkflow.finalized_at));
++      }
+ 
+       if (normalizeCallDirection(persistedCall.direction) === 'incoming' && hasCustomerConnection(persistedCall)) {
+         await closeNearbyIncomingForkMisses(connection, persistedCall);
+@@ -22210,11 +22232,17 @@
+       label: `save call ${persistedCall.id || normalizedIntakeToken || 'unknown'}`,
+       connection: lockConnection,
+     }));
++    if (intakeWorkflow && !intakeWorkflow.finalized_at) {
++      invalidateLiveAgentSnapshotCache();
++      void syncAsteriskQueuePauseStates([intakeWorkflow.agent_id]).catch((error) => {
++        console.warn('[intake-deadline] queue hold refresh failed:', error.message);
++      });
++    }
+     void runCallSavePostCommitTasks({
+       persistedCall,
+-      isDraftSave,
++      isDraftSave: isDraftSave || Boolean(intakeWorkflow && !intakeWorkflow.finalized_at),
+       hasFormStatusField: Object.prototype.hasOwnProperty.call(c, 'formStatus'),
+-      shouldClearAgentWrapUp,
++      shouldClearAgentWrapUp: shouldClearAgentWrapUp && !Boolean(intakeWorkflow && !intakeWorkflow.finalized_at),
+       clearedAgentWrapUp,
+       releasedAgentCallSlot,
+     }).catch((error) => {
+@@ -22451,9 +22479,7 @@
+   return { leadId, phone, scheduledFor };
+ }
+ 
+-app.post('/api/followups', async (req, res) => {
+-  try {
+-    const f = req.body;
++async function saveAgentFollowUp(f) {
+     const followUpExpiry = getFollowUpExpiryValues(f.outcome || f.status || 'Follow-Up');
+     await pool.query(
+       `INSERT INTO attica_followups (id,customer_name,phone,branch,follow_up_at,status,agent_id,agent_name,notes,outcome,followup_created_at,followup_expires_at,followup_reason,is_active,updated_at)
+@@ -22488,23 +22514,26 @@
+     );
+     await syncAgentFollowUpToAutoDial(f);
+     void triggerAutoDialAssignment('followup-save');
++}
++
++app.post('/api/followups', async (req, res) => {
++  try {
++    await saveAgentFollowUp(req.body);
+     res.json({success:true});
+   } catch (e) { res.status(500).json({ error: e.message }); }
+ });
+ 
+-app.put('/api/followups/:id', async (req, res) => {
+-  try {
+-    const followUpId = String(req.params.id || '').trim();
+-    const nextStatus = String(req.body.status || '').trim();
++async function updateAgentFollowUp(followUpId, body) {
++    const nextStatus = String(body.status || '').trim();
+     const fields = ['status=?', "is_active=CASE WHEN ? IN ('Pending','Rescheduled') THEN 1 ELSE 0 END", 'updated_at=NOW()'];
+     const values = [nextStatus, nextStatus];
+-    if (req.body.outcome !== undefined) {
++    if (body.outcome !== undefined) {
+       fields.push('outcome=?');
+-      values.push(req.body.outcome || '');
++      values.push(body.outcome || '');
+     }
+-    if (req.body.followUpAt !== undefined) {
++    if (body.followUpAt !== undefined) {
+       fields.push('follow_up_at=?');
+-      values.push(req.body.followUpAt || null);
++      values.push(body.followUpAt || null);
+     }
+     values.push(followUpId);
+     await pool.query(`UPDATE attica_followups SET ${fields.join(', ')} WHERE id=?`, values);
+@@ -22518,9 +22547,9 @@
+     if (linkedQueue) {
+       const phone10 = normalizeAutoDialPhone(linkedQueue.phone);
+       if (nextStatus === 'Called') {
+-        await closeStatusFollowUp(phone10, req.body.outcome || 'Marked called from follow-up');
++        await closeStatusFollowUp(phone10, body.outcome || 'Marked called from follow-up');
+       } else if (nextStatus === 'Pending' || nextStatus === 'Rescheduled') {
+-        const scheduledFor = getScheduledFollowUpDate(req.body.followUpAt) || getScheduledFollowUpDate(linkedQueue.updated_at) || new Date();
++        const scheduledFor = getScheduledFollowUpDate(body.followUpAt) || getScheduledFollowUpDate(linkedQueue.updated_at) || new Date();
+         await pool.query(
+           `UPDATE attica_auto_dial_leads
+           SET status='pending',
+@@ -22577,7 +22606,11 @@
+       });
+       void triggerAutoDialAssignment('followup-update');
+     }
++}
+ 
++app.put('/api/followups/:id', async (req, res) => {
++  try {
++    await updateAgentFollowUp(String(req.params.id || '').trim(),req.body);
+     res.json({success:true});
+   } catch (e) { res.status(500).json({ error: e.message }); }
+ });
+@@ -23594,7 +23627,8 @@
+        WHERE id=?
+          AND is_logged_in=1
+          AND active_call_id IS NULL
+-         AND (wrap_up_until IS NULL OR wrap_up_until <= NOW())`,
++         AND (wrap_up_until IS NULL OR wrap_up_until <= NOW())
++         AND NOT ${pendingIntakeSql('attica_agents.id')}`,
+       [transferReservationId, targetAgent.id]
+     );
+     if (reservationResult.affectedRows === 0) {
+@@ -30296,6 +30330,34 @@
+   }
+ });
+ 
++const intakeWorkflows = createIntakeWorkflowService({
++  pool, withCallSaveLock, saveIntake:upsertIntakeFormRecord,
++  onRoutingChanged: async (agentIds) => { invalidateLiveAgentSnapshotCache(); await syncAsteriskQueuePauseStates(agentIds); },
++  onSubmitted: async (draft, workflow) => {
++    const [[row]] = await pool.query('SELECT * FROM attica_calls WHERE id=?',[workflow.call_id]);
++    if (!row) throw new Error('Final intake call is missing');
++    if (JSON.parse(workflow.review_reasons || '[]').length === 0) {
++      const followUpId = `INTAKE-FU-${createHash('sha256').update(workflow.intake_token).digest('hex').slice(0,32)}`;
++      const phone = normalizeAutoDialPhone(workflow.normalized_phone);
++      if (phone && ['schedule','call-done'].includes(draft.followUpAction)) {
++        const [pending] = await pool.query(`SELECT id FROM attica_followups WHERE status IN ('Pending','Rescheduled')
++          AND RIGHT(REGEXP_REPLACE(phone,'[^0-9]',''),10)=? AND id<>?
++          AND DATE(CONVERT_TZ(follow_up_at,'+00:00','+05:30'))<=?
++          AND COALESCE(followup_created_at,updated_at)<=?`,
++          [phone,followUpId,getIstDateString(workflow.finalized_at),workflow.finalized_at]);
++        for (const item of pending) await updateAgentFollowUp(item.id,{status:'Called',outcome:'Call done from intake form'});
++      }
++      await runCallSavePostCommitTasks({persistedCall:serializeCallRow(row),hasFormStatusField:true,shouldClearAgentWrapUp:true});
++      if (phone && draft.followUpAction === 'schedule' && draft.statusFollowUpAt && !shouldQueueFormStatus(normalizeFormStatusLabel(draft.formStatus))) {
++        await saveAgentFollowUp({id:followUpId,customerName:draft.customerName || draft.callerName,phone,
++          branch:draft.branch,followUpAt:new Date(draft.statusFollowUpAt),status:'Pending',agentId:workflow.agent_id,
++          agentName:workflow.agent_name,notes:draft.notes,callId:workflow.call_id,sourceCallId:workflow.call_id,sourceStatus:draft.formStatus});
++        await pool.query('UPDATE attica_calls SET follow_up_flag=1 WHERE id=?',[workflow.call_id]);
++      }
++    }
++  },
++});
++
+ app.post('/api/intake-forms', async (req, res) => {
+   try {
+     const requestBody = req.body || {};
+@@ -30357,6 +30419,20 @@
+   }
+ });
+ 
++app.get('/api/intake-workflow', async (req, res) => {
++  try {
++    res.json({ success:true, workflow:await intakeWorkflows.read(cleanCanonicalCallId(req.query.callId,120),normalizeAgentId(req.query.agentId)) });
++  } catch (error) { res.status(503).json({success:false,error:'Pending Server Save'}); }
++});
++app.post('/api/intake-workflow', async (req, res) => {
++  try {
++    const workflow = await intakeWorkflows.mutate({ ...req.body, callId:cleanCanonicalCallId(req.body.callId,120),agentId:normalizeAgentId(req.body.agentId) });
++    res.json({success:true,workflow});
++  } catch (error) {
++    res.status(Number(error.statusCode) || 503).json({success:false,error:error.message || 'Pending Server Save'});
++  }
++});
++
+ app.get('/api/intake-forms/phone', async (req, res) => {
+   try {
+     const phone = (req.query.phone || '').replace(/[^0-9]/g, '');
+@@ -33176,6 +33252,7 @@
+ }
+ 
+ async function startServer() {
++  await ensureIntakeWorkflowSchema(pool);
+   const bootstrapCompleted = process.env.ATTICA_SHARED_BOOTSTRAP_COMPLETE === '1';
+ 
+   if (CLUSTER_ENABLED && cluster.isPrimary) {
+@@ -33243,6 +33320,9 @@
+ }
+ 
+ function startSchedulerWorker() {
++  const runIntakeDeadlines = () => { void intakeWorkflows.tick().catch((error) => console.error('[intake-deadline] worker failed:',error.message)); };
++  runIntakeDeadlines();
++  setInterval(runIntakeDeadlines,1000);
+   console.log(
+     `Attica scheduler worker pid=${process.pid} apiWorkers=${API_WORKER_COUNT} dbPool=${DB_POOL_CONNECTION_LIMIT}`
+   );

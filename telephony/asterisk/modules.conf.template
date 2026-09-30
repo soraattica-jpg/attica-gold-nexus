@@ -1,0 +1,17 @@
+[modules]
+autoload=yes
+
+; Preload PJSIP so it grabs WebSocket handler BEFORE chan_sip
+preload => res_pjsip.so
+preload => res_http_websocket.so
+preload => res_pjsip_transport_websocket.so
+preload => res_pjsip_session.so
+preload => chan_pjsip.so
+
+noload => chan_alsa.so
+noload => chan_console.so
+noload => chan_oss.so
+noload => chan_skinny.so
+noload => chan_phone.so
+noload => chan_mgcp.so
+noload => chan_unistim.so

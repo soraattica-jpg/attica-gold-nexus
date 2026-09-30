@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-09-21T10:46:33.304153+00:00",
+  "productionPath": "/root/attica-api",
+  "productionPort": 3001,
+  "files": {
+    "md-reporting.mjs": "9cfe3c8c9dd5df88ae28a099f7e9c0e8923df58c61514ac85ce587bd20ebee1f",
+    "package-lock.json": "15ef85a392b84cf2102658a817ade3cd73e285fd71235975212710cc5a8ee066",
+    "package.json": "8b217be21426458c760491a1a89c736a65dfe4846c8c1bb4ed6dcb91f60eb305",
+    "server.js": "43281706d939eb3da12d46e325fa276ba9df181785008628be23d1f664c1a618",
+    "intake-workflow.mjs": "d40f3c762f1f090ccac625b0fde794668e21b134b821ce8040285fa3c7b4e465"
+  },
+  "originalFiles": {
+    "md-reporting.mjs": "9cfe3c8c9dd5df88ae28a099f7e9c0e8923df58c61514ac85ce587bd20ebee1f",
+    "package-lock.json": "15ef85a392b84cf2102658a817ade3cd73e285fd71235975212710cc5a8ee066",
+    "package.json": "8b217be21426458c760491a1a89c736a65dfe4846c8c1bb4ed6dcb91f60eb305",
+    "server.js": "d675ad768e68d4822634b406cabe8476e8e015f54be966018c0aab39f361992e",
+    "intake-workflow.mjs": "d40f3c762f1f090ccac625b0fde794668e21b134b821ce8040285fa3c7b4e465"
+  },
+  "sanitizedAt": "2026-09-30T23:00:55.102Z",
+  "secretStorage": "Environment variables; credentials omitted from the tracked baseline."
+}

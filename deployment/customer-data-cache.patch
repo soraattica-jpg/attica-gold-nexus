@@ -1,0 +1,259 @@
+--- a/server.js
++++ b/server.js
+@@ -4278,18 +4278,13 @@
+   }
+ 
+   const url = `${CUSTOMER_DATA_TRANSACTION_URL}?phone=${encodeURIComponent(normalizedPhone)}`;
+-  let rows = [];
+-  try {
+-    const payload = await fetchJsonWithTimeout(
+-      url,
+-      { headers: { Accept: 'application/json' } },
+-      CUSTOMER_DATA_REMOTE_TIMEOUT_MS
+-    );
+-    rows = normalizeCustomerTransactionRows(payload);
+-  } catch (error) {
+-    console.warn(`[customerdata/transactions] fetch failed for ${normalizedPhone}:`, error?.message || error);
+-    rows = [];
+-  }
++  // Failed requests are not cached as successful empty lookups.
++  const payload = await fetchJsonWithTimeout(
++    url,
++    { headers: { Accept: 'application/json' } },
++    CUSTOMER_DATA_REMOTE_TIMEOUT_MS
++  );
++  const rows = normalizeCustomerTransactionRows(payload);
+ 
+   remoteCustomerTransactionCache.set(normalizedPhone, {
+     rows,
+@@ -4377,16 +4372,26 @@
+   );
+ 
+   const transactionsByPhone = new Map();
++  let consecutiveFailures = 0;
+   for (const row of rows) {
+     const phone = normalizeAutoDialPhone(row.contact);
+     if (!phone || transactionsByPhone.has(phone)) continue;
+-    transactionsByPhone.set(phone, await fetchRemoteCustomerTransactionsByPhone(phone));
++    try {
++      transactionsByPhone.set(phone, await fetchRemoteCustomerTransactionsByPhone(phone));
++      consecutiveFailures = 0;
++    } catch (error) {
++      transactionsByPhone.set(phone, null);
++      consecutiveFailures += 1;
++      console.warn('[customerdata/transactions] lookup deferred:', error?.message || error);
++      if (consecutiveFailures >= 3) break;
++    }
+   }
+ 
+   let updated = 0;
+   for (const row of rows) {
+     const phone = normalizeAutoDialPhone(row.contact);
+     if (!phone) continue;
++    if (!Array.isArray(transactionsByPhone.get(phone))) continue;
+     const transaction = pickRemoteCustomerTransaction(row, transactionsByPhone.get(phone) || []);
+     if (!transaction) {
+       await pool.query(
+@@ -4400,7 +4405,6 @@
+ 
+     const billId = getRemoteCustomerBillId(transaction);
+     const transactionStatus = cleanJustDialString(transaction.status, 100);
+-    const status = normalizeRemoteCustomerBillStatus(transactionStatus) || cleanJustDialString(row.status, 100);
+     const grossW = getTransactionGrossWeight(transaction) || cleanJustDialString(row.gross_w, 50);
+     const netW = getTransactionNetWeight(transaction) || cleanJustDialString(row.net_w, 50);
+     const billingAmount = roundMoneyAmount(getTransactionBillingAmount(transaction))
+@@ -4411,7 +4415,6 @@
+       `UPDATE attica_remote_customer_data
+           SET bill_id=?,
+               transaction_status=?,
+-              status=?,
+               gross_w=?,
+               net_w=?,
+               billing_amount=?,
+@@ -4422,7 +4425,6 @@
+       [
+         billId,
+         transactionStatus,
+-        status,
+         grossW,
+         netW,
+         billingAmount,
+@@ -4900,20 +4902,22 @@
+     const [rowsForChunk] = await pool.query(
+       `SELECT phone, agent_id, agent_name
+          FROM (
+-           SELECT COALESCE(NULLIF(normalized_customer_number, ''), ${normalizeCallerSql}) AS phone,
++           SELECT normalized_customer_number AS phone,
+                   agent_id,
+                   agent_name,
+                   created_at
+-             FROM attica_calls
+-            WHERE (
+-                  normalized_customer_number IN (?)
+-                  OR ${normalizeCallerSql} IN (?)
+-                )
+-              AND agent_id LIKE 'AG%'
+-              AND IFNULL(TRIM(agent_name), '') <> ''
+-              AND LOWER(TRIM(agent_name)) NOT IN ('no agent', 'system', 'unknown')
++             FROM attica_calls FORCE INDEX (idx_attica_calls_norm_created)
++            WHERE normalized_customer_number IN (?)
++           UNION ALL
++           SELECT ${normalizeCallerSql} AS phone, agent_id, agent_name, created_at
++             FROM attica_calls FORCE INDEX (idx_attica_calls_norm_created)
++            WHERE (normalized_customer_number IS NULL OR normalized_customer_number='')
++              AND ${normalizeCallerSql} IN (?)
+          ) contacted
+         WHERE phone IN (?)
++          AND agent_id LIKE 'AG%'
++          AND IFNULL(TRIM(agent_name), '') <> ''
++          AND LOWER(TRIM(agent_name)) NOT IN ('no agent', 'system', 'unknown')
+         ORDER BY created_at DESC`,
+       [chunk, chunk, chunk]
+     );
+@@ -5134,30 +5138,38 @@
+   return dates;
+ }
+ 
+-async function syncRemoteCustomerDataCache(options = {}) {
+-  const force = Boolean(options?.force);
+-  if (remoteCustomerDataSyncInFlight && !force) {
++async function syncRemoteCustomerDataCache() {
++  if (remoteCustomerDataSyncInFlight) {
+     return remoteCustomerDataSyncInFlight;
+   }
+ 
+   const syncPromise = (async () => {
+-    const payload = await fetchJsonWithTimeout(
+-      CUSTOMER_DATA_REMOTE_URL,
+-      { headers: { Accept: 'application/json' } },
+-      CUSTOMER_DATA_REMOTE_TIMEOUT_MS
+-    );
+-    const rawRows = Array.isArray(payload)
+-      ? payload
+-      : payload && typeof payload === 'object' && Array.isArray(payload.data)
+-        ? payload.data
+-        : [];
+-    const upserted = await upsertRemoteCustomerDataRows(rawRows);
+-    const pruned = await pruneStaleRemoteCustomerDataRows(rawRows);
+-    remoteCustomerDataLastSyncedAt = Date.now();
+-    if (upserted > 0 || pruned > 0) {
+-      clearRemoteCustomerDataListCache();
++    const connection = await pool.getConnection();
++    let locked = false;
++    try {
++      const [[lock]] = await connection.query("SELECT GET_LOCK('attica_customerdata_source_sync', 0) AS locked");
++      locked = Number(lock?.locked) === 1;
++      if (!locked) return 0;
++      const payload = await fetchJsonWithTimeout(
++        CUSTOMER_DATA_REMOTE_URL,
++        { headers: { Accept: 'application/json' } },
++        CUSTOMER_DATA_REMOTE_TIMEOUT_MS
++      );
++      const rawRows = Array.isArray(payload)
++        ? payload
++        : payload && typeof payload === 'object' && Array.isArray(payload.data)
++          ? payload.data
++          : null;
++      if (!rawRows) throw new Error('Unexpected customer billing API response');
++      const upserted = await upsertRemoteCustomerDataRows(rawRows);
++      const pruned = await pruneStaleRemoteCustomerDataRows(rawRows);
++      remoteCustomerDataLastSyncedAt = Date.now();
++      if (upserted > 0 || pruned > 0) clearRemoteCustomerDataListCache();
++      return upserted;
++    } finally {
++      if (locked) await connection.query("SELECT RELEASE_LOCK('attica_customerdata_source_sync')").catch(() => {});
++      connection.release();
+     }
+-    return upserted;
+   })();
+ 
+   remoteCustomerDataSyncInFlight = syncPromise;
+@@ -5170,6 +5182,30 @@
+   }
+ }
+ 
++let remoteCustomerDataRefreshInFlight = null;
++function refreshRemoteCustomerDataInBackground(date, options = {}) {
++  if (remoteCustomerDataRefreshInFlight) return remoteCustomerDataRefreshInFlight;
++  const normalizedDate = normalizeQueryDate(date) || getIstDateString();
++  const refresh = (async () => {
++    const connection = await pool.getConnection();
++    let locked = false;
++    try {
++      const [[lock]] = await connection.query("SELECT GET_LOCK('attica_customerdata_enrichment', 0) AS locked");
++      locked = Number(lock?.locked) === 1;
++      if (!locked) return;
++      if (options.force) await syncRemoteCustomerDataCache();
++      else await syncRemoteCustomerDataCacheIfStale();
++      await syncRemoteCustomerTransactionsForDate(normalizedDate, options);
++    } finally {
++      if (locked) await connection.query("SELECT RELEASE_LOCK('attica_customerdata_enrichment')").catch(() => {});
++      connection.release();
++    }
++  })().catch((error) => console.warn('[customerdata] background refresh deferred:', error?.message || error))
++    .finally(() => { if (remoteCustomerDataRefreshInFlight === refresh) remoteCustomerDataRefreshInFlight = null; });
++  remoteCustomerDataRefreshInFlight = refresh;
++  return refresh;
++}
++
+ async function fetchRemoteCustomerDataRowsByDate(date, limit = 5000, options = {}) {
+   const normalizedDate = normalizeQueryDate(date);
+   const safeLimit = Math.max(1, Math.min(10000, parsePositiveInteger(limit, 5000)));
+@@ -5188,14 +5224,8 @@
+     return remoteCustomerDataListCache;
+   }
+ 
+-  if (shouldRefreshRemote) {
+-    try {
+-      await syncRemoteCustomerDataCache({ force: forceRefresh });
+-      await syncRemoteCustomerTransactionsForDate(normalizedDate, { force: forceRefresh });
+-    } catch (error) {
+-      console.error('[customerdata/list] remote sync failed, using cache:', error?.message || error);
+-    }
+-  }
++  // A list request must never wait for hundreds of external transaction lookups.
++  if (shouldRefreshRemote || forceRefresh) void refreshRemoteCustomerDataInBackground(normalizedDate, { force: forceRefresh });
+ 
+   const cachedRows = await fetchCachedRemoteCustomerDataRowsByDate(normalizedDate, safeLimit);
+   const attributionByRemoteId = await fetchBillAttributionsForRemoteRows(cachedRows);
+@@ -22899,15 +22929,17 @@
+     const limit = Math.max(1, Math.min(10000, parsePositiveInteger(req.query.limit, 5000)));
+     const force = ['1', 'true', 'yes', 'refresh'].includes(String(req.query.force || '').trim().toLowerCase());
+     const rows = await fetchRemoteCustomerDataRowsByDate(date, limit, { force });
++    const [[sync]] = await pool.query('SELECT MAX(synced_at) AS last_synced_at FROM attica_remote_customer_data WHERE record_date=?', [date]);
+     res.json({
+       date,
+       source: 'atticagold.biz',
+       total: rows.length,
+       results: rows,
++      lastSyncedAt: toApiIsoString(sync?.last_synced_at),
+     });
+   } catch (e) {
+     console.error('[customerdata/list] remote customer data failed:', e?.message || e);
+-    res.status(500).json({ date: '', source: 'atticagold.biz', total: 0, results: [] });
++    res.status(500).json({ error: 'Customer data is temporarily unavailable. Please retry.' });
+   }
+ });
+ 
+@@ -33400,8 +33432,7 @@
+   loadRnrDisconnectedCallsSafely('startup');
+   triggerAutoDialAssignmentSafely('background');
+   cleanupOrphanedGsmOutboundRingback();
+-  void syncRemoteCustomerDataCache()
+-    .catch((error) => console.warn('[customerdata] initial remote sync failed:', error?.message || error));
++  void refreshRemoteCustomerDataInBackground(getIstDateString());
+   setTimeout(() => syncMissedCallbackStatusesSafely('startup'), 15000);
+   setTimeout(() => reconcileLeadCampaignMessagesSafely('startup'), 20000);
+ 
+@@ -33460,9 +33491,8 @@
+   }, WEBSITE_FORM_LEADS_API_SYNC_CACHE_MS);
+ 
+   setInterval(() => {
+-    void syncRemoteCustomerDataCache()
+-      .catch((error) => console.warn('[customerdata] scheduled remote sync failed:', error?.message || error));
+-  }, 300000);
++    void refreshRemoteCustomerDataInBackground(getIstDateString());
++  }, CUSTOMER_DATA_REMOTE_REPORT_SYNC_MS);
+ }
+ 
+ async function startClusterPrimary() {

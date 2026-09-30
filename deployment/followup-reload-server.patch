@@ -1,0 +1,55 @@
+--- server.js.before
++++ server.js
+@@ -15757,10 +15757,16 @@
+       [lookbackDays, AUTO_DIAL_MAX_ATTEMPTS_PER_NUMBER]
+     );
+ 
++    if (options.rnrOnly) {
++      await lockConnection.query(`DELETE FROM tmp_rnr_disconnected_followup_candidates
++        WHERE LOWER(TRIM(callback_status)) NOT IN ('rnr','ring no reply','ringing no response','no answer','na')`);
++      await lockConnection.query("UPDATE tmp_rnr_disconnected_followup_candidates SET followup_reason='RNR'");
++    }
+     const [[candidateRow]] = await lockConnection.query(
+       'SELECT COUNT(*) AS candidate_count FROM tmp_rnr_disconnected_followup_candidates'
+     );
+     const candidateCount = Number(candidateRow?.candidate_count || 0);
++    if (options.dryRun) return { skipped:false,dryRun:true,candidateCount };
+     if (candidateCount === 0) {
+       return { skipped: false, batchTag, candidateCount: 0 };
+     }
+@@ -15785,11 +15791,14 @@
+            f.notes=CONCAT_WS(' | ', NULLIF(f.notes,''), CONCAT('Auto-loaded RNR/disconnected follow-up from call ', c.call_id), NULLIF(c.purpose,''), NULLIF(c.call_notes,'')),
+            f.outcome=c.followup_reason,
+            f.followup_created_at=COALESCE(f.followup_created_at, ${MYSQL_QUEUE_NOW_SQL}),
+-           f.followup_expires_at=COALESCE(f.followup_expires_at, DATE_ADD(${MYSQL_QUEUE_NOW_SQL}, INTERVAL ? DAY)),
++           f.followup_expires_at=CASE
++             WHEN ?=1 AND f.followup_expires_at < ${MYSQL_QUEUE_NOW_SQL}
++             THEN DATE_ADD(${MYSQL_QUEUE_NOW_SQL}, INTERVAL ? DAY)
++             ELSE COALESCE(f.followup_expires_at, DATE_ADD(${MYSQL_QUEUE_NOW_SQL}, INTERVAL ? DAY)) END,
+            f.followup_reason=COALESCE(NULLIF(f.followup_reason,''), c.followup_reason),
+            f.is_active=1,
+            f.updated_at=NOW()`,
+-      [FOLLOW_UP_RETENTION_DAYS]
++      [force ? 1 : 0, FOLLOW_UP_RETENTION_DAYS, FOLLOW_UP_RETENTION_DAYS]
+     );
+ 
+     const [newFollowUpResult] = await lockConnection.query(
+@@ -15873,7 +15882,7 @@
+          last_error='',
+          scheduled_for=VALUES(scheduled_for),
+          followup_created_at=COALESCE(attica_auto_dial_leads.followup_created_at, VALUES(followup_created_at)),
+-         followup_expires_at=COALESCE(attica_auto_dial_leads.followup_expires_at, VALUES(followup_expires_at)),
++         followup_expires_at=VALUES(followup_expires_at),
+          followup_reason=COALESCE(NULLIF(attica_auto_dial_leads.followup_reason,''), VALUES(followup_reason)),
+          queue_exit_reason=NULL,
+          retry_allowed=1,
+@@ -22381,7 +22390,8 @@
+     const lookbackDays = Math.max(1, Math.min(30, requestedDays));
+     const result = await runWithDbLockRetry(
+       `loadRnrDisconnectedCallsToFollowUpQueue:manual:${lookbackDays}`,
+-      () => loadRnrDisconnectedCallsToFollowUpQueue({ force: true, lookbackDays }),
++      () => loadRnrDisconnectedCallsToFollowUpQueue({ force: true, lookbackDays,
++        rnrOnly:req.body?.reason === 'rnr',dryRun:req.body?.dryRun === true }),
+       5
+     );
+     res.json({ success: true, lookbackDays, ...result });

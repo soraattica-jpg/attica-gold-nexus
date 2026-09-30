@@ -1,0 +1,27 @@
+[Unit]
+Description=Attica Gold API Server
+After=network.target mysql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/attica-api
+ExecStart=/usr/bin/node bootstrap.mjs
+EnvironmentFile=-/etc/attica/production.env
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=ATTICA_API_WORKERS=8
+Environment=ATTICA_MAX_API_WORKERS=8
+Environment=ATTICA_DB_POOL_TOTAL_CONNECTIONS=64
+Environment=ATTICA_DB_POOL_CONNECTION_LIMIT=6
+Environment=ATTICA_AUTO_DIAL_ASSIGN_INTERVAL_MS=10000
+Environment=ATTICA_AUTO_DIAL_AGENT_POLL_MIN_INTERVAL_MS=10000
+Environment=ATTICA_AUTO_DIAL_MAX_ASSIGNMENTS_PER_RUN=20
+Environment=ATTICA_OUTBOUND_AUTO_DIAL_CONNECT_GAP_SECONDS=10
+Environment=ATTICA_MAX_CALLS_FETCH_LIMIT=20000
+Environment=ATTICA_MAX_REPORT_CALLS_FETCH_LIMIT=20000
+Environment=ATTICA_MAX_DASHBOARD_FETCH_LIMIT=5000
+Environment=ATTICA_CALL_SAVE_LOCK_WAIT_SECONDS=20
+
+[Install]
+WantedBy=multi-user.target

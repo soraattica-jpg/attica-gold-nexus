@@ -1,0 +1,221 @@
+--- server.js.before-quick-note-wrapup
++++ server.js
+@@ -3776,6 +3776,7 @@
+     }),
+     followUpFlag: !!r.follow_up_flag,
+     statusFollowUpAt: toApiIsoString(r.status_follow_up_at),
++    quickNote: cleanJustDialString(r.quick_note, 500),
+     notes: r.notes || '',
+     smsSent: !!r.sms_sent,
+     createdAt: toApiIsoString(r.created_at),
+@@ -3837,6 +3838,7 @@
+       status: sourceStatus,
+       callbackStatus,
+     }),
++    quickNote: cleanJustDialString(row.quick_note, 500),
+     notes: cleanJustDialString(row.notes, 5000),
+     smsSent: Number(row.sms_sent) > 0,
+     sourceStatus,
+@@ -5555,6 +5557,7 @@
+     }),
+     followUpFlag: false,
+     statusFollowUpAt: toApiIsoString(intakeForm?.statusFollowUpAt),
++    quickNote: cleanJustDialString(intakeForm?.quickNote, 500),
+     notes: cleanJustDialString(intakeForm?.notes, 5000),
+     smsSent: Boolean(intakeForm?.smsSent),
+     createdAt: savedAt || '',
+@@ -5604,6 +5607,7 @@
+     place: cleanJustDialString(callLike.place, 255),
+     purpose: cleanJustDialString(callLike.purpose, 150),
+     callbackStatus: cleanJustDialString(callLike.callbackStatus || callLike.callback_status, 100),
++    quickNote: cleanJustDialString(callLike.quickNote || callLike.quick_note, 500),
+     notes: cleanJustDialString(callLike.notes, 5000),
+     smsSent: Boolean(callLike.smsSent || callLike.sms_sent),
+     sourceStatus: cleanJustDialString(callLike.sourceStatus || callLike.source_status || callLike.status, 20),
+@@ -5983,12 +5987,13 @@
+        metal_type,
+        grams,
+        release_gross_amount,
++       quick_note,
+        notes,
+        sms_sent,
+        created_at
+      )
+      VALUES (
+-       ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
++       ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+      )
+      ON DUPLICATE KEY UPDATE
+        call_uuid=CASE
+@@ -6094,6 +6099,10 @@
+          WHEN COALESCE(TRIM(VALUES(release_gross_amount)), '') = '' THEN attica_calls.release_gross_amount
+          ELSE VALUES(release_gross_amount)
+        END,
++       quick_note=CASE
++         WHEN COALESCE(TRIM(VALUES(quick_note)), '') = '' THEN attica_calls.quick_note
++         ELSE VALUES(quick_note)
++       END,
+        notes=CASE
+          WHEN COALESCE(TRIM(VALUES(notes)), '') = '' THEN attica_calls.notes
+          ELSE VALUES(notes)
+@@ -6125,6 +6134,7 @@
+       intakeForm.metalType || '',
+       intakeForm.grams || '',
+       intakeForm.releaseGrossAmount || '',
++      intakeForm.quickNote || '',
+       intakeForm.notes || '',
+       intakeForm.smsSent ? 1 : 0,
+       toDatabaseDateTime(intakeForm.createdAt) || savedAtDateTime,
+@@ -6231,13 +6241,14 @@
+        place,
+        purpose,
+        callback_status,
++       quick_note,
+        notes,
+        sms_sent,
+        source_status,
+        last_saved_at,
+        created_at
+      )
+-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
++     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      ON DUPLICATE KEY UPDATE
+        intake_token=CASE
+          WHEN COALESCE(TRIM(VALUES(intake_token)), '') = '' THEN attica_intake_forms.intake_token
+@@ -6349,6 +6360,10 @@
+          WHEN COALESCE(TRIM(VALUES(callback_status)), '') = '' THEN attica_intake_forms.callback_status
+          ELSE VALUES(callback_status)
+        END,
++       quick_note=CASE
++         WHEN COALESCE(TRIM(VALUES(quick_note)), '') = '' THEN attica_intake_forms.quick_note
++         ELSE VALUES(quick_note)
++       END,
+        notes=CASE
+          WHEN COALESCE(TRIM(VALUES(notes)), '') = '' THEN attica_intake_forms.notes
+          ELSE VALUES(notes)
+@@ -6390,6 +6405,7 @@
+       intakeForm.place || '',
+       intakeForm.purpose || '',
+       intakeForm.callbackStatus || '',
++      intakeForm.quickNote || '',
+       intakeForm.notes || '',
+       intakeForm.smsSent ? 1 : 0,
+       intakeForm.sourceStatus || '',
+@@ -6445,6 +6461,7 @@
+       place,
+       purpose,
+       callback_status,
++      quick_note,
+       notes,
+       sms_sent,
+       source_status,
+@@ -6481,6 +6498,7 @@
+       place,
+       purpose,
+       callback_status,
++      quick_note,
+       notes,
+       COALESCE(sms_sent, 0),
+       status,
+@@ -6599,6 +6617,10 @@
+         WHEN COALESCE(TRIM(VALUES(callback_status)), '') = '' THEN attica_intake_forms.callback_status
+         ELSE VALUES(callback_status)
+       END,
++      quick_note=CASE
++        WHEN COALESCE(TRIM(VALUES(quick_note)), '') = '' THEN attica_intake_forms.quick_note
++        ELSE VALUES(quick_note)
++      END,
+       notes=CASE
+         WHEN COALESCE(TRIM(VALUES(notes)), '') = '' THEN attica_intake_forms.notes
+         ELSE VALUES(notes)
+@@ -6677,6 +6699,7 @@
+     || cleanJustDialString(row?.place, 255)
+     || cleanJustDialString(row?.purpose, 150)
+     || toApiIsoString(row?.statusFollowUpAt)
++    || cleanJustDialString(row?.quickNote, 500)
+     || cleanJustDialString(row?.notes, 5000)
+   );
+ }
+@@ -6730,6 +6753,7 @@
+       intakeForm.businessType,
+     ) || '',
+     statusFollowUpAt: toApiIsoString(intakeForm.statusFollowUpAt) || row.statusFollowUpAt || '',
++    quickNote: pickPreferredIntakeTextValue(intakeForm.quickNote, row.quickNote, 500) || '',
+     notes: pickPreferredIntakeTextValue(intakeForm.notes, row.notes, 5000) || '',
+     smsSent: Boolean(row.smsSent || intakeForm.smsSent),
+     createdAt: row.createdAt || intakeForm.lastSavedAt || intakeForm.updatedAt || intakeForm.createdAt || '',
+@@ -7178,6 +7202,7 @@
+     callbackStatus: preferLongerCallTextValue(current?.callbackStatus, candidate?.callbackStatus, 100) || '',
+     followUpFlag: Boolean(current?.followUpFlag || candidate?.followUpFlag),
+     statusFollowUpAt: pickLaterCallTimestamp(current?.statusFollowUpAt, candidate?.statusFollowUpAt) || '',
++    quickNote: preferLongerCallTextValue(current?.quickNote, candidate?.quickNote, 500) || '',
+     notes: preferLongerCallTextValue(current?.notes, candidate?.notes, 2000) || '',
+     smsSent: Boolean(current?.smsSent || candidate?.smsSent),
+     createdAt: pickEarlierCallTimestamp(current?.createdAt, candidate?.createdAt) || '',
+@@ -7658,6 +7683,7 @@
+     dispositionCategory: row.dispositionCategory || '',
+     followUpFlag: Boolean(row.followUpFlag),
+     statusFollowUpAt: row.statusFollowUpAt || '',
++    quickNote: row.quickNote || '',
+     smsSent: Boolean(row.smsSent),
+     createdAt: row.createdAt || '',
+     ringStartedAt: row.ringStartedAt || '',
+@@ -22048,6 +22074,7 @@
+       place: cleanJustDialString(c.place, 100) || cleanJustDialString(profile?.location, 100),
+       purpose: cleanJustDialString(c.purpose, 100),
+       callbackStatus: cleanJustDialString(c.callbackStatus, 100),
++      quickNote: cleanJustDialString(c.quickNote, 500),
+       notes: cleanJustDialString(c.notes, 5000),
+     };
+     const persistedCallHasCustomerConnection = hasCustomerConnection(persistedCall);
+@@ -22286,8 +22313,8 @@
+         persistedCall.createdAt || persistedCall.ringStartedAt || persistedCall.answeredAt || persistedCall.endedAt || new Date()
+       );
+       await connection.query(
+-        `INSERT INTO attica_calls (id,call_uuid,intake_token,normalized_customer_number,customer_uid,caller_id,caller_name,customer_name,mob2,age,gender,district,business_type,metal_type,grams,release_gross_amount,releasing_amount,bank_name,online_price,price_per_gram,advertisement,lead,form_status,status_follow_up_at,ring_started_at,answered_at,ended_at,talk_duration_seconds,agent_id,agent_name,direction,status,duration,call_time,call_date,language,has_recording,branch,place,purpose,callback_status,follow_up_flag,notes,sms_sent)
+-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
++        `INSERT INTO attica_calls (id,call_uuid,intake_token,normalized_customer_number,customer_uid,caller_id,caller_name,customer_name,mob2,age,gender,district,business_type,metal_type,grams,release_gross_amount,releasing_amount,bank_name,online_price,price_per_gram,advertisement,lead,form_status,status_follow_up_at,ring_started_at,answered_at,ended_at,talk_duration_seconds,agent_id,agent_name,direction,status,duration,call_time,call_date,language,has_recording,branch,place,purpose,callback_status,follow_up_flag,quick_note,notes,sms_sent)
++         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+          ON DUPLICATE KEY UPDATE
+            status=CASE
+              WHEN VALUES(status) IS NULL OR TRIM(VALUES(status))='' THEN attica_calls.status
+@@ -22360,6 +22387,7 @@
+              ELSE VALUES(callback_status)
+            END,
+            follow_up_flag=COALESCE(VALUES(follow_up_flag), attica_calls.follow_up_flag),
++           quick_note=COALESCE(NULLIF(VALUES(quick_note), ''), attica_calls.quick_note),
+            notes=COALESCE(VALUES(notes), attica_calls.notes),
+            sms_sent=COALESCE(VALUES(sms_sent), attica_calls.sms_sent),
+            branch=COALESCE(VALUES(branch), attica_calls.branch),
+@@ -22413,6 +22441,7 @@
+           persistedCall.purpose || '',
+           persistedCall.callbackStatus || '',
+           persistedCall.followUpFlag ? 1 : 0,
++          persistedCall.quickNote || '',
+           persistedCall.notes || '',
+           persistedCall.smsSent ? 1 : 0,
+         ]
+@@ -31768,6 +31797,7 @@
+   await pool.query("ALTER TABLE attica_calls ADD COLUMN IF NOT EXISTS advertisement varchar(100) DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_calls ADD COLUMN IF NOT EXISTS lead varchar(100) DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_calls ADD COLUMN IF NOT EXISTS form_status varchar(100) DEFAULT NULL");
++  await pool.query("ALTER TABLE attica_calls ADD COLUMN IF NOT EXISTS quick_note varchar(500) DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_calls MODIFY COLUMN callback_status varchar(100) DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_calls ADD COLUMN IF NOT EXISTS status_follow_up_at datetime DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_calls ADD COLUMN IF NOT EXISTS ring_started_at datetime DEFAULT NULL");
+@@ -32011,6 +32041,7 @@
+       place varchar(255) DEFAULT NULL,
+       purpose varchar(100) DEFAULT NULL,
+       callback_status varchar(100) DEFAULT NULL,
++      quick_note varchar(500) DEFAULT NULL,
+       notes text DEFAULT NULL,
+       sms_sent tinyint(1) NOT NULL DEFAULT 0,
+       source_status varchar(20) DEFAULT NULL,
+@@ -32036,6 +32067,7 @@
+   await pool.query("ALTER TABLE attica_intake_forms ADD COLUMN IF NOT EXISTS age varchar(20) DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_intake_forms ADD COLUMN IF NOT EXISTS gender varchar(20) DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_intake_forms ADD COLUMN IF NOT EXISTS release_gross_amount varchar(50) DEFAULT NULL");
++  await pool.query("ALTER TABLE attica_intake_forms ADD COLUMN IF NOT EXISTS quick_note varchar(500) DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_intake_forms ADD COLUMN IF NOT EXISTS customer_uid varchar(40) DEFAULT NULL");
+   await pool.query("ALTER TABLE attica_intake_forms MODIFY COLUMN callback_status varchar(100) DEFAULT NULL");
+   await ensureIndexExists(

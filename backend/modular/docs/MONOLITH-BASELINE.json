@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-09-22",
+  "legacyProductionServer": {
+    "path": "/root/attica-api/server.js",
+    "lines": 34943,
+    "warningGrowthLines": 300
+  },
+  "candidateEntrypoint": {
+    "path": "server.js",
+    "lines": 69,
+    "warningGrowthLines": 100
+  }
+}
