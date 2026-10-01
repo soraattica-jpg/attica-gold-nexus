@@ -1,6 +1,7 @@
 # Call center project structure
 
-Captured from the server on September 30, 2026.
+Captured from the server on September 30, 2026. The database tables-only
+snapshot was refreshed on October 1, 2026.
 
 ```text
 attica-gold-nexus/
@@ -44,7 +45,7 @@ attica-gold-nexus/
 | Production API | `/root/attica-api` | `backend/production` |
 | Modular API | `/root/attica-api-next` | `backend/modular` |
 | Reporting API | `/opt/attica-reporting-api` | `backend/reporting` |
-| Database structure | MariaDB database `asterisk` | `database/schema.sql` |
+| Database structure | `asterisk` and nine call-center preview/test databases | `database/schema.sql`; names in `database/schema-inventory.json` |
 | Phone settings | `/etc/asterisk` | `telephony/asterisk/*.template` |
 | Intake AGI | `/var/lib/asterisk/agi-bin` | `telephony/agi-bin` |
 | IVR prompts | `/var/lib/asterisk/sounds/attica` | `telephony/sounds/attica` |

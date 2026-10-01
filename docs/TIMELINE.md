@@ -1,6 +1,6 @@
 # Call center timeline
 
-These dates come from preserved Git history and the September 30 capture.
+These dates come from preserved Git history and the recorded server captures.
 Commit dates establish when changes entered Git, not their deployment dates.
 Times are UTC.
 
@@ -14,6 +14,7 @@ Times are UTC.
 | September 30, 2026 | Modular history imported into the complete-project branch | Subtree commit `f0a53a7` |
 | September 30, 2026 | Current frontend, APIs, schema, telephony, deployment and IVR source committed | `5176d7c` and `SOURCE-SNAPSHOT.json` |
 | September 30, 2026, 23:54 UTC | Complete project branch published to GitHub | Initial published commit `f2e4261`; [open the branch](https://github.com/soraattica-jpg/attica-gold-nexus/tree/chore/full-call-center-project-20260930) |
+| October 1, 2026 | Tables-only snapshot refreshed: 10 call-center database names and 419 empty table structures; no row data or executable database objects | `database/schema.sql` and `database/schema-inventory.json` |
 
 The frontend changes after March 20 were uncommitted on the server. They
 enter Git in the September 30 snapshot without invented earlier commit dates.

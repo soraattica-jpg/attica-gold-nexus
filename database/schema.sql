@@ -29,7 +29,7 @@ CREATE TABLE `aisensy_tagged_contacts` (
   KEY `idx_customer_number` (`customer_number`),
   KEY `idx_tag_name` (`tag_name`),
   KEY `idx_first_seen_at` (`first_seen_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -50,7 +50,7 @@ CREATE TABLE `attica_admin_broadcasts` (
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `idx_attica_admin_broadcast_active` (`is_active`,`expires_at`,`sent_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -88,7 +88,7 @@ CREATE TABLE `attica_agent_sessions` (
   KEY `idx_updated_at` (`updated_at`),
   KEY `idx_attica_agent_sessions_login_ip` (`login_ip`),
   KEY `idx_attica_agent_sessions_device_id` (`device_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4706274 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -548,7 +548,7 @@ CREATE TABLE `attica_customer_source_attribution_audit` (
   PRIMARY KEY (`id`),
   KEY `idx_source_audit_run` (`update_run_id`),
   KEY `idx_source_audit_remote` (`remote_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -698,7 +698,7 @@ CREATE TABLE `attica_frontend_errors` (
   PRIMARY KEY (`id`),
   KEY `idx_attica_frontend_errors_created` (`created_at`),
   KEY `idx_attica_frontend_errors_agent_created` (`agent_id`,`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=424 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -883,7 +883,7 @@ CREATE TABLE `attica_justdial_leads` (
   KEY `idx_attica_justdial_city` (`city`),
   KEY `idx_attica_justdial_lead_status` (`lead_status`),
   KEY `idx_attica_justdial_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=7138 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -961,7 +961,7 @@ CREATE TABLE `attica_metal_rates` (
   `value` varchar(50) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -1034,7 +1034,7 @@ CREATE TABLE `attica_sms_log` (
   KEY `idx_attica_sms_log_client_message` (`client_message_id`),
   KEY `idx_attica_sms_log_provider_message` (`provider_message_id`),
   KEY `idx_attica_sms_log_delivery_status` (`delivery_status`,`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=19200 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -1671,7 +1671,7 @@ CREATE TABLE `phones` (
   `protocol` enum('SIP','PJSIP','Zap','IAX2','EXTERNAL') DEFAULT 'SIP',
   `local_gmt` varchar(6) DEFAULT '-5.00',
   `ASTmgrUSERNAME` varchar(20) DEFAULT 'cron',
-  `ASTmgrSECRET` varchar(20) DEFAULT '1234',
+  `ASTmgrSECRET` varchar(20) DEFAULT '',
   `login_user` varchar(20) DEFAULT NULL,
   `login_pass` varchar(100) DEFAULT NULL,
   `login_campaign` varchar(10) DEFAULT NULL,
@@ -1710,12 +1710,12 @@ CREATE TABLE `phones` (
   `DBX_server` varchar(15) DEFAULT NULL,
   `DBX_database` varchar(15) DEFAULT 'asterisk',
   `DBX_user` varchar(15) DEFAULT 'cron',
-  `DBX_pass` varchar(15) DEFAULT '1234',
+  `DBX_pass` varchar(15) DEFAULT '',
   `DBX_port` int(6) DEFAULT 3306,
   `DBY_server` varchar(15) DEFAULT NULL,
   `DBY_database` varchar(15) DEFAULT 'asterisk',
   `DBY_user` varchar(15) DEFAULT 'cron',
-  `DBY_pass` varchar(15) DEFAULT '1234',
+  `DBY_pass` varchar(15) DEFAULT '',
   `DBY_port` int(6) DEFAULT 3306,
   `outbound_cid` varchar(20) DEFAULT NULL,
   `enable_sipsak_messages` enum('0','1') DEFAULT '0',
@@ -1724,7 +1724,7 @@ CREATE TABLE `phones` (
   `conf_override` text DEFAULT NULL,
   `phone_context` varchar(20) DEFAULT 'default',
   `phone_ring_timeout` smallint(3) DEFAULT 60,
-  `conf_secret` varchar(100) DEFAULT 'test',
+  `conf_secret` varchar(100) DEFAULT '',
   `delete_vm_after_email` enum('N','Y') DEFAULT 'N',
   `is_webphone` enum('Y','N','Y_API_LAUNCH') DEFAULT 'N',
   `use_external_server_ip` enum('Y','N') DEFAULT 'N',
@@ -2296,7 +2296,7 @@ CREATE TABLE `servers` (
   `telnet_host` varchar(20) NOT NULL DEFAULT 'localhost',
   `telnet_port` int(5) NOT NULL DEFAULT 5038,
   `ASTmgrUSERNAME` varchar(20) NOT NULL DEFAULT 'cron',
-  `ASTmgrSECRET` varchar(20) NOT NULL DEFAULT '1234',
+  `ASTmgrSECRET` varchar(20) NOT NULL DEFAULT '',
   `ASTmgrUSERNAMEupdate` varchar(20) NOT NULL DEFAULT 'updatecron',
   `ASTmgrUSERNAMElisten` varchar(20) NOT NULL DEFAULT 'listencron',
   `ASTmgrUSERNAMEsend` varchar(20) NOT NULL DEFAULT 'sendcron',
@@ -2325,7 +2325,7 @@ CREATE TABLE `servers` (
   `vicidial_balance_rank` tinyint(3) unsigned DEFAULT 0,
   `rebuild_music_on_hold` enum('Y','N') DEFAULT 'Y',
   `active_agent_login_server` enum('Y','N') DEFAULT 'Y',
-  `conf_secret` varchar(100) DEFAULT 'test',
+  `conf_secret` varchar(100) DEFAULT '',
   `external_server_ip` varchar(100) DEFAULT '',
   `custom_dialplan_entry` text DEFAULT NULL,
   `active_twin_server_ip` varchar(15) DEFAULT '',
@@ -2433,9 +2433,9 @@ CREATE TABLE `system_settings` (
   `webphone_systemkey` varchar(100) DEFAULT '',
   `first_login_trigger` enum('Y','N') DEFAULT 'N',
   `hosted_settings` varchar(100) DEFAULT '',
-  `default_phone_registration_password` varchar(100) DEFAULT 'test',
-  `default_phone_login_password` varchar(100) DEFAULT 'test',
-  `default_server_password` varchar(100) DEFAULT 'test',
+  `default_phone_registration_password` varchar(100) DEFAULT '',
+  `default_phone_login_password` varchar(100) DEFAULT '',
+  `default_server_password` varchar(100) DEFAULT '',
   `admin_modify_refresh` smallint(5) unsigned DEFAULT 0,
   `nocache_admin` enum('0','1') DEFAULT '1',
   `generate_cross_server_exten` enum('0','1') DEFAULT '0',
@@ -2966,7 +2966,7 @@ CREATE TABLE `vicidial_admin_log` (
   KEY `user` (`user`),
   KEY `event_section` (`event_section`),
   KEY `record_id` (`record_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -3579,7 +3579,7 @@ CREATE TABLE `vicidial_call_notes` (
   `call_notes` text DEFAULT NULL,
   PRIMARY KEY (`notesid`),
   KEY `lead_id` (`lead_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -4580,7 +4580,7 @@ CREATE TABLE `vicidial_configuration` (
   `value` varchar(36) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -5450,7 +5450,7 @@ CREATE TABLE `vicidial_inbound_dids` (
   PRIMARY KEY (`did_id`),
   UNIQUE KEY `did_pattern` (`did_pattern`),
   KEY `group_id` (`group_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4294967296 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -5831,7 +5831,7 @@ CREATE TABLE `vicidial_ivr` (
   PRIMARY KEY (`ivr_id`),
   KEY `phone_number` (`phone_number`),
   KEY `entry_time` (`entry_time`)
-) ENGINE=MyISAM AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -5847,7 +5847,7 @@ CREATE TABLE `vicidial_ivr_response` (
   PRIMARY KEY (`id`),
   KEY `question_created` (`question`,`uniqueid`,`campaign`,`created`),
   KEY `lead_id` (`lead_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1599 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -6157,7 +6157,7 @@ CREATE TABLE `vicidial_list` (
   KEY `phone_list` (`phone_number`,`list_id`),
   KEY `list_phone` (`list_id`,`phone_number`),
   KEY `list_status` (`list_id`,`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -6871,7 +6871,7 @@ CREATE TABLE `vicidial_peer_event_log` (
   KEY `event_date` (`event_date`),
   KEY `peer` (`peer`),
   KEY `channel` (`channel`)
-) ENGINE=MyISAM AUTO_INCREMENT=630320 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -7096,7 +7096,7 @@ CREATE TABLE `vicidial_recording_access_log` (
   PRIMARY KEY (`recording_access_log_id`),
   KEY `recording_id` (`recording_id`),
   KEY `lead_id` (`lead_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1599 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -8226,7 +8226,7 @@ CREATE TABLE `vicidial_users` (
   `manual_dial_lead_id` enum('Y','N','ONLY','DISABLED') DEFAULT 'DISABLED',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user` (`user`)
-) ENGINE=MyISAM AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -8448,7 +8448,7 @@ CREATE TABLE `wati_inbound_webhooks` (
   KEY `idx_provider_message_id` (`provider_message_id`),
   KEY `idx_customer_number` (`customer_number`),
   KEY `idx_event_type` (`event_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=89227 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -8472,7 +8472,7 @@ CREATE TABLE `wati_message_logs` (
   UNIQUE KEY `uniq_call_event` (`call_uuid`,`event_key`),
   KEY `idx_customer_number` (`customer_number`),
   KEY `idx_provider_message_id` (`provider_message_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1958003 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -8486,7 +8486,7 @@ CREATE TABLE `wati_template_master` (
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_event_key` (`event_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=33933334 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -8518,7 +8518,7 @@ CREATE TABLE `wp_branches_database` (
   `map_url` tinytext DEFAULT NULL,
   `bitly_url` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=283 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -8579,7 +8579,7 @@ CREATE TABLE `wp_branches_database_backup_before_sql_sync_20260727` (
   `map_url` tinytext DEFAULT NULL,
   `bitly_url` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=246 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
@@ -8594,6 +8594,650 @@ CREATE TABLE `www_phrases` (
   KEY `phrase_text` (`phrase_text`(333))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_api_next_contract` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_api_next_contract`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wp_branches_database` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `branchId` varchar(255) NOT NULL,
+  `addressline` varchar(255) NOT NULL,
+  `area` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `state` varchar(255) NOT NULL,
+  `pincode` varchar(255) NOT NULL,
+  `branchName` varchar(255) DEFAULT NULL,
+  `timings` varchar(50) DEFAULT '9:30 AM - 6:30 PM',
+  `latitude` varchar(255) DEFAULT NULL,
+  `longitude` varchar(255) DEFAULT NULL,
+  `url` tinytext DEFAULT NULL,
+  `status` int(10) NOT NULL DEFAULT 1,
+  `map_url` tinytext DEFAULT NULL,
+  `bitly_url` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_api_next_preview` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_api_next_preview`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seo_marketing_bill_snapshot` (
+  `remote_id` varchar(80) NOT NULL,
+  `bill_id` varchar(80) NOT NULL DEFAULT '',
+  `phone` char(10) NOT NULL,
+  `customer_name` varchar(255) NOT NULL DEFAULT '',
+  `bill_date` date DEFAULT NULL,
+  `bill_status` varchar(100) NOT NULL DEFAULT '',
+  `billing_amount` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `gross_weight` decimal(14,3) NOT NULL DEFAULT 0.000,
+  `source_attribution` varchar(120) NOT NULL DEFAULT '',
+  PRIMARY KEY (`remote_id`),
+  KEY `idx_seo_bill_snapshot_phone_date` (`phone`,`bill_date`),
+  KEY `idx_seo_bill_snapshot_source` (`source_attribution`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seo_marketing_call_snapshot` (
+  `call_date` date NOT NULL,
+  `phone` char(10) NOT NULL,
+  `call_attempts` int(10) unsigned NOT NULL,
+  `connected_calls` int(10) unsigned NOT NULL,
+  `total_talk_seconds` bigint(20) unsigned NOT NULL,
+  `latest_call_at` datetime DEFAULT NULL,
+  `latest_agent_name` varchar(150) NOT NULL DEFAULT '',
+  `latest_agent_id` varchar(40) NOT NULL DEFAULT '',
+  `latest_disposition` varchar(150) NOT NULL DEFAULT '',
+  `latest_callback_status` varchar(150) NOT NULL DEFAULT '',
+  `latest_status` varchar(150) NOT NULL DEFAULT '',
+  `latest_direction` varchar(20) NOT NULL DEFAULT '',
+  `latest_duration_seconds` int(10) unsigned NOT NULL DEFAULT 0,
+  KEY `idx_seo_call_snapshot_phone_date` (`phone`,`call_date`),
+  KEY `idx_seo_call_snapshot_date` (`call_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seo_marketing_lead_snapshot` (
+  `source_key` varchar(32) NOT NULL,
+  `lead_id` varchar(120) NOT NULL,
+  `customer_name` varchar(255) NOT NULL DEFAULT '',
+  `phone` char(10) NOT NULL,
+  `state_name` varchar(100) NOT NULL DEFAULT '',
+  `city` varchar(150) NOT NULL DEFAULT '',
+  `language` varchar(30) NOT NULL DEFAULT '',
+  `source_name` varchar(120) NOT NULL,
+  `platform` varchar(80) NOT NULL,
+  `campaign_name` varchar(255) NOT NULL DEFAULT '',
+  `keyword_name` varchar(255) NOT NULL DEFAULT '',
+  `lead_created_at` datetime NOT NULL,
+  `auto_dial_status` varchar(80) NOT NULL DEFAULT '',
+  `assigned_agent_id` varchar(40) NOT NULL DEFAULT '',
+  `assigned_agent_name` varchar(150) NOT NULL DEFAULT '',
+  KEY `idx_seo_snapshot_date` (`lead_created_at`),
+  KEY `idx_seo_snapshot_phone` (`phone`),
+  KEY `idx_seo_snapshot_source` (`source_name`,`platform`),
+  KEY `idx_seo_snapshot_campaign` (`campaign_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seo_marketing_snapshot_metadata` (
+  `snapshot_name` varchar(80) NOT NULL,
+  `source_window_start` datetime NOT NULL,
+  `source_window_end` datetime NOT NULL,
+  `lead_rows` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `call_rows` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `bill_rows` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `refreshed_at` datetime NOT NULL,
+  PRIMARY KEY (`snapshot_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seo_marketing_spend_snapshot` (
+  `snapshot_start` date NOT NULL,
+  `snapshot_end` date NOT NULL,
+  `metric_date` varchar(80) NOT NULL,
+  `platform` varchar(80) NOT NULL,
+  `ad_account` varchar(80) NOT NULL DEFAULT '',
+  `campaign_id` varchar(120) NOT NULL DEFAULT '',
+  `campaign_name` varchar(255) NOT NULL DEFAULT '',
+  `adset_or_adgroup` varchar(255) NOT NULL DEFAULT '',
+  `ad_or_creative` varchar(255) NOT NULL DEFAULT '',
+  `impressions` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `clicks` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `spend` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `leads` int(10) unsigned NOT NULL DEFAULT 0,
+  `unique_leads` int(10) unsigned NOT NULL DEFAULT 0,
+  `qualified_leads` int(10) unsigned NOT NULL DEFAULT 0,
+  `billed_leads` int(10) unsigned NOT NULL DEFAULT 0,
+  `bill_records` int(10) unsigned NOT NULL DEFAULT 0,
+  `billing_amount` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `cpl` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `cost_per_qualified_lead` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `cost_per_bill` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `roas` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `last_synced_at` varchar(80) NOT NULL DEFAULT '',
+  `sync_status` varchar(80) NOT NULL DEFAULT '',
+  `captured_at` datetime NOT NULL,
+  KEY `idx_seo_spend_snapshot_range` (`snapshot_start`,`snapshot_end`),
+  KEY `idx_seo_spend_snapshot_campaign` (`campaign_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seo_marketing_spend_snapshot_metadata` (
+  `snapshot_start` date NOT NULL,
+  `snapshot_end` date NOT NULL,
+  `dashboard_total_spend` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `captured_at` datetime NOT NULL,
+  PRIMARY KEY (`snapshot_start`,`snapshot_end`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wp_branches_database` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `branchId` varchar(255) NOT NULL,
+  `addressline` varchar(255) NOT NULL,
+  `area` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `state` varchar(255) NOT NULL,
+  `pincode` varchar(255) NOT NULL,
+  `branchName` varchar(255) DEFAULT NULL,
+  `timings` varchar(50) DEFAULT '9:30 AM - 6:30 PM',
+  `latitude` varchar(255) DEFAULT NULL,
+  `longitude` varchar(255) DEFAULT NULL,
+  `url` tinytext DEFAULT NULL,
+  `status` int(10) NOT NULL DEFAULT 1,
+  `map_url` tinytext DEFAULT NULL,
+  `bitly_url` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_next_billing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_next_billing`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_intake_forms` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `normalized_phone` varchar(20) NOT NULL,
+  `caller_name` varchar(255) DEFAULT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `agent_name` varchar(100) DEFAULT NULL,
+  `business_type` varchar(100) DEFAULT NULL,
+  `branch` varchar(150) DEFAULT NULL,
+  `purpose` varchar(150) DEFAULT NULL,
+  `form_status` varchar(100) DEFAULT NULL,
+  `callback_status` varchar(100) DEFAULT NULL,
+  `grams` varchar(50) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `last_saved_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_phone` (`normalized_phone`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_remote_customer_data` (
+  `remote_id` varchar(80) NOT NULL,
+  `contact` varchar(30) NOT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `customer_type` varchar(100) DEFAULT NULL,
+  `branch` varchar(150) DEFAULT NULL,
+  `record_date` date NOT NULL,
+  `record_time` time DEFAULT NULL,
+  `status` varchar(100) DEFAULT NULL,
+  `gross_w` varchar(50) DEFAULT NULL,
+  `net_w` varchar(50) DEFAULT NULL,
+  `bill_id` varchar(80) DEFAULT NULL,
+  `billing_amount` decimal(15,2) DEFAULT NULL,
+  `transaction_status` varchar(100) DEFAULT NULL,
+  `walkin_type` varchar(150) DEFAULT NULL,
+  `source_attribution` varchar(120) DEFAULT NULL,
+  `attributed_agent_id` varchar(50) DEFAULT NULL,
+  `attributed_agent_name` varchar(100) DEFAULT NULL,
+  `total_talk_seconds` int(11) DEFAULT 0,
+  `connected_call_count` int(11) DEFAULT 0,
+  `attribution_window_start` datetime DEFAULT NULL,
+  `attribution_window_end` datetime DEFAULT NULL,
+  `attribution_method` varchar(80) DEFAULT NULL,
+  `attribution_reason` varchar(255) DEFAULT NULL,
+  `attributed_at` datetime DEFAULT NULL,
+  `synced_at` datetime NOT NULL,
+  PRIMARY KEY (`remote_id`),
+  KEY `idx_date` (`record_date`),
+  KEY `idx_contact` (`contact`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_next_customer_history` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_next_customer_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_calls` (
+  `id` varchar(50) NOT NULL,
+  `caller_id` varchar(50) DEFAULT NULL,
+  `caller_name` varchar(100) DEFAULT NULL,
+  `customer_name` varchar(100) DEFAULT NULL,
+  `agent_id` varchar(20) DEFAULT NULL,
+  `agent_name` varchar(100) DEFAULT NULL,
+  `direction` enum('incoming','outgoing') DEFAULT 'outgoing',
+  `status` varchar(20) DEFAULT 'completed',
+  `duration` varchar(10) DEFAULT '00:00',
+  `call_time` varchar(10) DEFAULT NULL,
+  `call_date` date DEFAULT NULL,
+  `language` varchar(30) DEFAULT 'English',
+  `has_recording` tinyint(4) DEFAULT 0,
+  `branch` varchar(100) DEFAULT NULL,
+  `place` varchar(100) DEFAULT NULL,
+  `purpose` varchar(100) DEFAULT NULL,
+  `callback_status` varchar(100) DEFAULT NULL,
+  `follow_up_flag` tinyint(4) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `disposition` varchar(20) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `sms_sent` tinyint(4) DEFAULT 0,
+  `mob2` varchar(50) DEFAULT NULL,
+  `district` varchar(100) DEFAULT NULL,
+  `business_type` varchar(100) DEFAULT NULL,
+  `metal_type` varchar(100) DEFAULT NULL,
+  `grams` varchar(50) DEFAULT NULL,
+  `releasing_amount` varchar(50) DEFAULT NULL,
+  `bank_name` varchar(150) DEFAULT NULL,
+  `online_price` varchar(50) DEFAULT NULL,
+  `price_per_gram` varchar(50) DEFAULT NULL,
+  `advertisement` varchar(100) DEFAULT NULL,
+  `lead` varchar(100) DEFAULT NULL,
+  `form_status` varchar(100) DEFAULT NULL,
+  `status_follow_up_at` datetime DEFAULT NULL,
+  `intake_token` varchar(120) DEFAULT NULL,
+  `ring_started_at` datetime DEFAULT NULL,
+  `answered_at` datetime DEFAULT NULL,
+  `ended_at` datetime DEFAULT NULL,
+  `talk_duration_seconds` int(10) unsigned NOT NULL DEFAULT 0,
+  `call_uuid` varchar(120) DEFAULT NULL,
+  `normalized_customer_number` varchar(20) DEFAULT NULL,
+  `age` varchar(20) DEFAULT NULL,
+  `gender` varchar(20) DEFAULT NULL,
+  `recording_name` varchar(255) DEFAULT NULL,
+  `recording_size` bigint(20) unsigned DEFAULT NULL,
+  `recording_recorded_at` datetime DEFAULT NULL,
+  `release_gross_amount` varchar(50) DEFAULT NULL,
+  `customer_uid` varchar(40) DEFAULT NULL,
+  `quick_note` varchar(500) DEFAULT NULL,
+  `data_filling_duration_seconds` int(10) unsigned NOT NULL DEFAULT 0,
+  `pledge_place` varchar(150) DEFAULT NULL,
+  `other_pledge_place` varchar(150) DEFAULT NULL,
+  `difference_amount` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_attica_calls_intake_token` (`intake_token`),
+  UNIQUE KEY `uniq_attica_calls_call_uuid` (`call_uuid`),
+  KEY `idx_attica_calls_agent_status` (`agent_id`,`status`),
+  KEY `idx_attica_calls_normalized_customer_number` (`normalized_customer_number`),
+  KEY `idx_attica_calls_call_date_created_at` (`call_date`,`created_at`),
+  KEY `idx_attica_calls_call_date_agent_id` (`call_date`,`agent_id`),
+  KEY `idx_attica_calls_recording_name` (`recording_name`),
+  KEY `idx_attica_calls_followup_normalized` (`follow_up_flag`,`normalized_customer_number`),
+  KEY `idx_attica_calls_direction_created` (`direction`,`created_at`),
+  KEY `idx_attica_calls_direction_call_date` (`direction`,`call_date`),
+  KEY `idx_attica_calls_created_id` (`created_at`,`id`),
+  KEY `idx_attica_calls_customer_uid` (`customer_uid`),
+  KEY `idx_attica_calls_norm_created` (`normalized_customer_number`,`created_at`),
+  KEY `idx_attica_calls_caller_created` (`caller_id`,`created_at`),
+  KEY `idx_attica_calls_missed_retry` (`direction`,`status`,`callback_status`,`created_at`,`id`),
+  KEY `idx_attica_calls_status_created` (`status`,`created_at`,`id`),
+  KEY `idx_attica_calls_call_date_status_created` (`call_date`,`status`,`created_at`,`id`),
+  KEY `idx_attica_calls_norm_date_agent` (`normalized_customer_number`,`call_date`,`agent_id`),
+  KEY `idx_attica_calls_direction_date_created_id` (`direction`,`call_date`,`created_at`,`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_customers` (
+  `customer_uid` varchar(40) NOT NULL,
+  `normalized_phone` varchar(20) NOT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `caller_name` varchar(255) DEFAULT NULL,
+  `mob2` varchar(50) DEFAULT NULL,
+  `age` varchar(20) DEFAULT NULL,
+  `gender` varchar(20) DEFAULT NULL,
+  `district` varchar(100) DEFAULT NULL,
+  `language` varchar(30) DEFAULT NULL,
+  `business_type` varchar(100) DEFAULT NULL,
+  `metal_type` varchar(100) DEFAULT NULL,
+  `grams` varchar(50) DEFAULT NULL,
+  `release_gross_amount` varchar(50) DEFAULT NULL,
+  `releasing_amount` varchar(50) DEFAULT NULL,
+  `bank_name` varchar(150) DEFAULT NULL,
+  `online_price` varchar(50) DEFAULT NULL,
+  `price_per_gram` varchar(50) DEFAULT NULL,
+  `advertisement` varchar(100) DEFAULT NULL,
+  `lead` varchar(100) DEFAULT NULL,
+  `form_status` varchar(100) DEFAULT NULL,
+  `status_follow_up_at` datetime DEFAULT NULL,
+  `branch` varchar(150) DEFAULT NULL,
+  `place` varchar(255) DEFAULT NULL,
+  `purpose` varchar(150) DEFAULT NULL,
+  `callback_status` varchar(100) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `source_status` varchar(40) DEFAULT NULL,
+  `last_call_id` varchar(120) DEFAULT NULL,
+  `last_intake_token` varchar(120) DEFAULT NULL,
+  `last_saved_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`customer_uid`),
+  UNIQUE KEY `uniq_attica_customers_phone` (`normalized_phone`),
+  KEY `idx_attica_customers_last_saved` (`last_saved_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_intake_forms` (
+  `call_id` varchar(120) NOT NULL,
+  `intake_token` varchar(120) DEFAULT NULL,
+  `call_uuid` varchar(120) DEFAULT NULL,
+  `normalized_phone` varchar(20) DEFAULT NULL,
+  `caller_name` varchar(100) DEFAULT NULL,
+  `customer_name` varchar(100) DEFAULT NULL,
+  `agent_id` varchar(20) DEFAULT NULL,
+  `agent_name` varchar(100) DEFAULT NULL,
+  `mob2` varchar(50) DEFAULT NULL,
+  `district` varchar(100) DEFAULT NULL,
+  `language` varchar(30) DEFAULT NULL,
+  `business_type` varchar(100) DEFAULT NULL,
+  `metal_type` varchar(100) DEFAULT NULL,
+  `grams` varchar(50) DEFAULT NULL,
+  `releasing_amount` varchar(50) DEFAULT NULL,
+  `bank_name` varchar(150) DEFAULT NULL,
+  `online_price` varchar(50) DEFAULT NULL,
+  `price_per_gram` varchar(50) DEFAULT NULL,
+  `advertisement` varchar(100) DEFAULT NULL,
+  `lead` varchar(100) DEFAULT NULL,
+  `form_status` varchar(100) DEFAULT NULL,
+  `status_follow_up_at` datetime DEFAULT NULL,
+  `branch` varchar(100) DEFAULT NULL,
+  `place` varchar(255) DEFAULT NULL,
+  `purpose` varchar(100) DEFAULT NULL,
+  `callback_status` varchar(100) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `sms_sent` tinyint(1) NOT NULL DEFAULT 0,
+  `source_status` varchar(20) DEFAULT NULL,
+  `last_saved_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `age` varchar(20) DEFAULT NULL,
+  `gender` varchar(20) DEFAULT NULL,
+  `release_gross_amount` varchar(50) DEFAULT NULL,
+  `customer_uid` varchar(40) DEFAULT NULL,
+  `submission_status` varchar(32) DEFAULT NULL,
+  `submitted_at` datetime(3) DEFAULT NULL,
+  `submission_method` varchar(20) DEFAULT NULL,
+  `quick_note` varchar(500) DEFAULT NULL,
+  `data_filling_duration_seconds` int(10) unsigned NOT NULL DEFAULT 0,
+  `pledge_place` varchar(150) DEFAULT NULL,
+  `other_pledge_place` varchar(150) DEFAULT NULL,
+  `difference_amount` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`call_id`),
+  UNIQUE KEY `uniq_attica_intake_forms_intake_token` (`intake_token`),
+  KEY `idx_attica_intake_forms_call_uuid` (`call_uuid`),
+  KEY `idx_attica_intake_forms_phone_updated` (`normalized_phone`,`updated_at`),
+  KEY `idx_attica_intake_forms_created_updated` (`created_at`,`updated_at`),
+  KEY `idx_attica_intake_forms_last_saved` (`last_saved_at`),
+  KEY `idx_attica_intake_forms_customer_uid` (`customer_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_next_followups` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_next_followups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_followups` (
+  `id` varchar(100) NOT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `branch` varchar(255) DEFAULT NULL,
+  `follow_up_at` datetime DEFAULT NULL,
+  `status` varchar(40) DEFAULT NULL,
+  `agent_id` varchar(60) DEFAULT NULL,
+  `agent_name` varchar(255) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `outcome` varchar(100) DEFAULT NULL,
+  `source_call_id` varchar(100) DEFAULT NULL,
+  `source_status` varchar(100) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_due` (`status`,`follow_up_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_status_followup_queue` (
+  `id` varchar(100) NOT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `form_status` varchar(100) DEFAULT NULL,
+  `is_active` tinyint(4) DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `source_call_id` varchar(100) DEFAULT NULL,
+  `follow_up_id` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `test_followup_candidates` (
+  `id` varchar(100) NOT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `phone` varchar(30) DEFAULT NULL,
+  `branch` varchar(255) DEFAULT NULL,
+  `follow_up_at` datetime DEFAULT NULL,
+  `agent_id` varchar(60) DEFAULT NULL,
+  `agent_name` varchar(255) DEFAULT NULL,
+  `source_call_id` varchar(100) DEFAULT NULL,
+  `reason` varchar(40) DEFAULT NULL,
+  `occurred_at` datetime DEFAULT NULL,
+  `processed_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_next_intake` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_next_intake`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_calls` (
+  `id` varchar(120) NOT NULL,
+  `status` varchar(40) DEFAULT NULL,
+  `agent_id` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_intake_forms` (
+  `call_id` varchar(120) NOT NULL,
+  `intake_token` varchar(120) DEFAULT NULL,
+  `normalized_phone` varchar(20) DEFAULT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `agent_id` varchar(20) DEFAULT NULL,
+  `agent_name` varchar(100) DEFAULT NULL,
+  `language` varchar(30) DEFAULT NULL,
+  `business_type` varchar(100) DEFAULT NULL,
+  `purpose` varchar(150) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `submission_status` varchar(32) DEFAULT NULL,
+  `submitted_at` datetime(3) DEFAULT NULL,
+  `submission_method` varchar(20) DEFAULT NULL,
+  `last_saved_at` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`call_id`),
+  UNIQUE KEY `intake_token` (`intake_token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_intake_workflows` (
+  `call_id` varchar(120) NOT NULL,
+  `intake_token` varchar(120) DEFAULT NULL,
+  `agent_id` varchar(20) DEFAULT NULL,
+  `agent_name` varchar(100) DEFAULT NULL,
+  `normalized_phone` varchar(20) DEFAULT NULL,
+  `direction` varchar(20) DEFAULT NULL,
+  `draft_json` longtext DEFAULT NULL,
+  `draft_revision` bigint(20) DEFAULT 0,
+  `confirmed_ended_at` datetime(3) DEFAULT NULL,
+  `disposition_selected_at` datetime(3) DEFAULT NULL,
+  `auto_submit_at` datetime(3) DEFAULT NULL,
+  `finalized_at` datetime(3) DEFAULT NULL,
+  `submission_method` varchar(20) DEFAULT NULL,
+  `review_reasons` text DEFAULT NULL,
+  `last_error` varchar(255) DEFAULT NULL,
+  `created_at` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`call_id`),
+  UNIQUE KEY `intake_token` (`intake_token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_next_messages_contract` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_next_messages_contract`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_admin_broadcasts` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `message` varchar(500) NOT NULL,
+  `recipient_scope` varchar(32) NOT NULL DEFAULT 'all',
+  `expiry_code` varchar(32) NOT NULL DEFAULT 'until-cleared',
+  `expires_at` datetime DEFAULT NULL,
+  `sent_by_id` varchar(80) DEFAULT NULL,
+  `sent_by_name` varchar(160) DEFAULT NULL,
+  `sent_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `cleared_by_id` varchar(80) DEFAULT NULL,
+  `cleared_by_name` varchar(160) DEFAULT NULL,
+  `cleared_at` datetime DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_attica_admin_broadcast_active` (`is_active`,`expires_at`,`sent_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_agents` (
+  `id` varchar(80) NOT NULL,
+  `role` varchar(30) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `is_logged_in` int(11) DEFAULT NULL,
+  `incoming_access` int(11) DEFAULT NULL,
+  `outgoing_access` int(11) DEFAULT NULL,
+  `follow_up_access` int(11) DEFAULT NULL,
+  `admin_message` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_next_messages_preview` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_next_messages_preview`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_admin_broadcasts` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `message` varchar(500) NOT NULL,
+  `recipient_scope` varchar(32) NOT NULL DEFAULT 'all',
+  `expiry_code` varchar(32) NOT NULL DEFAULT 'until-cleared',
+  `expires_at` datetime DEFAULT NULL,
+  `sent_by_id` varchar(80) DEFAULT NULL,
+  `sent_by_name` varchar(160) DEFAULT NULL,
+  `sent_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `cleared_by_id` varchar(80) DEFAULT NULL,
+  `cleared_by_name` varchar(160) DEFAULT NULL,
+  `cleared_at` datetime DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_attica_admin_broadcast_active` (`is_active`,`expires_at`,`sent_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_agents` (
+  `id` varchar(80) NOT NULL,
+  `role` varchar(30) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `is_logged_in` int(11) DEFAULT NULL,
+  `incoming_access` int(11) DEFAULT NULL,
+  `outgoing_access` int(11) DEFAULT NULL,
+  `follow_up_access` int(11) DEFAULT NULL,
+  `admin_message` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `attica_next_sms` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+
+USE `attica_next_sms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attica_sms_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `phone` varchar(30) DEFAULT NULL,
+  `branch_id` varchar(50) DEFAULT NULL,
+  `branch_name` varchar(255) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `status` varchar(32) DEFAULT NULL,
+  `provider` varchar(50) DEFAULT NULL,
+  `message_type` varchar(50) DEFAULT NULL,
+  `source` varchar(50) DEFAULT NULL,
+  `client_message_id` varchar(120) DEFAULT NULL,
+  `provider_message_id` varchar(120) DEFAULT NULL,
+  `delivery_status` varchar(32) DEFAULT NULL,
+  `delivery_status_code` varchar(100) DEFAULT NULL,
+  `delivery_reason` varchar(255) DEFAULT NULL,
+  `country` varchar(100) DEFAULT NULL,
+  `iso_code` varchar(20) DEFAULT NULL,
+  `network` varchar(100) DEFAULT NULL,
+  `cost` varchar(50) DEFAULT NULL,
+  `units` varchar(50) DEFAULT NULL,
+  `provider_response_json` mediumtext DEFAULT NULL,
+  `dlr_payload_json` mediumtext DEFAULT NULL,
+  `submitted_at` datetime DEFAULT NULL,
+  `sent_at` datetime DEFAULT NULL,
+  `delivered_at` datetime DEFAULT NULL,
+  `status_updated_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_client` (`client_message_id`),
+  KEY `idx_provider` (`provider_message_id`),
+  KEY `idx_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wp_branches_database` (
+  `branchId` varchar(50) NOT NULL,
+  `branchName` varchar(255) NOT NULL,
+  `url` varchar(1000) DEFAULT NULL,
+  `map_url` varchar(1000) DEFAULT NULL,
+  `bitly_url` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`branchId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -8603,4 +9247,3 @@ CREATE TABLE `www_phrases` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-

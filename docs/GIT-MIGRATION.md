@@ -36,9 +36,12 @@ Review before installing under `/etc/asterisk`. IVR prompts belong under
 
 Provision Apache, PHP, MariaDB, Asterisk and VICIdial/astguiclient separately.
 Captured service units retain their existing server paths, which need review
-for a new installation. The schema, routines, events and triggers are in
-`database/schema.sql`; operational records, users and grants are restored
-privately. See `database/README.md`.
+for a new installation. `database/schema.sql` contains database names and
+empty table structures for `asterisk` and nine preview/test databases,
+refreshed October 1, 2026. Routines, events and triggers are excluded from
+this tables-only snapshot. Required executable database objects,
+operational records, users and grants must be provisioned privately.
+See `database/README.md` and the full table-name inventory beside it.
 
 Install Node dependencies in the root and each backend. The modular baseline
 is sanitized and has checked hashes in `backend/modular/docs/BASELINE.json`.
